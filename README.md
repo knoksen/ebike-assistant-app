@@ -2,6 +2,11 @@
 
 E-Bike Assistant is an AI-powered tool for diagnosing e-bike and scooter issues. Built with **React**, **TypeScript**, and **Vite**, it provides step-by-step repair guidance and performance tips. The app is designed to run entirely in the browser and can be deployed as a static site.
 
+The app uses **React Router** for client-side navigation. The main routes are:
+- `/` - Home
+- `/diagnostics` - Diagnostics tools
+- `/about` - Project information
+
 ## Setup
 
 ```bash
