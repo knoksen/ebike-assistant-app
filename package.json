@@ -29,5 +29,6 @@
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4"
   },
-  "homepage": "https://knoksen.github.io/ebike-assistant-app"
+  "homepage": "https://knoksen.github.io/ebike-assistant-app",
+  "license": "MIT"
 }
