@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Diagnostics from './pages/Diagnostics'
 import About from './pages/About'
 import './App.css'
+import { Diagnostics } from './components/Diagnostics'
 
 export default function App() {
   return (
@@ -19,4 +20,6 @@ export default function App() {
       </Routes>
     </BrowserRouter>
   )
+function App() {
+  return <Diagnostics />
 }
