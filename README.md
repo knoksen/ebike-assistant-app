@@ -26,6 +26,12 @@ npm run build
 npm run build:analyze
 ```
 
+## Manifest
+
+The PWA manifest is defined in `public/manifest.json`. During the build step,
+`vite-plugin-pwa` copies this file to `dist/manifest.webmanifest`. Update the
+JSON in `public` to modify the generated manifest.
+
 ## Deployment
 
 ### GitHub Pages

@@ -35,6 +35,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4",
+    "vite-plugin-pwa": "^1.0.1",
     "vitest": "^3.2.4"
   },
   "homepage": "https://knoksen.github.io/ebike-assistant-app",
