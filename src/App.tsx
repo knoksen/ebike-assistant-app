@@ -4,6 +4,7 @@ import Diagnostics from './pages/Diagnostics'
 import About from './pages/About'
 import './App.css'
 import { Diagnostics } from './components/Diagnostics'
+import Header from './components/Header'
 
 export default function App() {
   return (
@@ -21,5 +22,10 @@ export default function App() {
     </BrowserRouter>
   )
 function App() {
-  return <Diagnostics />
+  return (
+    <>
+      <Header />
+      <Diagnostics />
+    </>
+  )
 }
