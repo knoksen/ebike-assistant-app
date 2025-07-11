@@ -28,7 +28,7 @@ npm run build:analyze
 
 ## Manifest
 
-The PWA manifest is defined in `public/manifest.json`. During the build step,
+The PWA manifest is defined in `public/manifest.webmanifest`. During the build step,
 `vite-plugin-pwa` copies this file to `dist/manifest.webmanifest`. Update the
 JSON in `public` to modify the generated manifest.
 
@@ -51,7 +51,7 @@ An Azure Static Web Apps workflow is included in `.github/workflows`. Pushes to 
 ### PWA support
 
 The app can be installed like a native application. The web app manifest is
-sourced from `public/manifest.json`. Update this file to change the app name or
+sourced from `public/manifest.webmanifest`. Update this file to change the app name or
 modify icon paths if you want to use custom images.
 
 Running `npm run build` generates `dist/manifest.webmanifest` and `sw.js` while

@@ -11,8 +11,11 @@ export default defineConfig(() => {
     react(),
     VitePWA({
       srcDir: 'public',
-      filename: 'manifest.webmanifest',
-      manifest: require('./public/manifest.json'),
+      manifest: require('./public/manifest.webmanifest'),
+      manifestFilename: 'manifest.webmanifest',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+      },
     }),
   ]
   if (process.env.ANALYZE) {
