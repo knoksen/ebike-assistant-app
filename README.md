@@ -16,6 +16,9 @@ npm run lint
 
 # Build the app for production
 npm run build
+
+# Generate a bundle size report
+npm run build:analyze
 ```
 
 ## Deployment
