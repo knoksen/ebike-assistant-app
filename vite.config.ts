@@ -31,7 +31,4 @@ export default defineConfig(() => {
     base: '/ebike-assistant-app/',
     plugins,
   }
-export default defineConfig({
-  plugins: [react()],
-  base: '/ebike-assistant-app/',
 })
