@@ -20,27 +20,6 @@ const PartsSearch: React.FC = () => {
       <input
         className="w-full p-2 rounded border dark:bg-gray-700 dark:text-white mb-2"
         placeholder="Type to search for parts…"
-import { useState } from 'react'
-import PartItem, { Part } from './PartItem'
-
-const inventory: Part[] = [
-  { id: 1, name: 'Battery Pack' },
-  { id: 2, name: 'Brake Pads' },
-  { id: 3, name: 'Controller' },
-  { id: 4, name: 'Tire Tube' }
-]
-
-export default function PartsSearch() {
-  const [query, setQuery] = useState('')
-  const results = inventory.filter(p =>
-    p.name.toLowerCase().includes(query.toLowerCase())
-  )
-
-  return (
-    <div>
-      <h1>Search Parts</h1>
-      <input
-        placeholder="Search for parts..."
         value={query}
         onChange={e => setQuery(e.target.value)}
       />
@@ -56,9 +35,6 @@ export default function PartsSearch() {
         {filtered.length === 0 && (
           <li className="text-gray-500">No parts found.</li>
         )}
-        {results.map(p => (
-          <PartItem key={p.id} part={p} />
-        ))}
       </ul>
     </div>
   )
