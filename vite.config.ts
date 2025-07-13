@@ -29,8 +29,11 @@ export default defineConfig(() => {
     )
   }
 
+  // Use environment variable for base URL, defaulting to GitHub Pages path
+  const baseUrl = process.env.VITE_BASE_URL || '/ebike-assistant-app/'
+
   return {
-    base: '/ebike-assistant-app/',
+    base: baseUrl,
     plugins,
   }
 })

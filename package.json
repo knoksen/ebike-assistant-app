@@ -1,7 +1,8 @@
 {
   "name": "ebike-assistant-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Your comprehensive e-bike maintenance and troubleshooting companion",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +12,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "deploy:azure": "npm run build",
     "build:analyze": "ANALYZE=true npm run build"
   },
   "dependencies": {
