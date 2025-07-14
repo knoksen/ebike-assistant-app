@@ -1,99 +1,116 @@
-# React + TypeScript + Vite
+# E-Bike Assistant
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive Progressive Web App (PWA) for e-bike maintenance, troubleshooting, and parts management. Built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔧 **Diagnostics**: Troubleshoot common e-bike issues
+- 🔍 **Parts Search**: Find compatible components for your e-bike
+- 📱 **Progressive Web App**: Install on mobile devices for offline access
+- ⚡ **Fast & Responsive**: Built with modern web technologies
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 20 or higher
+- npm
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/knoksen/ebike-assistant-app.git
+   cd ebike-assistant-app
+   ```
 
-## Manifest
+2. Install dependencies:
+   ```bash
+   npm ci
+   ```
 
-The PWA manifest is defined in `public/manifest.webmanifest`. During the build step,
-`vite-plugin-pwa` copies this file to `dist/manifest.webmanifest`. Update the
-JSON in `public` to modify the generated manifest.
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint
+- `npm test` - Run tests with Vitest
+- `npm run build:analyze` - Build with bundle analyzer
 
 ## Deployment
 
-### GitHub Pages
+This app is configured for deployment to multiple platforms:
 
-This repository is configured to publish the `dist` directory to GitHub Pages. After building, run:
+### GitHub Pages (Recommended)
 
+Automatic deployment is configured via GitHub Actions:
+
+1. Push to the `main` branch triggers automatic deployment
+2. The app will be available at: https://knoksen.github.io/ebike-assistant-app
+
+Manual deployment:
 ```bash
 npm run deploy
 ```
 
-The site will be available at <https://knoksen.github.io/ebike-assistant-app>.
-
 ### Azure Static Web Apps
 
-An Azure Static Web Apps workflow is included in `.github/workflows`. Pushes to the `main` branch trigger the workflow to build and deploy the site. Configure the `AZURE_STATIC_WEB_APPS_API_TOKEN_*` secret in your repository settings to enable automatic deployment.
+Automatic deployment is configured for Azure:
 
-### PWA support
+1. Configure the `AZURE_STATIC_WEB_APPS_API_TOKEN_*` secret in repository settings
+2. Push to `main` branch triggers deployment
 
-The app can be installed like a native application. The web app manifest is
-sourced from `public/manifest.webmanifest`. Update this file to change the app name or
-modify icon paths if you want to use custom images.
+### Custom Deployment
 
-Running `npm run build` generates `dist/manifest.webmanifest` and `sw.js` while
-pre‑caching static assets so the app works offline.
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+For other hosting platforms, build the app and serve the `dist` folder:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+# Upload the 'dist' folder to your hosting provider
 ```
+
+#### Environment Variables
+
+- `VITE_BASE_URL` - Set the base URL for deployment (default: `/ebike-assistant-app/`)
+
+## PWA Features
+
+The app includes Progressive Web App capabilities:
+
+- **Offline Support**: Service worker caches assets for offline use
+- **Install Prompt**: Can be installed on mobile devices and desktops
+- **App Icons**: Proper iconography for different platforms
+- **Manifest**: Web app manifest for native-like experience
+
+## Technology Stack
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Styling
+- **Vitest** - Testing framework
+- **PWA Plugin** - Progressive Web App features
+- **ESLint** - Code linting
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes and add tests
+4. Run tests: `npm test`
+5. Run linting: `npm run lint`
+6. Commit your changes: `git commit -m 'Add your feature'`
+7. Push to the branch: `git push origin feature/your-feature`
+8. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
