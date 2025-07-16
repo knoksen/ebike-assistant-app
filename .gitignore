@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Electron build artifacts
+dist-electron
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.deb
+*.rpm
