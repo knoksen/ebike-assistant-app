@@ -90,7 +90,6 @@
         }
       ],
       "icon": "public/ebike-icon.svg",
-      "publisherName": "Knoksen",
       "verifyUpdateCodeSignature": false
     },
     "linux": {

@@ -1,13 +1,41 @@
 # E-Bike Assistant
 
-A comprehensive Progressive Web App (PWA) for e-bike maintenance, troubleshooting, and parts management. Built with React, TypeScript, and Vite.
+A comprehensive Progressive Web App (PWA) and Desktop Application for e-bike maintenance, troubleshooting, and parts management. Built with React, TypeScript, and Vite.
 
 ## Features
 
 - 🔧 **Diagnostics**: Troubleshoot common e-bike issues
 - 🔍 **Parts Search**: Find compatible components for your e-bike
 - 📱 **Progressive Web App**: Install on mobile devices for offline access
+- 🖥️ **Desktop Application**: Native Windows 10/11, macOS, and Linux support
 - ⚡ **Fast & Responsive**: Built with modern web technologies
+
+## Desktop Application
+
+### Download & Install
+
+The E-Bike Assistant is available as a native desktop application for Windows 10/11, macOS, and Linux.
+
+#### Windows 10/11
+- Download the installer (.exe) or portable version
+- Run the installer for system-wide installation with Start Menu integration
+- Or use the portable version for no-install usage
+
+#### macOS
+- Download the .dmg file
+- Drag to Applications folder
+
+#### Linux
+- Download the AppImage file
+- Make executable: `chmod +x E-Bike-Assistant-*.AppImage`
+- Run directly: `./E-Bike-Assistant-*.AppImage`
+
+### Desktop Features
+- Native application menus and keyboard shortcuts
+- System tray integration
+- File associations
+- Offline functionality
+- Auto-updater support (configurable)
 
 ## Development
 
@@ -38,12 +66,21 @@ A comprehensive Progressive Web App (PWA) for e-bike maintenance, troubleshootin
 
 ### Available Scripts
 
+#### Web Development
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint
 - `npm test` - Run tests with Vitest
 - `npm run build:analyze` - Build with bundle analyzer
+
+#### Desktop Development
+- `npm run electron:dev` - Start Electron app in development mode
+- `npm run electron:build` - Build desktop app for current platform
+- `npm run electron:win` - Build Windows installer and portable app
+- `npm run electron:mac` - Build macOS application
+- `npm run electron:linux` - Build Linux AppImage
+- `npm run electron:dist` - Build for current platform without publishing
 
 ## Deployment
 
@@ -98,6 +135,8 @@ The app includes Progressive Web App capabilities:
 - **Tailwind CSS** - Styling
 - **Vitest** - Testing framework
 - **PWA Plugin** - Progressive Web App features
+- **Electron** - Desktop application framework
+- **electron-builder** - Desktop app packaging and distribution
 - **ESLint** - Code linting
 
 ## Contributing
