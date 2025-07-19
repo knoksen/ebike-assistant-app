@@ -62,6 +62,26 @@ const Header: React.FC = () => {
               Parts
             </Link>
             <Link 
+              to="/maintenance" 
+              className={`transition-colors ${
+                isActive('/maintenance') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
+              }`}
+            >
+              Maintenance
+            </Link>
+            <Link 
+              to="/guides" 
+              className={`transition-colors ${
+                isActive('/guides') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
+              }`}
+            >
+              Guides
+            </Link>
+            <Link 
               to="/about" 
               className={`transition-colors ${
                 isActive('/about') 
@@ -70,6 +90,26 @@ const Header: React.FC = () => {
               }`}
             >
               About
+            </Link>
+            <Link 
+              to="/rides" 
+              className={`transition-colors ${
+                isActive('/rides') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
+              }`}
+            >
+              Rides
+            </Link>
+            <Link 
+              to="/settings" 
+              className={`transition-colors ${
+                isActive('/settings') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white'
+              }`}
+            >
+              Settings
             </Link>
           </nav>
 
@@ -85,7 +125,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Navigation */}
         <nav className="md:hidden pb-4">
-          <div className="flex justify-center space-x-6">
+          <div className="grid grid-cols-4 gap-2 text-center">
             <Link 
               to="/" 
               className={`text-sm transition-colors ${
@@ -115,6 +155,48 @@ const Header: React.FC = () => {
               }`}
             >
               Parts
+            </Link>
+            <Link 
+              to="/maintenance" 
+              className={`text-sm transition-colors ${
+                isActive('/maintenance') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300'
+              }`}
+            >
+              Maintenance
+            </Link>
+          </div>
+          <div className="grid grid-cols-4 gap-2 text-center mt-2">
+            <Link 
+              to="/guides" 
+              className={`text-sm transition-colors ${
+                isActive('/guides') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300'
+              }`}
+            >
+              Guides
+            </Link>
+            <Link 
+              to="/rides" 
+              className={`text-sm transition-colors ${
+                isActive('/rides') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300'
+              }`}
+            >
+              Rides
+            </Link>
+            <Link 
+              to="/settings" 
+              className={`text-sm transition-colors ${
+                isActive('/settings') 
+                  ? 'text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-600 dark:text-gray-300'
+              }`}
+            >
+              Settings
             </Link>
             <Link 
               to="/about" 

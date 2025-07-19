@@ -23,18 +23,18 @@ export default function Home() {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-12">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
             <div className="text-3xl mb-4">🔧</div>
             <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
-              Diagnostics & Troubleshooting
+              Diagnostics
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
               Step-by-step guidance to identify and fix common e-bike issues
             </p>
             <Link 
               to="/diagnostics" 
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
             >
               Start Diagnostics
             </Link>
@@ -45,14 +45,78 @@ export default function Home() {
             <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
               Parts Search
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
               Find compatible components and replacement parts for your e-bike
             </p>
             <Link 
               to="/parts" 
-              className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+              className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
             >
               Browse Parts
+            </Link>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="text-3xl mb-4">📋</div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+              Maintenance
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              Keep track of maintenance schedules and service history
+            </p>
+            <Link 
+              to="/maintenance" 
+              className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+            >
+              Track Maintenance
+            </Link>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="text-3xl mb-4">📚</div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+              Tips & Guides
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              Learn maintenance techniques and best practices
+            </p>
+            <Link 
+              to="/guides" 
+              className="inline-block bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+            >
+              Read Guides
+            </Link>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="text-3xl mb-4">🚴‍♂️</div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+              Ride Tracker
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              Log your rides and track your e-bike adventures and statistics
+            </p>
+            <Link 
+              to="/rides" 
+              className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+            >
+              Track Rides
+            </Link>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="text-3xl mb-4">⚙️</div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+              Settings
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+              Customize your preferences and manage your e-bike profile
+            </p>
+            <Link 
+              to="/settings" 
+              className="inline-block bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+            >
+              Open Settings
             </Link>
           </div>
         </div>

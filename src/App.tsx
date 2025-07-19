@@ -1,8 +1,12 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import DiagnosticsPage from './pages/Diagnostics'
 import Parts from './pages/Parts'
+import Maintenance from './pages/Maintenance'
+import Guides from './pages/Guides'
 import About from './pages/About'
+import SettingsPage from './pages/Settings'
+import { RideTrackerPage } from './pages/RideTracker'
 import Header from './components/Header'
 import './App.css'
 
@@ -16,7 +20,11 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/diagnostics" element={<DiagnosticsPage />} />
             <Route path="/parts" element={<Parts />} />
+            <Route path="/maintenance" element={<Maintenance />} />
+            <Route path="/guides" element={<Guides />} />
             <Route path="/about" element={<About />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/rides" element={<RideTrackerPage />} />
           </Routes>
         </main>
       </div>
