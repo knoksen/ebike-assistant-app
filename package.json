@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Your comprehensive e-bike maintenance and troubleshooting companion",
   "type": "module",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -13,7 +14,14 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "deploy:azure": "npm run build",
-    "build:analyze": "ANALYZE=true npm run build"
+    "build:analyze": "ANALYZE=true npm run build",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && NODE_ENV=development electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:dist": "npm run build && electron-builder --publish=never",
+    "electron:win": "npm run build && electron-builder --win --publish=never",
+    "electron:mac": "npm run build && electron-builder --mac --publish=never",
+    "electron:linux": "npm run build && electron-builder --linux --publish=never"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -24,26 +32,82 @@
     "@eslint/js": "^9.30.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@types/node": "^20.19.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/testing-library__jest-dom": "^5.14.9",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.0",
+    "electron": "^37.2.2",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.30.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "gh-pages": "^6.3.0",
     "globals": "^16.3.0",
-    "rollup-plugin-visualizer": "^6.0.3",
-    "vite-plugin-pwa": "^1.0.1",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
+    "rollup-plugin-visualizer": "^6.0.3",
     "tailwindcss": "^4.1.11",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4",
-    "@types/node": "^20.19.7",
-    "vitest": "^3.2.4"
+    "vite-plugin-pwa": "^1.0.1",
+    "vitest": "^3.2.4",
+    "wait-on": "^8.0.3"
+  },
+  "build": {
+    "appId": "com.knoksen.ebike-assistant",
+    "productName": "E-Bike Assistant",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "public/ebike-icon.svg",
+        "to": "icon.svg"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.lifestyle",
+      "icon": "public/ebike-icon.svg"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/ebike-icon.svg",
+      "verifyUpdateCodeSignature": false
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/ebike-icon.svg",
+      "category": "Utility"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "E-Bike Assistant",
+      "uninstallDisplayName": "E-Bike Assistant"
+    },
+    "portable": {
+      "artifactName": "E-Bike-Assistant-Portable-${version}.${ext}"
+    }
   },
   "homepage": "https://knoksen.github.io/ebike-assistant-app",
   "license": "MIT"
