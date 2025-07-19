@@ -1,30 +1,4 @@
-import { useState, useEffect } from 'react'
-
-type UserSettings = {
-  units: 'metric' | 'imperial'
-  language: 'en' | 'es' | 'fr' | 'de'
-  notifications: boolean
-  autoSave: boolean
-  theme: 'light' | 'dark' | 'auto'
-  bikeProfile: {
-    make?: string
-    model?: string
-    year?: number
-    type?: 'mountain' | 'road' | 'hybrid' | 'commuter' | 'cargo'
-    motorType?: 'hub' | 'mid-drive' | 'none'
-    batteryCapacity?: number
-    purchaseDate?: string
-  }
-}
-
-const DEFAULT_SETTINGS: UserSettings = {
-  units: 'metric',
-  language: 'en',
-  notifications: true,
-  autoSave: true,
-  theme: 'auto',
-  bikeProfile: {}
-}
+export { Settings } from './SettingsNew'
 
 export function Settings() {
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS)
