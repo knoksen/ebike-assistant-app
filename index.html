@@ -2,13 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="./ebike-icon.svg" />
+    <link rel="manifest" href="/ebike-assistant-app/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-    <script type="module" crossorigin src="/assets/index-9_sxcfan.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D8b4DHJx.css">
-  </head>
+    <meta name="description" content="Your comprehensive e-bike maintenance and troubleshooting companion" />
+    <meta name="theme-color" content="#4CAF50" />
+    <title>E-Bike Assistant</title>
+    <script type="module" crossorigin src="/ebike-assistant-app/assets/index-B6zpo926.js"></script>
+    <link rel="stylesheet" crossorigin href="/ebike-assistant-app/assets/index-p9EP0-X1.css">
+  <link rel="manifest" href="/ebike-assistant-app/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/ebike-assistant-app/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
+    <script>
+      // Handle GitHub Pages SPA redirect
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
   </body>
 </html>
