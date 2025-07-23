@@ -639,4 +639,5 @@ class SensorService {
 }
 
 export const sensorService = new SensorService()
-export type { SensorDevice, SensorData, LocationData, MotionData }
+export type { SensorDevice, SensorData, MotionData }
+export type { LocationData as SensorLocationData }
