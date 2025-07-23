@@ -169,9 +169,14 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
     </div>
   </div>
 )
+
+export default function Settings() {
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS)
   const [hasChanges, setHasChanges] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [connectedSensors, setConnectedSensors] = useState<any[]>([])
+  const [isScanning, setIsScanning] = useState(false)
+  const [sensorStatus, setSensorStatus] = useState<string>('Ready')
 
   // Load settings from localStorage on component mount
   useEffect(() => {
@@ -252,6 +257,40 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
     }
     reader.readAsText(file)
   }
+
+  const scanForSensors = async () => {
+    setIsScanning(true)
+    setSensorStatus('Scanning for sensors...')
+    
+    try {
+      const sensors = await sensorService.scanBluetoothSensors()
+      setConnectedSensors(sensors)
+      setSensorStatus(`Found ${sensors.length} sensor(s)`)
+    } catch (error) {
+      console.error('Failed to scan sensors:', error)
+      setSensorStatus('Failed to scan sensors. Check Bluetooth permissions.')
+    } finally {
+      setIsScanning(false)
+    }
+  }
+
+  const disconnectSensor = async (sensorId: string) => {
+    try {
+      await sensorService.disconnectSensor(sensorId)
+      setConnectedSensors(prev => prev.filter(sensor => sensor.id !== sensorId))
+    } catch (error) {
+      console.error('Failed to disconnect sensor:', error)
+    }
+  }
+
+  const loadConnectedSensors = () => {
+    const sensors = sensorService.getConnectedSensors()
+    setConnectedSensors(sensors)
+  }
+
+  useEffect(() => {
+    loadConnectedSensors()
+  }, [])
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -454,6 +493,73 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
                 value={settings.bikeProfile.purchaseDate || ''}
                 onChange={(e) => updateBikeProfile({ purchaseDate: e.target.value })}
                 className="w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Sensor Management */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
+            Sensor Management
+          </h2>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Bluetooth Sensors</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Connect speed, cadence, power, and heart rate sensors</p>
+              </div>
+              <button
+                onClick={() => scanForSensors()}
+                disabled={isScanning}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  isScanning 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
+              >
+                {isScanning ? 'Scanning...' : 'Scan for Sensors'}
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {connectedSensors.length === 0 ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No sensors connected</p>
+              ) : (
+                connectedSensors.map((sensor) => (
+                  <div key={sensor.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-800 dark:text-white">{sensor.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {sensor.type} • {sensor.capabilities.join(', ')}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        sensor.connectionStatus === 'connected' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                          : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                      }`}>
+                        {sensor.connectionStatus}
+                      </span>
+                      <button
+                        onClick={() => disconnectSensor(sensor.id)}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <ToggleSwitch
+                enabled={settings.sensors.autoConnect}
+                onChange={(value) => updateSettings({ sensors: { ...settings.sensors, autoConnect: value } })}
+                label="Auto-connect to known sensors"
               />
             </div>
           </div>
