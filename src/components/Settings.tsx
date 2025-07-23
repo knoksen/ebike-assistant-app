@@ -1,6 +1,174 @@
-export { Settings } from './SettingsNew'
+import { useState, useEffect } from 'react'
+import { sensorService } from '../services/SensorService'
+import { useTheme } from '../context/useTheme'
+import type { Theme } from '../context/themeTypes'
 
-export function Settings() {
+type UserSettings = {
+  units: 'metric' | 'imperial'
+  language: 'en' | 'es' | 'fr' | 'de' | 'it' | 'pt' | 'nl' | 'ja' | 'zh'
+  notifications: boolean
+  autoSave: boolean
+  theme: 'light' | 'dark' | 'auto' | 'midnight' | 'forest' | 'ocean'
+  privacy: {
+    shareData: boolean
+    analytics: boolean
+    crashReports: boolean
+    location: boolean
+  }
+  performance: {
+    highFrameRate: boolean
+    reduceAnimations: boolean
+    offlineMode: boolean
+    backgroundSync: boolean
+  }
+  sensors: {
+    autoConnect: boolean
+    reconnectInterval: number
+    dataRetention: number
+    calibrationAlerts: boolean
+  }
+  ai: {
+    enableInsights: boolean
+    personalizedRecommendations: boolean
+    predictiveAnalytics: boolean
+    voiceCommands: boolean
+  }
+  bikeProfile: {
+    make?: string
+    model?: string
+    year?: number
+    type?: 'mountain' | 'road' | 'hybrid' | 'commuter' | 'cargo' | 'ebike' | 'touring'
+    motorType?: 'hub' | 'mid-drive' | 'none'
+    batteryCapacity?: number
+    purchaseDate?: string
+    weight?: number
+    wheelSize?: string
+    gears?: number
+    color?: string
+    customName?: string
+  }
+  advanced: {
+    developerMode: boolean
+    debugLogs: boolean
+    experimentalFeatures: boolean
+    apiEndpoint?: string
+    syncInterval: number
+  }
+}
+
+const DEFAULT_SETTINGS: UserSettings = {
+  units: 'metric',
+  language: 'en',
+  notifications: true,
+  autoSave: true,
+  theme: 'auto',
+  privacy: {
+    shareData: false,
+    analytics: true,
+    crashReports: true,
+    location: true
+  },
+  performance: {
+    highFrameRate: true,
+    reduceAnimations: false,
+    offlineMode: false,
+    backgroundSync: true
+  },
+  sensors: {
+    autoConnect: true,
+    reconnectInterval: 30,
+    dataRetention: 90,
+    calibrationAlerts: true
+  },
+  ai: {
+    enableInsights: true,
+    personalizedRecommendations: true,
+    predictiveAnalytics: false,
+    voiceCommands: false
+  },
+  bikeProfile: {},
+  advanced: {
+    developerMode: false,
+    debugLogs: false,
+    experimentalFeatures: false,
+    syncInterval: 300
+  }
+}
+
+// Modern Toggle Switch Component
+const ToggleSwitch = ({ enabled, onChange, label }: { 
+  enabled: boolean
+  onChange: (value: boolean) => void 
+  label: string
+}) => (
+  <label className="flex items-center justify-between cursor-pointer group">
+    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+      {label}
+    </span>
+    <div
+      onClick={() => onChange(!enabled)}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out ${
+        enabled ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gray-300 dark:bg-gray-600'
+      }`}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-200 ease-in-out ${
+          enabled ? 'translate-x-6' : 'translate-x-1'
+        }`}
+      />
+    </div>
+  </label>
+)
+
+// Advanced Slider Component
+const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
+  value: number
+  onChange: (value: number) => void
+  min: number
+  max: number
+  step?: number
+  label: string
+  unit: string
+}) => (
+  <div className="space-y-2">
+    <div className="flex items-center justify-between">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+      <span className="text-sm text-blue-600 dark:text-blue-400 font-mono">{value}{unit}</span>
+    </div>
+    <div className="relative">
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-2 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-800 dark:to-purple-800 rounded-lg appearance-none cursor-pointer slider"
+        aria-label={label}
+      />
+      <style jsx>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .slider::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+      `}</style>
+    </div>
+  </div>
+)
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS)
   const [hasChanges, setHasChanges] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')

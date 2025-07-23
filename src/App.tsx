@@ -8,16 +8,18 @@ import About from './pages/About'
 import SettingsPage from './pages/Settings'
 import { RideTrackerPage } from './pages/RideTracker'
 import Header from './components/Header'
+import { ThemeProvider } from './context/ThemeContext'
 import './App.css'
 
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
+    <ThemeProvider>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <div className="min-h-screen">
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
             <Route path="/diagnostics" element={<DiagnosticsPage />} />
             <Route path="/parts" element={<Parts />} />
             <Route path="/maintenance" element={<Maintenance />} />
@@ -29,5 +31,6 @@ export default function App() {
         </main>
       </div>
     </BrowserRouter>
+    </ThemeProvider>
   )
 }
