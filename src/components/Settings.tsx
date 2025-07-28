@@ -171,7 +171,46 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
 )
 
 export default function Settings() {
-  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS)
+  const { theme, setTheme } = useTheme()
+  const [settings, setSettings] = useState<UserSettings>({
+    units: 'metric',
+    language: 'en',
+    notifications: true,
+    autoSave: true,
+    theme: theme as Theme,
+    privacy: {
+      shareData: false,
+      analytics: false,
+      crashReports: true,
+      location: true,
+    },
+    performance: {
+      highFrameRate: true,
+      reduceAnimations: false,
+      offlineMode: false,
+      backgroundSync: true,
+    },
+    sensors: {
+      autoConnect: true,
+      reconnectInterval: 30,
+      dataRetention: 90,
+      calibrationAlerts: true,
+    },
+    ai: {
+      enableInsights: true,
+      personalizedRecommendations: true,
+      predictiveAnalytics: false,
+      voiceCommands: false,
+    },
+    bikeProfile: {},
+    advanced: {
+      developerMode: false,
+      debugLogs: false,
+      experimentalFeatures: false,
+      apiEndpoint: '',
+      syncInterval: 60,
+    }
+  })
   const [hasChanges, setHasChanges] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [connectedSensors, setConnectedSensors] = useState<any[]>([])
@@ -291,6 +330,23 @@ export default function Settings() {
   useEffect(() => {
     loadConnectedSensors()
   }, [])
+
+  // Handler for theme change
+  const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTheme(e.target.value as Theme)
+    setSettings(s => ({ ...s, theme: e.target.value as Theme }))
+  }
+
+  // Example handler for toggles
+  const handleToggle = (section: keyof UserSettings, key: string) => {
+    setSettings(s => ({
+      ...s,
+      [section]: {
+        ...s[section],
+        [key]: !s[section][key]
+      }
+    }))
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -549,10 +605,18 @@ export default function Settings() {
                       >
                         Disconnect
                       </button>
+                      {sensor.connectionStatus === 'connected' && (
+                        <button
+                          onClick={() => sensorService.calibrateSensor(sensor.id)}
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 ml-2"
+                        >
+                          Calibrate
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))
-              )}
+              }
             </div>
 
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -565,33 +629,88 @@ export default function Settings() {
           </div>
         </div>
 
+        {/* Sensor Advanced Controls */}
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-700 grid md:grid-cols-2 gap-6">
+          <SliderControl
+            value={settings.sensors.reconnectInterval}
+            onChange={value => updateSettings({ sensors: { ...settings.sensors, reconnectInterval: value } })}
+            min={5}
+            max={120}
+            step={5}
+            label="Reconnect Interval"
+            unit="s"
+          />
+          <SliderControl
+            value={settings.sensors.dataRetention}
+            onChange={value => updateSettings({ sensors: { ...settings.sensors, dataRetention: value } })}
+            min={7}
+            max={365}
+            step={1}
+            label="Data Retention"
+            unit="days"
+          />
+          <ToggleSwitch
+            enabled={settings.sensors.calibrationAlerts}
+            onChange={value => updateSettings({ sensors: { ...settings.sensors, calibrationAlerts: value } })}
+            label="Calibration Alerts"
+          />
+        </div>
+
         {/* Data Management */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
             Data Management
           </h2>
           
-          <div className="flex flex-wrap gap-4">
+          {/* Settings Summary Card */}
+          <div className="bg-gradient-to-r from-blue-100 to-green-100 dark:from-gray-900 dark:to-gray-800 rounded-xl shadow-lg p-6 mb-8 flex flex-col md:flex-row items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Current Profile</h2>
+              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                <li><strong>Units:</strong> {settings.units}</li>
+                <li><strong>Language:</strong> {settings.language}</li>
+                <li><strong>Theme:</strong> {settings.theme}</li>
+                <li><strong>Notifications:</strong> {settings.notifications ? 'On' : 'Off'}</li>
+                <li><strong>Auto-save:</strong> {settings.autoSave ? 'On' : 'Off'}</li>
+                <li><strong>Bike:</strong> {settings.bikeProfile.make || 'N/A'} {settings.bikeProfile.model || ''}</li>
+              </ul>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <span className="inline-block px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-semibold">
+                {settings.advanced.developerMode ? 'Developer Mode' : 'User Mode'}
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-4" aria-label="Data Management Actions">
             <button
               onClick={exportSettings}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              aria-label="Export Settings"
             >
               Export Settings
             </button>
             
-            <label className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors cursor-pointer">
+            <label
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors cursor-pointer"
+              aria-label="Import Settings"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLLabelElement).querySelector('input')?.click() }}
+            >
               Import Settings
               <input
                 type="file"
                 accept=".json"
                 onChange={importSettings}
                 className="hidden"
+                aria-label="Import Settings File"
               />
             </label>
             
             <button
               onClick={resetSettings}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+              aria-label="Reset to Defaults"
             >
               Reset to Defaults
             </button>
@@ -618,4 +737,18 @@ export default function Settings() {
       </div>
     </div>
   )
+}
+
+type UserSettings = {
+  units: 'metric' | 'imperial'
+  language: string
+  notifications: boolean
+  autoSave: boolean
+  theme: Theme
+  privacy: Record<string, boolean>
+  performance: Record<string, boolean>
+  sensors: Record<string, boolean | number>
+  ai: Record<string, boolean>
+  bikeProfile: Record<string, any>
+  advanced: Record<string, boolean | number | string>
 }
