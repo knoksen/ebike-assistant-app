@@ -193,7 +193,7 @@ export default function Settings() {
   })
   const [hasChanges, setHasChanges] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
-  const [connectedSensors, setConnectedSensors] = useState<any[]>([])
+  const [connectedSensors, setConnectedSensors] = useState<Array<{ id: string; name: string; type: string; capabilities: string[]; connectionStatus: string }>>([])
   const [isScanning, setIsScanning] = useState(false)
 
   // Load settings from localStorage on component mount
