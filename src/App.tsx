@@ -34,3 +34,9 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
+onChange={(e) => updateSettings({ language: e.target.value as string })}
+onChange={(e) => updateSettings({ theme: e.target.value as string })}
+catch (error) {
+  // error not used
+}
