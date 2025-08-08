@@ -5,7 +5,7 @@
   width: 100%;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar for Webkit */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -23,6 +23,12 @@
   background: #a8a8a8;
 }
 
+/* Custom scrollbar for Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
 /* Dark mode scrollbar */
 .dark ::-webkit-scrollbar-track {
   background: #2d2d2d;
@@ -36,6 +42,10 @@
   background: #777;
 }
 
+.dark html {
+  scrollbar-color: #555 #2d2d2d;
+}
+
 /* Text truncation utility */
 .line-clamp-2 {
   display: -webkit-box;
@@ -46,12 +56,12 @@
 
 /* Focus styles for accessibility */
 .focus\:ring-2:focus {
-  outline: none;
+  outline: 2px solid rgba(59, 130, 246, 0.5);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
 
-/* Smooth transitions */
-* {
+/* Smooth transitions for interactive elements */
+button, a, input, select, textarea {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
