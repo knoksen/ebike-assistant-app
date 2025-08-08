@@ -177,7 +177,7 @@ export default function Settings() {
     language: 'en',
     notifications: true,
     autoSave: true,
-    theme: theme as Theme,
+  theme: (theme as 'light' | 'dark' | 'auto' | 'midnight' | 'forest' | 'ocean'),
     privacy: {
       shareData: false,
       analytics: false,
@@ -333,19 +333,23 @@ export default function Settings() {
 
   // Handler for theme change
   const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setTheme(e.target.value as Theme)
-    setSettings(s => ({ ...s, theme: e.target.value as Theme }))
+    const value = e.target.value as UserSettings['theme'];
+    setTheme(value);
+    setSettings(s => ({ ...s, theme: value }));
   }
 
   // Example handler for toggles
-  const handleToggle = (section: keyof UserSettings, key: string) => {
-    setSettings(s => ({
-      ...s,
-      [section]: {
-        ...s[section],
-        [key]: !s[section][key]
-      }
-    }))
+  // Only allow toggling for object sections (privacy, performance, sensors, ai, advanced)
+  const handleToggle = <T extends keyof UserSettings>(section: T, key: string) => {
+    if (typeof settings[section] === 'object' && settings[section] !== null) {
+      setSettings(s => ({
+        ...s,
+        [section]: {
+          ...s[section] as Record<string, any>,
+          [key]: !((s[section] as Record<string, any>)[key])
+        }
+      }));
+    }
   }
 
   return (
@@ -615,9 +619,8 @@ export default function Settings() {
                       )}
                     </div>
                   </div>
-                ))
-              }
-            </div>
+        ))}
+      </div>
 
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <ToggleSwitch
