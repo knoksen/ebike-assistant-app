@@ -1,7 +1,7 @@
 // Connectivity Framework - Central hub for all connections and data flow
 import { databaseService, type EBikeDB } from './DatabaseService'
 import { sensorService, type SensorData, type LocationData } from './SensorService'
-import { networkService, type WeatherData, type RouteData } from './NetworkService'
+import { networkService, type WeatherData } from './NetworkService'
 
 // Enhanced ride data with all sensor inputs and external data
 export interface EnhancedRideData {
@@ -220,11 +220,14 @@ class ConnectivityFramework {
 
     // Request location permission (will be handled by sensorService)
     // Request device motion permission on iOS
-    if (typeof (DeviceMotionEvent as any)?.requestPermission === 'function') {
+    if (
+      typeof DeviceMotionEvent !== 'undefined' &&
+      typeof (DeviceMotionEvent as { requestPermission?: () => Promise<string> }).requestPermission === 'function'
+    ) {
       try {
-        await (DeviceMotionEvent as any).requestPermission()
-      } catch (error) {
-        console.log('Motion permission denied:', error)
+        await ((DeviceMotionEvent as unknown) as { requestPermission: () => Promise<string> }).requestPermission()
+      } catch {
+        console.log('Motion permission denied')
       }
     }
   }
@@ -905,4 +908,3 @@ class ConnectivityFramework {
 
 // Create singleton instance
 export const connectivityFramework = new ConnectivityFramework()
-export type { EnhancedRideData }

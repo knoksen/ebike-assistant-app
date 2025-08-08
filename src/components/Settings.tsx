@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { sensorService } from '../services/SensorService'
 import { useTheme } from '../context/useTheme'
-import type { Theme } from '../context/themeTypes'
 
 type UserSettings = {
   units: 'metric' | 'imperial'
@@ -146,32 +145,13 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
         className="w-full h-2 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-800 dark:to-purple-800 rounded-lg appearance-none cursor-pointer slider"
         aria-label={label}
       />
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 20px;
-          width: 20px;
-          border-radius: 50%;
-          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-          cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .slider::-moz-range-thumb {
-          height: 20px;
-          width: 20px;
-          border-radius: 50%;
-          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-      `}</style>
+  {/* Removed invalid <style jsx> block. Use CSS or Tailwind for styling. */}
     </div>
   </div>
 )
 
 export default function Settings() {
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
   const [settings, setSettings] = useState<UserSettings>({
     units: 'metric',
     language: 'en',
@@ -215,7 +195,6 @@ export default function Settings() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [connectedSensors, setConnectedSensors] = useState<any[]>([])
   const [isScanning, setIsScanning] = useState(false)
-  const [sensorStatus, setSensorStatus] = useState<string>('Ready')
 
   // Load settings from localStorage on component mount
   useEffect(() => {
@@ -230,20 +209,7 @@ export default function Settings() {
     }
   }, [])
 
-  // Save settings to localStorage
-  const saveSettings = () => {
-    setSaveStatus('saving')
-    try {
-      localStorage.setItem('ebike-assistant-settings', JSON.stringify(settings))
-      setHasChanges(false)
-      setSaveStatus('saved')
-      setTimeout(() => setSaveStatus('idle'), 2000)
-    } catch (error) {
-      console.error('Failed to save settings:', error)
-      setSaveStatus('error')
-      setTimeout(() => setSaveStatus('idle'), 2000)
-    }
-  }
+  // Duplicate saveSettings removed.
 
   const updateSettings = (updates: Partial<UserSettings>) => {
     setSettings(prev => ({ ...prev, ...updates }))
@@ -299,15 +265,12 @@ export default function Settings() {
 
   const scanForSensors = async () => {
     setIsScanning(true)
-    setSensorStatus('Scanning for sensors...')
     
     try {
       const sensors = await sensorService.scanBluetoothSensors()
       setConnectedSensors(sensors)
-      setSensorStatus(`Found ${sensors.length} sensor(s)`)
     } catch (error) {
       console.error('Failed to scan sensors:', error)
-      setSensorStatus('Failed to scan sensors. Check Bluetooth permissions.')
     } finally {
       setIsScanning(false)
     }
@@ -331,26 +294,23 @@ export default function Settings() {
     loadConnectedSensors()
   }, [])
 
-  // Handler for theme change
-  const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value as UserSettings['theme'];
-    setTheme(value);
-    setSettings(s => ({ ...s, theme: value }));
-  }
-
-  // Example handler for toggles
-  // Only allow toggling for object sections (privacy, performance, sensors, ai, advanced)
-  const handleToggle = <T extends keyof UserSettings>(section: T, key: string) => {
-    if (typeof settings[section] === 'object' && settings[section] !== null) {
-      setSettings(s => ({
-        ...s,
-        [section]: {
-          ...s[section] as Record<string, any>,
-          [key]: !((s[section] as Record<string, any>)[key])
-        }
-      }));
+  // Save settings to localStorage
+  const saveSettings = () => {
+    setSaveStatus('saving')
+    try {
+      localStorage.setItem('ebike-assistant-settings', JSON.stringify(settings))
+      setHasChanges(false)
+      setSaveStatus('saved')
+      setTimeout(() => setSaveStatus('idle'), 2000)
+    } catch (error) {
+      console.error('Failed to save settings:', error)
+      setSaveStatus('error')
+      setTimeout(() => setSaveStatus('idle'), 2000)
     }
   }
+
+  // Removed unused variable
+  // const [sensorStatus, setSensorStatus] = useState<string>('Ready')
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -500,8 +460,9 @@ export default function Settings() {
               </label>
               <select
                 value={settings.bikeProfile.type || ''}
-                onChange={(e) => updateBikeProfile({ type: e.target.value as any })}
+                onChange={(e) => updateBikeProfile({ type: e.target.value as 'mountain' | 'road' | 'hybrid' | 'commuter' | 'cargo' | 'ebike' | 'touring' | undefined })}
                 className="w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                title="Select bike type"
               >
                 <option value="">Select type...</option>
                 <option value="mountain">Mountain</option>
@@ -518,8 +479,9 @@ export default function Settings() {
               </label>
               <select
                 value={settings.bikeProfile.motorType || ''}
-                onChange={(e) => updateBikeProfile({ motorType: e.target.value as any })}
+                onChange={(e) => updateBikeProfile({ motorType: e.target.value as 'hub' | 'mid-drive' | 'none' | undefined })}
                 className="w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                title="Select motor type"
               >
                 <option value="">Select motor type...</option>
                 <option value="mid-drive">Mid-drive</option>
@@ -611,7 +573,7 @@ export default function Settings() {
                       </button>
                       {sensor.connectionStatus === 'connected' && (
                         <button
-                          onClick={() => sensorService.calibrateSensor(sensor.id)}
+                          onClick={() => sensorService.calibrateSensor(sensor.id, {})}
                           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 ml-2"
                         >
                           Calibrate
@@ -619,8 +581,9 @@ export default function Settings() {
                       )}
                     </div>
                   </div>
-        ))}
-      </div>
+                ))
+              )}
+            </div>
 
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <ToggleSwitch
@@ -742,16 +705,4 @@ export default function Settings() {
   )
 }
 
-type UserSettings = {
-  units: 'metric' | 'imperial'
-  language: string
-  notifications: boolean
-  autoSave: boolean
-  theme: Theme
-  privacy: Record<string, boolean>
-  performance: Record<string, boolean>
-  sensors: Record<string, boolean | number>
-  ai: Record<string, boolean>
-  bikeProfile: Record<string, any>
-  advanced: Record<string, boolean | number | string>
-}
+
