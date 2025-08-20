@@ -10,6 +10,28 @@ A comprehensive Progressive Web App (PWA) and Desktop Application for e-bike mai
 - 🖥️ **Desktop Application**: Native Windows 10/11, macOS, and Linux support
 - ⚡ **Fast & Responsive**: Built with modern web technologies
 
+---
+
+## 🚀 One-Click Deploy & Start (Mobile)
+
+The E-Bike Assistant app is a Progressive Web App (PWA) and can be launched instantly on any mobile device—no installation or build steps needed!
+
+### 📲 How to Use on Mobile
+
+1. **Open:** https://knoksen.github.io/ebike-assistant-app
+2. **Install (Recommended):**
+   - **Android:** Tap the browser menu (⋮) → “Add to Home screen”
+   - **iOS (Safari):** Tap Share → “Add to Home Screen”
+3. **Start:** Tap the home screen icon to launch the app instantly.
+
+- Works fully offline after first load.
+- No account required.
+- Updates automatically.
+
+> This app is optimized for touch and mobile navigation!
+
+---
+
 ## Desktop Application
 
 ### Download & Install
