@@ -154,64 +154,165 @@ export function MaintenanceTracker() {
   const upcoming = getUpcomingMaintenance()
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
-          🔧 Maintenance Tracker
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
-          Keep track of your e-bike maintenance and stay ahead of issues
-        </p>
+    <div className="max-w-4xl mx-auto px-4">
+      <div className="relative text-center mb-12">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-green-500/10 to-blue-500/10 rounded-3xl blur-3xl transform -translate-y-1/2"></div>
+        <div className="relative">
+          <div className="inline-block mb-6">
+            <div className="relative w-20 h-20 mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl opacity-20 blur-lg transform rotate-12 group-hover:rotate-0 transition-transform duration-300"></div>
+              <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg transform -rotate-12 group-hover:rotate-0 transition-transform duration-300">
+                <span className="text-4xl transform group-hover:scale-110 transition-transform duration-300">🔧</span>
+              </div>
+            </div>
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent mb-4">
+            Maintenance Tracker
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Advanced monitoring system for your e-bike maintenance schedule
+          </p>
+        </div>
       </div>
 
       {/* Current Mileage */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-          Current Odometer
-        </h2>
-        <div className="flex items-center space-x-4">
-          <input
-            type="number"
-            value={currentMileage}
-            onChange={(e) => setCurrentMileage(parseInt(e.target.value) || 0)}
-            className="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-            placeholder="Enter current mileage"
-          />
-          <span className="text-gray-600 dark:text-gray-300">miles</span>
+      <div className="relative mb-8">
+        <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 via-green-500/5 to-blue-500/5 rounded-2xl blur-xl"></div>
+        <div className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 bg-blue-500 rounded-xl opacity-20 blur"></div>
+                <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-xl">
+                  <span className="text-2xl">📊</span>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent">
+                  Odometer Reading
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Track your e-bike's total mileage</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Last updated:</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                {new Date().toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <div className="relative flex-1 max-w-xs">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-xl opacity-10 blur group-hover:opacity-20 transition-opacity duration-300"></div>
+              <input
+                type="number"
+                value={currentMileage}
+                onChange={(e) => setCurrentMileage(parseInt(e.target.value) || 0)}
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
+                         text-2xl font-bold text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+                         transition-all duration-300"
+                placeholder="Enter mileage"
+              />
+            </div>
+            <div className="flex items-baseline space-x-2">
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent">
+                miles
+              </span>
+              <div className="text-xs text-gray-500 dark:text-gray-400">total</div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Upcoming Maintenance */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-          Upcoming Maintenance
-        </h2>
-        <div className="space-y-3">
-          {upcoming.map(({ type, dueIn, overdue }) => (
-            <div
-              key={type.id}
-              className={`flex items-center justify-between p-4 rounded-lg border ${
-                overdue 
-                  ? 'border-red-300 bg-red-50 dark:bg-red-900/20' 
-                  : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700'
-              }`}
-            >
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">{type.icon}</span>
-                <div>
-                  <h3 className={`font-medium ${overdue ? 'text-red-800 dark:text-red-200' : 'text-gray-800 dark:text-white'}`}>
-                    {type.name}
-                  </h3>
-                  <p className={`text-sm ${overdue ? 'text-red-600 dark:text-red-300' : 'text-gray-600 dark:text-gray-300'}`}>
-                    {type.description}
-                  </p>
+      <div className="relative mb-8">
+        <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 via-green-500/5 to-blue-500/5 rounded-2xl blur-xl"></div>
+        <div className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 bg-blue-500 rounded-xl opacity-20 blur"></div>
+                <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-xl">
+                  <span className="text-2xl">⚡</span>
                 </div>
               </div>
-              <div className={`font-semibold ${overdue ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'}`}>
-                {dueIn}
+              <div>
+                <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent">
+                  Maintenance Schedule
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Upcoming and overdue maintenance tasks
+                </p>
               </div>
             </div>
-          ))}
+            <div className="flex items-center">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                <span className="w-2 h-2 mr-1.5 bg-blue-400 rounded-full animate-pulse"></span>
+                Real-time tracking
+              </span>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            {upcoming.map(({ type, dueIn, overdue }) => (
+              <div key={type.id} className="group relative">
+                <div className={`absolute -inset-0.5 rounded-xl blur transition-all duration-300 ${
+                  overdue 
+                    ? 'bg-gradient-to-r from-red-500 to-orange-500 opacity-20'
+                    : 'bg-gradient-to-r from-blue-500 to-green-500 opacity-0 group-hover:opacity-20'
+                }`}></div>
+                <div className={`relative p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border transition-all duration-300 ${
+                  overdue
+                    ? 'border-red-200/50 dark:border-red-800/50'
+                    : 'border-gray-200/50 dark:border-gray-700/50'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="relative w-12 h-12">
+                        <div className={`absolute inset-0 rounded-lg opacity-20 blur ${
+                          overdue ? 'bg-red-500' : 'bg-blue-500'
+                        }`}></div>
+                        <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-lg">
+                          <span className="text-2xl">{type.icon}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className={`font-medium text-lg ${
+                          overdue ? 'text-red-800 dark:text-red-200' : 'text-gray-800 dark:text-white'
+                        }`}>
+                          {type.name}
+                        </h3>
+                        <p className={`text-sm ${
+                          overdue ? 'text-red-600 dark:text-red-300' : 'text-gray-600 dark:text-gray-300'
+                        }`}>
+                          {type.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        overdue
+                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                          : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                      }`}>
+                        <span className={`w-2 h-2 mr-1.5 rounded-full ${
+                          overdue ? 'bg-red-400 animate-pulse' : 'bg-green-400'
+                        }`}></span>
+                        {overdue ? 'Overdue' : 'On Track'}
+                      </div>
+                      <div className={`mt-2 text-sm font-medium ${
+                        overdue ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'
+                      }`}>
+                        {dueIn}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
