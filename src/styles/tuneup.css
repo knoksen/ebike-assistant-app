@@ -1,0 +1,36 @@
+.tuneup-progress-bar {
+  height: 0.5rem;
+  background-color: theme('colors.gray.200');
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.tuneup-progress-bar.dark {
+  background-color: theme('colors.gray.700');
+}
+
+.tuneup-progress-bar-fill {
+  height: 100%;
+  background-color: theme('colors.blue.500');
+  transition: width 500ms;
+}
+
+.tuneup-section {
+  background-color: theme('colors.white');
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.tuneup-section.dark {
+  background-color: theme('colors.gray.800');
+}
+
+.tuneup-section-header {
+  padding: 1rem;
+  background-color: theme('colors.gray.50');
+}
+
+.tuneup-section-header.dark {
+  background-color: theme('colors.gray.700');
+}
