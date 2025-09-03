@@ -84,11 +84,59 @@ Having issues? Try these quick fixes:
 
 ## 💾 Technical Details
 
+### Core Features
 - Works offline after first install
 - Automatic updates
 - No account needed
 - Secure: all data stays on your phone
 - Low battery usage
+
+### 📡 Bluetooth Connectivity
+
+The app uses Bluetooth Low Energy (BLE) with GATT services to communicate with e-bikes:
+
+#### Supported Protocols
+
+1. **Xiaomi/Mi Protocol**
+   - Service UUID: `0000fe95-0000-1000-8000-00805f9b34fb`
+   - Secure authentication via ECDH
+   - Encrypted telemetry and commands
+
+2. **Nordic UART Service (NUS)**
+   - Service UUID: `6e400001-b5a3-f393-e0a9-e50e24dcca9e`
+   - TX Characteristic: `6e400002-b5a3-f393-e0a9-e50e24dcca9e`
+   - RX Characteristic: `6e400003-b5a3-f393-e0a9-e50e24dcca9e`
+   - Plain UART-style communication
+
+#### Telemetry Capabilities
+
+- Battery metrics:
+  - Individual cell voltages (1-10 cells)
+  - Pack voltage and current
+  - State of charge
+  - Temperature monitoring
+  - External battery support
+
+- Vehicle data:
+  - Error code reporting
+  - Total mileage tracking
+  - Speed and performance metrics
+  - BMS/ESC diagnostics
+
+#### Control Features
+
+- Cruise control management
+- Riding mode presets
+- Security settings
+- Performance tuning
+
+### 🔒 Security
+
+- ECDH-based authentication
+- Session encryption
+- Secure parameter validation
+- Rate-limited commands
+- See [SECURITY.md](SECURITY.md) for details
 
 ## 🖥️ Desktop App
 

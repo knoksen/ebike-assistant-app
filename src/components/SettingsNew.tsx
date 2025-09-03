@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { sensorService } from '../services/SensorService'
+import { BluetoothSelector } from './BluetoothSelector'
+import type { TelemetryData } from '../services/BluetoothService'
 
 type UserSettings = {
   units: 'metric' | 'imperial'
@@ -632,8 +634,17 @@ export function Settings() {
                 <span className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                   📡
                 </span>
-                Sensor Configuration
+                Bluetooth & Sensor Configuration
               </h3>
+
+              <div className="mb-8">
+                <BluetoothSelector
+                  onTelemetryUpdate={(data) => {
+                    // Update system stats or handle telemetry data
+                    console.log('Telemetry update:', data);
+                  }}
+                />
+              </div>
               
               <div className="space-y-6">
                 <ToggleSwitch
