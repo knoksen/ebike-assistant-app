@@ -9,7 +9,7 @@ export default function Home() {
         <div className="text-center mb-12">
           <div className="mb-6">
             <img 
-              src={import.meta.env.BASE_URL + 'ebike-icon.svg'} 
+              src="./public/ebike-icon.svg"
               alt="E-Bike Assistant" 
               className="w-24 h-24 mx-auto mb-4"
             />

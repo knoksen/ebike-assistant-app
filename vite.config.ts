@@ -29,17 +29,19 @@ export default defineConfig(() => {
     )
   }
 
-  // Use environment variable for base URL, defaulting to GitHub Pages path
-  // For electron, use relative paths
-  const isElectron = process.env.NODE_ENV === 'development' && process.env.ELECTRON === 'true'
-  const baseUrl = isElectron ? './' : (process.env.VITE_BASE_URL || '/ebike-assistant-app/')
-
+  // Use relative paths for all environments when running locally
   return {
-    base: baseUrl,
+    base: './',
     plugins,
     server: {
-      port: 5173,
-      strictPort: true,
+      port: 3000,
+      strictPort: false,
     },
+    publicDir: 'public',
+    resolve: {
+      alias: {
+        '@': '/src'
+      }
+    }
   }
 })

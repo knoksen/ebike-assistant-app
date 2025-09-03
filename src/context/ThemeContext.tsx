@@ -10,13 +10,21 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('ebike-theme') as Theme;
-    return saved || 'default';
+    try {
+      const saved = localStorage.getItem('ebike-theme') as Theme;
+      return saved && ['default', 'midnight', 'forest', 'ocean'].includes(saved) ? saved : 'default';
+    } catch {
+      return 'default';
+    }
   });
   
   const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem('ebike-dark-mode');
-    return saved ? JSON.parse(saved) : false;
+    try {
+      const saved = localStorage.getItem('ebike-dark-mode');
+      return saved ? JSON.parse(saved) : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
   });
 
   useEffect(() => {
@@ -28,15 +36,21 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   }, [isDark]);
 
   useEffect(() => {
+    const root = document.documentElement;
     // Apply theme to document
-    document.documentElement.classList.remove('theme-midnight', 'theme-forest', 'theme-ocean', 'dark');
+    root.classList.remove('theme-midnight', 'theme-forest', 'theme-ocean', 'dark');
     
     if (theme !== 'default') {
-      document.documentElement.classList.add(`theme-${theme}`);
+      root.classList.add(`theme-${theme}`);
     }
     
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      root.style.backgroundColor = '#111827'; // dark:bg-gray-900
+      root.style.color = '#ffffff'; // dark:text-white
+    } else {
+      root.style.backgroundColor = '#f9fafb'; // bg-gray-50
+      root.style.color = '#111827'; // text-gray-900
     }
   }, [theme, isDark]);
 
@@ -53,7 +67,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={value}>
-      <div className={`min-h-screen transition-all duration-500 ${getThemeClasses(theme, isDark)}`}>
+      <div className={`min-h-screen w-full transition-all duration-500 ${getThemeClasses(theme, isDark)}`}>
         {children}
       </div>
     </ThemeContext.Provider>
