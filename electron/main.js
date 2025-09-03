@@ -1,4 +1,8 @@
-const { app, BrowserWindow, Menu, shell } = require('electron');
+
+
+// Add your instrumentation key or use the APPLICATIONINSIGHTSKEY environment variable on your production machine to start collecting data.
+var ai = require('applicationinsights');
+ai.setup(process.env.APPLICATIONINSIGHTSKEY || 'your_instrumentation_key').start();const { app, BrowserWindow, Menu, shell } = require('electron');
 const path = require('path');
 const isDev = process.env.NODE_ENV === 'development';
 

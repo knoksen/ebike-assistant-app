@@ -1,14 +1,65 @@
-# E-Bike Assistant
+# E-Bike Assistant 🚲
+## 🔧 Main Features
 
-A comprehensive Progressive Web App (PWA) and Desktop Application for e-bike maintenance, troubleshooting, and parts management. Built with React, TypeScript, and Vite.
+### Diagnostics
+- Quick troubleshooting guide
+- Step-by-step solutions
+- Common issue database
+- Photo diagnosis helper
 
-## Features
+### Maintenance Tracking
+- Service reminders
+- Part replacement logs
+- Maintenance schedule
+- Wear indicators
 
-- 🔧 **Diagnostics**: Troubleshoot common e-bike issues
-- 🔍 **Parts Search**: Find compatible components for your e-bike
-- 📱 **Progressive Web App**: Install on mobile devices for offline access
-- 🖥️ **Desktop Application**: Native Windows 10/11, macOS, and Linux support
-- ⚡ **Fast & Responsive**: Built with modern web technologies
+### Parts Search
+- Compatible parts finder
+- Price comparisons
+- Installation guides
+- Where to buy
+
+### Settings
+- Dark/Light mode
+- Units (km/miles)
+- Language
+- Notifications
+
+## ⚠️ Quick Fixes
+
+Having issues? Try these:
+
+1. **App Won't Load?**
+   - Check internet connection
+   - Clear browser cache
+   - Reinstall from home screen
+
+2. **Features Not Working?**
+   - Update to latest version
+   - Check permissions
+   - Restart the app
+
+3. **Other Issues?**
+   - Visit our [support page](https://github.com/knoksen/ebike-assistant-app/issues)
+   - Email: support@ebike-assistant.appke companion! Track rides, diagnose issues, and maintain your e-bike - all from your phone.
+
+## 📱 Quick Start (30 seconds!)
+
+1. Open [our web app](https://knoksen.github.io/ebike-assistant-app) in your phone's browser
+2. Tap "Add to Home Screen" when prompted
+   - **Android:** Tap menu (⋮) → "Add to Home screen"
+   - **iOS:** Tap Share → "Add to Home Screen"
+3. Tap the app icon on your home screen to start
+
+That's it! The app works offline and updates automatically.
+
+## ⚡ Features
+
+- 🔧 **Quick Diagnosis**: Fix common issues in minutes
+- 🔍 **Parts Finder**: Find the right parts fast
+- 📱 **Works Offline**: No internet needed after install
+- 🌙 **Dark Mode**: Easy on your eyes
+- ⚡ **Battery Efficient**: Optimized for long rides
 
 ---
 

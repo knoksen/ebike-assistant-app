@@ -5,7 +5,7 @@ import { databaseService } from './DatabaseService'
 export interface SensorData {
   timestamp: number
   sensorId: string
-  type: 'speed' | 'cadence' | 'power' | 'heart-rate' | 'battery' | 'temperature' | 'gps' | 'accelerometer' | 'gyroscope'
+  type: 'speed' | 'cadence' | 'power' | 'heart-rate' | 'battery' | 'temperature' | 'gps' | 'accelerometer' | 'gyroscope' | 'odometer'
   value: number
   unit: string
   accuracy?: number
@@ -15,7 +15,7 @@ export interface SensorData {
 export interface SensorDevice {
   id: string
   name: string
-  type: 'bluetooth' | 'ant+' | 'wifi' | 'internal'
+  type: 'bluetooth' | 'ant+' | 'wifi' | 'internal' | 'scooter'
   manufacturer?: string
   model?: string
   capabilities: string[]
@@ -24,6 +24,13 @@ export interface SensorDevice {
   signalStrength?: number
   lastData?: SensorData
   settings: Record<string, unknown>
+}
+
+// Interface for scooter command responses
+export interface ScooterCommandResponse {
+  sensorId: string
+  subCommand: number
+  success: boolean
 }
 
 // Geolocation and motion sensors
@@ -47,6 +54,7 @@ class SensorService {
   private sensors: Map<string, SensorDevice> = new Map()
   private dataStreams: Map<string, SensorData[]> = new Map()
   private eventListeners: Map<string, Array<(data: unknown) => void>> = new Map()
+  private characteristics: Map<string, BluetoothRemoteGATTCharacteristic> = new Map()
   private isRecording = false
   private recordingStartTime = 0
   private watchId: number | null = null
@@ -59,14 +67,37 @@ class SensorService {
     CYCLING_POWER: '00001818-0000-1000-8000-00805f9b34fb',
     HEART_RATE: '0000180d-0000-1000-8000-00805f9b34fb',
     BATTERY_SERVICE: '0000180f-0000-1000-8000-00805f9b34fb',
-    DEVICE_INFORMATION: '0000180a-0000-1000-8000-00805f9b34fb'
+    DEVICE_INFORMATION: '0000180a-0000-1000-8000-00805f9b34fb',
+    // Miscooter0211 specific
+    MISCOOTER_SERVICE: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+    XIAOMI_SERVICE: 'fe95'
   }
 
   private readonly BLUETOOTH_CHARACTERISTICS = {
     CSC_MEASUREMENT: '00002a5b-0000-1000-8000-00805f9b34fb',
     CYCLING_POWER_MEASUREMENT: '00002a63-0000-1000-8000-00805f9b34fb',
     HEART_RATE_MEASUREMENT: '00002a37-0000-1000-8000-00805f9b34fb',
-    BATTERY_LEVEL: '00002a19-0000-1000-8000-00805f9b34fb'
+    BATTERY_LEVEL: '00002a19-0000-1000-8000-00805f9b34fb',
+    // Miscooter0211 specific
+    MISCOOTER_RX: '6e400002-b5a3-f393-e0a9-e50e24dcca9e',  // Write
+    MISCOOTER_TX: '6e400003-b5a3-f393-e0a9-e50e24dcca9e',  // Notify
+    XIAOMI_WRITE: 'fe95'
+  }
+
+  // Miscooter0211 specific commands
+  private readonly SCOOTER_COMMANDS = {
+    READ_SPEED: [0x55, 0xAA, 0x04, 0x22, 0x01, 0x26],
+    READ_BATTERY: [0x55, 0xAA, 0x04, 0x22, 0x02, 0x27],
+    READ_ODOMETER: [0x55, 0xAA, 0x04, 0x22, 0x03, 0x28],
+    SET_SPEED_LIMIT: (speed: number) => {
+      const checksum = (0x55 + 0xAA + 0x04 + 0x20 + 0x01 + speed) & 0xFF
+      return [0x55, 0xAA, 0x04, 0x20, 0x01, speed, checksum]
+    },
+    SET_BOOST_MODE: (enabled: boolean) => {
+      const value = enabled ? 0x01 : 0x00
+      const checksum = (0x55 + 0xAA + 0x04 + 0x20 + 0x02 + value) & 0xFF
+      return [0x55, 0xAA, 0x04, 0x20, 0x02, value, checksum]
+    }
   }
 
   constructor() {
@@ -162,13 +193,22 @@ class SensorService {
     }
 
     try {
-      const device = await navigator.bluetooth.requestDevice({
+      const device = await (navigator as any).bluetooth.requestDevice({
         filters: [
+          // Miscooter0211 and Xiaomi scooters
+          { services: [this.BLUETOOTH_SERVICES.MISCOOTER_SERVICE] },
+          { services: [this.BLUETOOTH_SERVICES.XIAOMI_SERVICE] },
+          // Standard bike sensors
           { services: [this.BLUETOOTH_SERVICES.CYCLING_SPEED_CADENCE] },
           { services: [this.BLUETOOTH_SERVICES.CYCLING_POWER] },
-          { services: [this.BLUETOOTH_SERVICES.HEART_RATE] }
+          { services: [this.BLUETOOTH_SERVICES.HEART_RATE] },
+          // Include devices by name for broader compatibility
+          { namePrefix: 'MiScooter' }
         ],
-        optionalServices: [this.BLUETOOTH_SERVICES.BATTERY_SERVICE, this.BLUETOOTH_SERVICES.DEVICE_INFORMATION]
+        optionalServices: [
+          this.BLUETOOTH_SERVICES.BATTERY_SERVICE,
+          this.BLUETOOTH_SERVICES.DEVICE_INFORMATION
+        ]
       })
 
       const sensorDevice: SensorDevice = {
@@ -177,7 +217,26 @@ class SensorService {
         type: 'bluetooth',
         capabilities: this.detectCapabilities(device),
         connectionStatus: 'disconnected',
-        settings: {}
+        settings: {
+          // Default settings for Miscooter0211
+          speedLimit: 25, // km/h
+          powerMode: 'normal',
+          cruiseControl: true,
+          regenerativeBraking: true,
+          ledMode: 'auto'
+        }
+      }
+
+      // Add specific capabilities for Miscooter
+      if (device.name?.includes('MiScooter')) {
+        sensorDevice.type = 'scooter'
+        sensorDevice.capabilities.push(
+          'speed',
+          'battery',
+          'odometer',
+          'tuning',
+          'boost-mode'
+        )
       }
 
       this.sensors.set(device.id, sensorDevice)
@@ -229,7 +288,7 @@ class SensorService {
       
       // Save to database
       await databaseService.create('sensors', {
-        id: sensor.id,
+        deviceId: sensor.id,
         type: sensor.type,
         name: sensor.name,
         manufacturer: sensor.manufacturer || '',
@@ -240,7 +299,8 @@ class SensorService {
         calibration: {},
         lastData: { timestamp: Date.now(), values: {} },
         created: Date.now(),
-        lastSync: Date.now()
+        lastSync: Date.now(),
+        firmwareVersion: ''
       })
       
     } catch (error) {
@@ -250,49 +310,137 @@ class SensorService {
     }
   }
 
-  private async subscribeToBluetoothServices(server: BluetoothRemoteGATTServer, sensor: SensorDevice): Promise<void> {
+  private async subscribeToBluetoothServices(server: any, sensor: SensorDevice): Promise<void> {
     try {
+      // Miscooter service
+      const miscooterService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.MISCOOTER_SERVICE).catch(() => null)
+      if (miscooterService) {
+        // Get RX (write) and TX (notify) characteristics
+        const rxChar = await miscooterService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.MISCOOTER_RX)
+        const txChar = await miscooterService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.MISCOOTER_TX)
+
+        // Start notifications for receiving data
+        await txChar.startNotifications()
+        txChar.addEventListener('characteristicvaluechanged', (event: any) => {
+          const value = event.target.value
+          if (!value) return
+
+          const data = new Uint8Array(value.buffer)
+          this.handleMiscooterData(sensor.id, data)
+        })
+
+        // Store RX characteristic for writing commands
+        this.characteristics.set(`${sensor.id}_rx`, rxChar)
+
+        // Initial data read
+        await this.sendMiscooterCommand(sensor.id, this.SCOOTER_COMMANDS.READ_BATTERY)
+        await new Promise(resolve => setTimeout(resolve, 100))
+        await this.sendMiscooterCommand(sensor.id, this.SCOOTER_COMMANDS.READ_SPEED)
+        await new Promise(resolve => setTimeout(resolve, 100))
+        await this.sendMiscooterCommand(sensor.id, this.SCOOTER_COMMANDS.READ_ODOMETER)
+
+        return // Skip other services for Miscooter
+      }
+
+      // Standard bike sensors if not a Miscooter
       // Cycling Speed and Cadence
       const cscService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.CYCLING_SPEED_CADENCE).catch(() => null)
       if (cscService) {
-        const cscCharacteristic = await cscService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.CSC_MEASUREMENT)
-        await cscCharacteristic.startNotifications()
-        cscCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
-          this.handleCSCData(sensor.id, (event.target as BluetoothRemoteGATTCharacteristic).value!)
+        const cscChar = await cscService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.CSC_MEASUREMENT)
+        await cscChar.startNotifications()
+        cscChar.addEventListener('characteristicvaluechanged', (event: any) => {
+          this.handleCSCData(sensor.id, event.target.value!)
         })
       }
 
       // Heart Rate
       const hrService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.HEART_RATE).catch(() => null)
       if (hrService) {
-        const hrCharacteristic = await hrService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.HEART_RATE_MEASUREMENT)
-        await hrCharacteristic.startNotifications()
-        hrCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
-          this.handleHeartRateData(sensor.id, (event.target as BluetoothRemoteGATTCharacteristic).value!)
+        const hrChar = await hrService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.HEART_RATE_MEASUREMENT)
+        await hrChar.startNotifications()
+        hrChar.addEventListener('characteristicvaluechanged', (event: any) => {
+          this.handleHeartRateData(sensor.id, event.target.value!)
         })
       }
 
       // Power
       const powerService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.CYCLING_POWER).catch(() => null)
       if (powerService) {
-        const powerCharacteristic = await powerService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.CYCLING_POWER_MEASUREMENT)
-        await powerCharacteristic.startNotifications()
-        powerCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
-          this.handlePowerData(sensor.id, (event.target as BluetoothRemoteGATTCharacteristic).value!)
+        const powerChar = await powerService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.CYCLING_POWER_MEASUREMENT)
+        await powerChar.startNotifications()
+        powerChar.addEventListener('characteristicvaluechanged', (event: any) => {
+          this.handlePowerData(sensor.id, event.target.value!)
         })
       }
 
       // Battery Level
       const batteryService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.BATTERY_SERVICE).catch(() => null)
       if (batteryService) {
-        const batteryCharacteristic = await batteryService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.BATTERY_LEVEL)
-        const batteryLevel = await batteryCharacteristic.readValue()
+        const batteryChar = await batteryService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.BATTERY_LEVEL)
+        const batteryLevel = await batteryChar.readValue()
         sensor.batteryLevel = batteryLevel.getUint8(0)
       }
 
     } catch (error) {
       console.error('Error subscribing to Bluetooth services:', error)
+      throw error
     }
+  }
+
+  private async sendMiscooterCommand(sensorId: string, command: number[]): Promise<void> {
+    const rxChar = this.characteristics.get(`${sensorId}_rx`)
+    if (!rxChar) throw new Error('Device not ready for commands')
+
+    await rxChar.writeValue(new Uint8Array(command))
+  }
+
+  private handleMiscooterData(sensorId: string, data: Uint8Array): void {
+    // Check header
+    if (data[0] !== 0x55 || data[1] !== 0xAA) {
+      console.warn('Invalid Miscooter data header')
+      return
+    }
+
+    const command = data[3]
+    const subCommand = data[4]
+
+    switch (command) {
+      case 0x22: // Read responses
+        switch (subCommand) {
+          case 0x01: // Speed
+            const speed = data[5]
+            this.addSensorData(sensorId, 'speed', speed, 'km/h')
+            break
+          case 0x02: // Battery
+            const battery = data[5]
+            this.addSensorData(sensorId, 'battery', battery, '%')
+            break
+          case 0x03: // Odometer
+            const odometer = (data[5] << 16) | (data[6] << 8) | data[7]
+            this.addSensorData(sensorId, 'odometer', odometer / 1000, 'km')
+            break
+        }
+        break
+      case 0x20: // Write responses
+        this.emit('scooter:command:response', {
+          sensorId,
+          subCommand,
+          success: data[5] === 0
+        })
+        break
+    }
+  }
+
+  // Miscooter specific methods
+  async setScooterSpeedLimit(sensorId: string, speed: number): Promise<void> {
+    if (speed < 1 || speed > 35) {
+      throw new Error('Speed limit must be between 1 and 35 km/h')
+    }
+    await this.sendMiscooterCommand(sensorId, this.SCOOTER_COMMANDS.SET_SPEED_LIMIT(speed))
+  }
+
+  async setScooterBoostMode(sensorId: string, enabled: boolean): Promise<void> {
+    await this.sendMiscooterCommand(sensorId, this.SCOOTER_COMMANDS.SET_BOOST_MODE(enabled))
   }
 
   // Data handlers for different sensor types
@@ -450,7 +598,7 @@ class SensorService {
       await port.open({ baudRate: 9600 })
 
       const textDecoder = new TextDecoderStream()
-      const readableStreamClosed = port.readable.pipeTo(textDecoder.writable)
+      await port.readable.pipeTo(textDecoder.writable)
       const reader = textDecoder.readable.getReader()
 
       const serialDevice = this.sensors.get('serial-bike-computer')
@@ -553,7 +701,7 @@ class SensorService {
   startRecording(): void {
     this.isRecording = true
     this.recordingStartTime = Date.now()
-    this.emit('recording:started')
+    this.emit('recording:started', null)
   }
 
   stopRecording(): Array<{ sensorId: string; data: SensorData[] }> {
@@ -568,13 +716,13 @@ class SensorService {
   }
 
   // Utility methods
-  private calculateSpeed(wheelRevolutions: number, wheelEventTime: number): number {
+  private calculateSpeed(wheelRevolutions: number, _wheelEventTime: number): number {
     // Implementation depends on wheel circumference and previous values
     // This is a simplified version
     return wheelRevolutions * 0.1 // Placeholder calculation
   }
 
-  private calculateCadence(crankRevolutions: number, crankEventTime: number): number {
+  private calculateCadence(crankRevolutions: number, _crankEventTime: number): number {
     // Implementation depends on previous values to calculate RPM
     // This is a simplified version
     return crankRevolutions * 2 // Placeholder calculation
@@ -613,7 +761,7 @@ class SensorService {
     // Update sensor calibration in database
     await databaseService.update('sensors', sensorId, {
       calibration: calibrationData,
-      lastModified: Date.now()
+      lastSync: Date.now()
     })
 
     this.emit('sensor:calibrated', { sensor, calibrationData })
@@ -639,4 +787,4 @@ class SensorService {
 }
 
 export const sensorService = new SensorService()
-export type { SensorDevice, SensorData, MotionData }
+export type { MotionData }
