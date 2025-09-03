@@ -30,6 +30,26 @@ android {
         }
     }
 
+    flavorDimensions += "protocol"
+    productFlavors {
+        create("xiaomi") {
+            dimension = "protocol"
+            buildConfigField("String", "FLAVOR_TAG", "\"xiaomi\"")
+        }
+        create("ninebot") {
+            dimension = "protocol"
+            buildConfigField("String", "FLAVOR_TAG", "\"ninebot\"")
+        }
+    }
+
+    variantFilter {
+        // Only allow BouncyCastle for xiaomi flavor
+        val includeBc = flavors.any { it.name == "xiaomi" }
+        if (!includeBc) {
+            dependencies.remove(dependencies.find { it.name.contains("bcprov") })
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -59,6 +79,9 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-ktx:1.7.2")
+    
+    // Crypto (only for xiaomi flavor)
+    "xiaomiImplementation"("org.bouncycastle:bcprov-jdk15to18:1.78.1")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

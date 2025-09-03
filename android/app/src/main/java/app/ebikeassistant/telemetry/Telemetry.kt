@@ -1,24 +1,5 @@
 package app.ebikeassistant.telemetry
 
-/**
- * Represents telemetry data from an e-bike
- *
- * @property vehicleModel The model name/identifier of the vehicle
- * @property manufacturerId Manufacturer-specific ID
- * @property firmwareApp Version of the main application firmware
- * @property firmwareBle Version of the BLE firmware
- * @property totalMileageKm Total distance traveled in kilometers
- * @property currentTripKm Current trip distance in kilometers
- * @property avgSpeedKmH Average speed in kilometers per hour
- * @property packVoltageV Battery pack voltage in volts
- * @property packCurrentA Battery pack current in amperes
- * @property socPercent State of charge as percentage (0-100)
- * @property tempC Main temperature reading in Celsius
- * @property extBatteryTempC External battery temperature in Celsius
- * @property cellsMv Individual cell voltages in millivolts
- * @property errorCode Current error code (0 = no error)
- * @property warning Optional warning message
- */
 data class Telemetry(
     val vehicleModel: String? = null,
     val manufacturerId: Int? = null,

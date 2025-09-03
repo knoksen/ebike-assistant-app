@@ -95,18 +95,47 @@ Having issues? Try these quick fixes:
 
 The app uses Bluetooth Low Energy (BLE) with GATT services to communicate with e-bikes:
 
+#### Architecture Notes
+
+1. **Transport Abstraction**
+   - Supports both encrypted (FE95) and plain (NUS) protocols
+   - Pluggable crypto implementation for secure sessions
+   - Device-specific adapters handle protocol variations
+
+2. **Security Implementation**
+   - ECDH-based handshake for Xiaomi devices
+   - Secure session management via `XiaomiECDH`
+   - Cryptographic operations isolated in `NinebotSecureCryptor`
+
+3. **Firmware Operations**
+   - Firmware flashing capabilities are isolated
+   - Not included in v1 release
+   - When implemented:
+     - Requires explicit user consent
+     - Mandatory checksum verification
+     - Extensive error handling
+
 #### Supported Protocols
 
 1. **Xiaomi/Mi Protocol**
    - Service UUID: `0000fe95-0000-1000-8000-00805f9b34fb`
    - Secure authentication via ECDH
    - Encrypted telemetry and commands
+   - Some devices only expose FE95 with encrypted commands
 
 2. **Nordic UART Service (NUS)**
    - Service UUID: `6e400001-b5a3-f393-e0a9-e50e24dcca9e`
    - TX Characteristic: `6e400002-b5a3-f393-e0a9-e50e24dcca9e`
    - RX Characteristic: `6e400003-b5a3-f393-e0a9-e50e24dcca9e`
-   - Plain UART-style communication
+   - Simple UART-style communication
+   - Used by some models for direct communication
+
+#### Device Compatibility
+
+- Models vary in their protocol support
+- Some use only encrypted FE95 service
+- Others use simpler UART-style interface
+- Transport layer abstracts these differences
 
 #### Telemetry Capabilities
 

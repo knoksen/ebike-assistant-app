@@ -28,13 +28,22 @@ import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 
-enum class GattState {
-    DISCONNECTED,
-    CONNECTING,
-    CONNECTED,
-    DISCOVERING_SERVICES,
-    READY,
-    DISCONNECTING
+sealed class GattState {
+    data object Disconnected : GattState()
+    data object Connecting : GattState()
+    data object Connected : GattState()
+    data object DiscoveringServices : GattState()
+    data object Ready : GattState()
+    data object Disconnecting : GattState()
+    data class Failed(val error: GattError) : GattState()
+}
+
+sealed class GattError : Exception() {
+    data class ConnectionError(override val message: String) : GattError()
+    data class ServiceDiscoveryFailed(override val message: String) : GattError()
+    data class CharacteristicNotFound(val uuid: String) : GattError()
+    data class OperationFailed(val operation: String, override val cause: Throwable? = null) : GattError()
+    data class Timeout(val operation: String) : GattError()
 }
 
 data class CharacteristicEvent(
@@ -70,24 +79,33 @@ class GattClient(
     val connectionState: StateFlow<GattState> = _connectionState
 
     private val characteristicChangedChannel = Channel<CharacteristicEvent>(Channel.BUFFERED)
-
+    private var pendingMtu: Int? = null
+    
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             val deviceAddress = gatt.device.address
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
-                    Log.i(tag, "Connected to GATT server. Discovering services...")
-                    _connectionState.value = GattState.DISCOVERING_SERVICES
-                    gatt.discoverServices()
+                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                        Log.i(tag, "Connected to GATT server. Discovering services...")
+                        _connectionState.value = GattState.DiscoveringServices
+                        gatt.discoverServices()
+                    } else {
+                        Log.e(tag, "Connection failed with status: $status")
+                        disconnect()
+                        _connectionState.value = GattState.Failed(
+                            GattError.ConnectionError("Connection failed with status: $status")
+                        )
+                    }
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.i(tag, "Disconnected from GATT server")
                     disconnect()
-                    if (_connectionState.value != GattState.DISCONNECTING) {
+                    if (_connectionState.value != GattState.Disconnecting) {
                         // Unexpected disconnection - attempt reconnect
                         attemptReconnect()
                     } else {
-                        _connectionState.value = GattState.DISCONNECTED
+                        _connectionState.value = GattState.Disconnected
                     }
                 }
             }
@@ -96,11 +114,18 @@ class GattClient(
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.i(tag, "Services discovered successfully")
-                _connectionState.value = GattState.READY
+                _connectionState.value = GattState.Ready
+                // Request MTU update if pending
+                pendingMtu?.let { mtu ->
+                    gatt.requestMtu(mtu)
+                    pendingMtu = null
+                }
             } else {
                 Log.e(tag, "Service discovery failed with status: $status")
                 disconnect()
-            }
+                _connectionState.value = GattState.Failed(
+                    GattError.ServiceDiscoveryFailed("Discovery failed with status: $status")
+                )
         }
 
         override fun onCharacteristicChanged(
@@ -122,23 +147,33 @@ class GattClient(
         }
     }
 
-    suspend fun connect() = withContext(Dispatchers.Main) {
+    suspend fun connect(requestedMtu: Int = 517) = withContext(Dispatchers.Main) {
         mutex.withLock {
-            if (_connectionState.value != GattState.DISCONNECTED) {
+            if (_connectionState.value !is GattState.Disconnected) {
                 return@withContext
             }
 
-            _connectionState.value = GattState.CONNECTING
-            gatt = device.connectGatt(
-                context,
-                false,
-                gattCallback,
-                BluetoothDevice.TRANSPORT_LE
-            )
+            try {
+                pendingMtu = requestedMtu
+                _connectionState.value = GattState.Connecting
+                gatt = device.connectGatt(
+                    context,
+                    false,
+                    gattCallback,
+                    BluetoothDevice.TRANSPORT_LE
+                )
 
-            // Wait for connection to be established
-            withTimeout(operationTimeout) {
-                connectionState.first { it == GattState.READY }
+                // Wait for connection to be established
+                withTimeout(operationTimeout) {
+                    connectionState.first { it is GattState.Ready }
+                }
+            } catch (e: Exception) {
+                disconnect()
+                when (e) {
+                    is SecurityException -> throw GattError.ConnectionError("Missing Bluetooth permissions")
+                    is CancellationException -> throw e
+                    else -> throw GattError.ConnectionError(e.message ?: "Connection failed")
+                }
             }
         }
     }
@@ -150,16 +185,19 @@ class GattClient(
                 connect()
                 return
             } catch (e: Exception) {
+                Log.w(tag, "Reconnection attempt ${attempt + 1} failed", e)
                 if (attempt == reconnectBackoff.lastIndex) {
                     Log.e(tag, "Failed to reconnect after ${attempt + 1} attempts")
-                    _connectionState.value = GattState.DISCONNECTED
+                    _connectionState.value = GattState.Failed(
+                        GattError.ConnectionError("Failed to reconnect after ${attempt + 1} attempts")
+                    )
                 }
             }
         }
     }
 
     fun disconnect() {
-        _connectionState.value = GattState.DISCONNECTING
+        _connectionState.value = GattState.Disconnecting
         gatt?.disconnect()
         gatt?.close()
         gatt = null
