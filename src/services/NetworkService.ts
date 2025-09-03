@@ -1,6 +1,7 @@
 // Network Service - API integrations, WebSocket, real-time sync
 import { databaseService } from './DatabaseService'
 import { sensorService } from './SensorService'
+import type { Trip, Settings } from '../types/db'
 
 // API Response types
 export interface WeatherData {
@@ -81,7 +82,7 @@ export interface CommunityData {
 }
 
 class NetworkService {
-  private baseUrl = process.env.REACT_APP_API_URL || 'https://api.ebike-assistant.com'
+  private baseUrl = import.meta.env.VITE_API_URL || 'https://api.ebike-assistant.com'
   private wsConnection: WebSocket | null = null
   private reconnectAttempts = 0
   private maxReconnectAttempts = 5
@@ -92,11 +93,11 @@ class NetworkService {
 
   // API Keys (in production, these should be secured)
   private readonly API_KEYS = {
-    weather: process.env.REACT_APP_WEATHER_API_KEY || '',
-    maps: process.env.REACT_APP_MAPS_API_KEY || '',
-    elevation: process.env.REACT_APP_ELEVATION_API_KEY || '',
-    traffic: process.env.REACT_APP_TRAFFIC_API_KEY || '',
-    community: process.env.REACT_APP_COMMUNITY_API_KEY || ''
+    weather: import.meta.env.VITE_WEATHER_API_KEY || '',
+    maps: import.meta.env.VITE_MAPS_API_KEY || '',
+    elevation: import.meta.env.VITE_ELEVATION_API_KEY || '',
+    traffic: import.meta.env.VITE_TRAFFIC_API_KEY || '',
+    community: import.meta.env.VITE_COMMUNITY_API_KEY || ''
   }
 
   // External API endpoints
@@ -135,7 +136,7 @@ class NetworkService {
   private initializeWebSocket(): void {
     if (!this.isOnline) return
 
-    const wsUrl = process.env.REACT_APP_WS_URL || 'wss://ws.ebike-assistant.com'
+    const wsUrl = import.meta.env.VITE_WS_URL || 'wss://ws.ebike-assistant.com'
     
     try {
       this.wsConnection = new WebSocket(wsUrl)
@@ -585,37 +586,35 @@ class NetworkService {
 
   private async syncData(): Promise<void> {
     try {
-      // Sync rides data
-      const unsynced = await databaseService.list('rides', {
-        index: 'synchronized',
-        query: IDBKeyRange.only(false)
+      // Sync trips data
+      const unsynced = await databaseService.list('trips', {
+        index: 'by-date',
+        query: IDBKeyRange.upperBound(Date.now())
       })
 
-      for (const ride of unsynced.slice(0, 10)) { // Sync up to 10 rides at a time
-        await this.syncRideToCloud(ride)
+      for (const trip of unsynced.slice(0, 10)) { // Sync up to 10 trips at a time
+        await this.syncTripToCloud(trip)
       }
     } catch (error) {
       console.error('Sync error:', error)
     }
   }
 
-  private async syncRideToCloud(ride: unknown): Promise<void> {
-    const url = `${this.baseUrl}/rides/sync`
+  private async syncTripToCloud(trip: Trip): Promise<void> {
+    const url = `${this.baseUrl}/trips/sync`
     
     try {
       await this.makeRequest(url, {
         method: 'POST',
-        body: JSON.stringify(ride)
+        body: JSON.stringify(trip)
       }, 2, 'sync')
 
-      // Mark as synchronized
-      if (ride && typeof ride === 'object' && 'id' in ride) {
-        await databaseService.update('rides', (ride as { id: string }).id, {
-          synchronized: true
-        })
-      }
+      // Mark as synchronized by updating metadata
+      await databaseService.update('trips', trip.id, {
+        metadata: { ...trip.metadata, synced: true }
+      })
     } catch (error) {
-      console.error('Failed to sync ride:', error)
+      console.error('Failed to sync trip:', error)
     }
   }
 
@@ -655,14 +654,8 @@ class NetworkService {
   }
 
   private async getUserProfile(): Promise<{ name?: string; emergencyContact?: string }> {
-    // Get user profile from database
-    const settings = await databaseService.list('settings', {
-      index: 'category',
-      query: IDBKeyRange.only('user')
-    })
-    
-    const userSetting = settings.find(s => s.id === 'user-profile')
-    return userSetting?.data as { name?: string; emergencyContact?: string } || {}
+    const userProfile = await databaseService.get('settings', 'user-profile')
+    return userProfile?.value as { name?: string; emergencyContact?: string } || {}
   }
 
   // Connection status
@@ -689,4 +682,3 @@ class NetworkService {
 }
 
 export const networkService = new NetworkService()
-export type { WeatherData, RouteData, TrafficData, CommunityData }

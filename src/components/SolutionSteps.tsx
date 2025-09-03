@@ -34,121 +34,257 @@ export function SolutionSteps({ steps, faultInfo, onBack }: SolutionStepsProps) 
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-      <div className="mb-6">
+    <div>
+      <div className="mb-8">
         <button 
           onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 mb-4 transition-colors"
+          className="group flex items-center space-x-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 mb-6 transition-colors"
         >
-          ← Back to problems
+          <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Back to diagnostics</span>
         </button>
         
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">
-            Troubleshooting: {faultInfo.question}
-          </h2>
+        <div className="relative mb-6">
+          <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 via-green-500/10 to-blue-500/10 rounded-2xl blur-xl"></div>
+          <div className="relative">
+            <h2 className="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent mb-3">
+              Troubleshooting Guide
+            </h2>
+            <p className="text-lg text-gray-800 dark:text-white mb-4">
+              {faultInfo.question}
+            </p>
           
           {/* Fault Info */}
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getSeverityColor(faultInfo.severity)}`}>
-              {faultInfo.severity} priority
-            </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              ⏱️ Estimated time: {faultInfo.estimatedTime}
-            </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">
-              📂 {faultInfo.category}
-            </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl blur-lg"></div>
+              <div className="relative p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <div className="relative w-10 h-10">
+                    <div className="absolute inset-0 bg-red-500 rounded-lg opacity-20 blur"></div>
+                    <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-lg">
+                      <span className="text-xl">⚡</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Priority Level</div>
+                    <div className={`font-semibold ${getSeverityColor(faultInfo.severity)}`}>
+                      {faultInfo.severity.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl blur-lg"></div>
+              <div className="relative p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <div className="relative w-10 h-10">
+                    <div className="absolute inset-0 bg-blue-500 rounded-lg opacity-20 blur"></div>
+                    <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-lg">
+                      <span className="text-xl">⏱️</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Est. Time</div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">
+                      {faultInfo.estimatedTime}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-xl blur-lg"></div>
+              <div className="relative p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <div className="relative w-10 h-10">
+                    <div className="absolute inset-0 bg-green-500 rounded-lg opacity-20 blur"></div>
+                    <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-lg">
+                      <span className="text-xl">📂</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Category</div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100 capitalize">
+                      {faultInfo.category}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
         {/* Progress bar */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
-            <span>Progress</span>
-            <span>{completedSteps.size}/{steps.length} steps completed ({completionPercentage}%)</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            <div 
-              className="bg-green-600 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${completionPercentage}%` }}
-            />
+        <div className="relative mb-8">
+          <div className="absolute -inset-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-2xl blur-xl"></div>
+          <div className="relative p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+            <div className="flex justify-between items-center mb-3">
+              <div className="flex items-center space-x-2">
+                <div className="relative w-8 h-8">
+                  <div className="absolute inset-0 bg-green-500 rounded-lg opacity-20 blur"></div>
+                  <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-lg">
+                    <span className="text-lg">📊</span>
+                  </div>
+                </div>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">Progress Tracker</span>
+              </div>
+              <div className="text-sm">
+                <span className="font-semibold text-green-600 dark:text-green-400">{completedSteps.size}</span>
+                <span className="text-gray-500 dark:text-gray-400"> / {steps.length} steps</span>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="overflow-hidden h-4 rounded-full bg-gray-200 dark:bg-gray-700">
+                <div 
+                  className="h-full bg-gradient-to-r from-green-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${completionPercentage}%` }}
+                >
+                  <div className="absolute top-0 right-0 bottom-0 w-24 animate-shimmer">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -right-1 top-1/2 transform -translate-y-1/2">
+                <span className="bg-gray-900 text-white text-xs px-2 py-1 rounded-md shadow-lg">
+                  {completionPercentage}%
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-4">
-          Follow these steps in order:
-        </h3>
-        
-        {steps.map((step, index) => (
-          <div
-            key={index}
-            className={`p-4 rounded-lg border-2 transition-all duration-200 ${
-              completedSteps.has(index)
-                ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                : 'border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500'
-            }`}
-          >
-            <div className="flex items-start">
-              <button
-                onClick={() => toggleStep(index)}
-                className={`flex-shrink-0 w-7 h-7 rounded-full border-2 mr-4 mt-0.5 transition-all flex items-center justify-center text-sm font-medium ${
+      <div className="space-y-6">
+        <div className="relative">
+          <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-2xl blur-xl"></div>
+          <div className="relative">
+            <h3 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent mb-6">
+              Step-by-Step Solution Guide
+            </h3>
+            
+            {steps.map((step, index) => (
+              <div key={index} className="group relative mb-4 last:mb-0">
+                <div className={`absolute -inset-0.5 rounded-xl transition-all duration-300 ${
                   completedSteps.has(index)
-                    ? 'bg-green-500 border-green-500 text-white'
-                    : 'border-gray-300 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400 text-gray-500 dark:text-gray-400'
-                }`}
-              >
-                {completedSteps.has(index) ? '✓' : index + 1}
-              </button>
-              
-              <div className="flex-1">
-                <div className="flex items-center mb-2">
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Step {index + 1} of {steps.length}
-                  </span>
-                </div>
-                <p className={`text-gray-800 dark:text-white leading-relaxed ${
-                  completedSteps.has(index) ? 'line-through opacity-75' : ''
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 opacity-20'
+                    : 'bg-gradient-to-r from-blue-500 to-green-500 opacity-0 group-hover:opacity-20'
+                } blur`}></div>
+                <div className={`relative p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border transition-all duration-300 ${
+                  completedSteps.has(index)
+                    ? 'border-green-200/50 dark:border-green-800/50'
+                    : 'border-gray-200/50 dark:border-gray-700/50 group-hover:border-blue-200/50 dark:group-hover:border-blue-700/50'
                 }`}>
-                  {step}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <button
+                        onClick={() => toggleStep(index)}
+                        className={`relative w-10 h-10 rounded-lg transition-all duration-300 ${
+                          completedSteps.has(index)
+                            ? 'bg-green-500 text-white'
+                            : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:text-blue-500'
+                        }`}
+                      >
+                        <div className={`absolute inset-0 rounded-lg transition-opacity duration-300 ${
+                          completedSteps.has(index)
+                            ? 'opacity-20 bg-green-500'
+                            : 'opacity-0 group-hover:opacity-20 bg-blue-500'
+                        } blur`}></div>
+                        <div className="relative flex items-center justify-center w-full h-full text-lg font-medium">
+                          {completedSteps.has(index) ? '✓' : index + 1}
+                        </div>
+                      </button>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className={`text-sm font-medium ${
+                          completedSteps.has(index)
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-gray-500 dark:text-gray-400'
+                        }`}>
+                          Step {index + 1} of {steps.length}
+                        </span>
+                        {completedSteps.has(index) && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            Completed
+                          </span>
+                        )}
+                      </div>
+                      <p className={`text-gray-900 dark:text-gray-100 leading-relaxed ${
+                        completedSteps.has(index) ? 'line-through opacity-75' : ''
+                      }`}>
+                        {step}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Success Message */}
+        {completedSteps.size === steps.length && (
+          <div className="relative mt-8">
+            <div className="absolute -inset-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl"></div>
+            <div className="relative p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-green-200/50 dark:border-green-800/50">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="relative w-12 h-12">
+                    <div className="absolute inset-0 bg-green-500 rounded-xl opacity-20 blur"></div>
+                    <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-xl">
+                      <span className="text-2xl">🎉</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
+                    Congratulations! All steps completed
+                  </h4>
+                  <p className="text-green-600 dark:text-green-300">
+                    You've successfully completed all troubleshooting steps. If the issue persists, 
+                    consider consulting a professional e-bike technician.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Additional Help */}
+        <div className="relative mt-8">
+          <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl"></div>
+          <div className="relative p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <div className="relative w-12 h-12">
+                  <div className="absolute inset-0 bg-blue-500 rounded-xl opacity-20 blur"></div>
+                  <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-xl">
+                    <span className="text-2xl">💡</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                  Need Additional Support?
+                </h4>
+                <p className="text-blue-600 dark:text-blue-300">
+                  If these steps don't resolve your issue, document the problem with photos and 
+                  reach out to your local e-bike shop or manufacturer's support team for expert assistance.
                 </p>
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Success Message */}
-      {completedSteps.size === steps.length && (
-        <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded">
-          <div className="flex items-center">
-            <div className="text-green-500 mr-3 text-xl">🎉</div>
-            <div>
-              <h4 className="font-semibold text-green-800 dark:text-green-200">
-                Excellent work! You've completed all troubleshooting steps.
-              </h4>
-              <p className="text-sm text-green-600 dark:text-green-300 mt-1">
-                If the issue persists after following these steps, consider consulting a professional 
-                e-bike technician or contacting your manufacturer's support team.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Additional Help */}
-      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <div className="flex items-start">
-          <div className="text-blue-500 mr-2">ℹ️</div>
-          <div className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Need additional help?</strong> If these steps don't resolve your issue, 
-            consider taking photos of the problem area and consulting your local e-bike shop 
-            or the manufacturer's technical support.
-          </div>
         </div>
       </div>
+    </div>
+  )
     </div>
   )
 }

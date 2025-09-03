@@ -15,22 +15,22 @@ export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <div className="min-h-screen">
+        <div className="min-h-screen flex flex-col">
           <Header />
-          <main>
+          <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
-            <Route path="/diagnostics" element={<DiagnosticsPage />} />
-            <Route path="/parts" element={<Parts />} />
-            <Route path="/maintenance" element={<Maintenance />} />
-            <Route path="/guides" element={<Guides />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/rides" element={<RideTrackerPage />} />
-          </Routes>
-        </main>
-      </div>
-    </BrowserRouter>
+              <Route path="/diagnostics" element={<DiagnosticsPage />} />
+              <Route path="/parts" element={<Parts />} />
+              <Route path="/maintenance" element={<Maintenance />} />
+              <Route path="/guides" element={<Guides />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/rides" element={<RideTrackerPage />} />
+            </Routes>
+          </main>
+        </div>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }
