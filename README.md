@@ -1,228 +1,103 @@
 # E-Bike Assistant 🚲
-## 🔧 Main Features
 
-### Diagnostics
-- Quick troubleshooting guide
-- Step-by-step solutions
-- Common issue database
-- Photo diagnosis helper
+Your pocket e-bike companion! Track rides, diagnose issues, and maintain your e-bike - all from your phone.
 
-### Maintenance Tracking
-- Service reminders
-- Part replacement logs
-- Maintenance schedule
-- Wear indicators
-
-### Parts Search
-- Compatible parts finder
-- Price comparisons
-- Installation guides
-- Where to buy
-
-### Settings
-- Dark/Light mode
-- Units (km/miles)
-- Language
-- Notifications
-
-## ⚠️ Quick Fixes
-
-Having issues? Try these:
-
-1. **App Won't Load?**
-   - Check internet connection
-   - Clear browser cache
-   - Reinstall from home screen
-
-2. **Features Not Working?**
-   - Update to latest version
-   - Check permissions
-   - Restart the app
-
-3. **Other Issues?**
-   - Visit our [support page](https://github.com/knoksen/ebike-assistant-app/issues)
-   - Email: support@ebike-assistant.appke companion! Track rides, diagnose issues, and maintain your e-bike - all from your phone.
+![App Screenshots](docs/screenshots/app-preview.png)
 
 ## 📱 Quick Start (30 seconds!)
 
 1. Open [our web app](https://knoksen.github.io/ebike-assistant-app) in your phone's browser
-2. Tap "Add to Home Screen" when prompted
+2. Tap "Add to Home Screen" when prompted:
    - **Android:** Tap menu (⋮) → "Add to Home screen"
    - **iOS:** Tap Share → "Add to Home Screen"
 3. Tap the app icon on your home screen to start
 
 That's it! The app works offline and updates automatically.
 
-## ⚡ Features
+## 🔧 Main Features
 
-- 🔧 **Quick Diagnosis**: Fix common issues in minutes
-- 🔍 **Parts Finder**: Find the right parts fast
-- 📱 **Works Offline**: No internet needed after install
-- 🌙 **Dark Mode**: Easy on your eyes
-- ⚡ **Battery Efficient**: Optimized for long rides
+### Diagnose & Fix
 
----
+![Diagnostics Screen](docs/screenshots/diagnostics.png)
 
-## 🚀 One-Click Deploy & Start (Mobile)
+- Quick troubleshooting guide
+- Step-by-step solutions
+- Common issue database
+- Photo diagnosis helper
 
-The E-Bike Assistant app is a Progressive Web App (PWA) and can be launched instantly on any mobile device—no installation or build steps needed!
+### Track Maintenance
 
-### 📲 How to Use on Mobile
+![Maintenance Screen](docs/screenshots/maintenance.png)
 
-1. **Open:** https://knoksen.github.io/ebike-assistant-app
-2. **Install (Recommended):**
-   - **Android:** Tap the browser menu (⋮) → “Add to Home screen”
-   - **iOS (Safari):** Tap Share → “Add to Home Screen”
-3. **Start:** Tap the home screen icon to launch the app instantly.
+- Service reminders
+- Part replacement logs
+- Maintenance schedule
+- Wear indicators
 
-- Works fully offline after first load.
-- No account required.
-- Updates automatically.
+### Find Parts
 
-> This app is optimized for touch and mobile navigation!
+![Parts Search](docs/screenshots/parts-search.png)
 
----
+- Compatible parts finder
+- Price comparisons
+- Installation guides
+- Where to buy
 
-## Desktop Application
+### Track Your Rides
 
-### Download & Install
+![Ride Tracker](docs/screenshots/ride-tracker.png)
 
-The E-Bike Assistant is available as a native desktop application for Windows 10/11, macOS, and Linux.
+- Record routes & distance
+- Track performance
+- View ride history
+- Export ride data
 
-#### Windows 10/11
-- Download the installer (.exe) or portable version
-- Run the installer for system-wide installation with Start Menu integration
-- Or use the portable version for no-install usage
+### Customize
 
-#### macOS
-- Download the .dmg file
-- Drag to Applications folder
+![Settings](docs/screenshots/settings.png)
 
-#### Linux
-- Download the AppImage file
-- Make executable: `chmod +x E-Bike-Assistant-*.AppImage`
-- Run directly: `./E-Bike-Assistant-*.AppImage`
+- Dark/Light mode
+- Units (km/miles)
+- Language
+- Notifications
 
-### Desktop Features
-- Native application menus and keyboard shortcuts
-- System tray integration
-- File associations
-- Offline functionality
-- Auto-updater support (configurable)
+## ⚠️ Quick Troubleshooting
 
-## Development
+Having issues? Try these quick fixes:
 
-### Prerequisites
+### App Won't Load?
 
-- Node.js 20 or higher
-- npm
+- Check internet connection
+- Clear browser cache
+- Reinstall from home screen
 
-### Getting Started
+### Features Not Working?
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/knoksen/ebike-assistant-app.git
-   cd ebike-assistant-app
-   ```
+- Update to latest version
+- Check permissions
+- Restart the app
 
-2. Install dependencies:
-   ```bash
-   npm ci
-   ```
+### Need More Help?
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- Visit our [support page](https://github.com/knoksen/ebike-assistant-app/issues)
+- Email us at [support@ebike-assistant.app](mailto:support@ebike-assistant.app)
 
-4. Open [http://localhost:5173](http://localhost:5173) in your browser.
+## 💾 Technical Details
 
-### Available Scripts
+- Works offline after first install
+- Automatic updates
+- No account needed
+- Secure: all data stays on your phone
+- Low battery usage
 
-#### Web Development
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint
-- `npm test` - Run tests with Vitest
-- `npm run build:analyze` - Build with bundle analyzer
+## 🖥️ Desktop App
 
-#### Desktop Development
-- `npm run electron:dev` - Start Electron app in development mode
-- `npm run electron:build` - Build desktop app for current platform
-- `npm run electron:win` - Build Windows installer and portable app
-- `npm run electron:mac` - Build macOS application
-- `npm run electron:linux` - Build Linux AppImage
-- `npm run electron:dist` - Build for current platform without publishing
+For power users, we also offer a desktop version with additional features. See [desktop installation guide](DESKTOP.md).
 
-## Deployment
+## 🛠️ Development
 
-This app is configured for deployment to multiple platforms:
+For developer documentation and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-### GitHub Pages (Recommended)
-
-Automatic deployment is configured via GitHub Actions:
-
-1. Push to the `main` branch triggers automatic deployment
-2. The app will be available at: https://knoksen.github.io/ebike-assistant-app
-
-Manual deployment:
-```bash
-npm run deploy
-```
-
-### Azure Static Web Apps
-
-Automatic deployment is configured for Azure:
-
-1. Configure the `AZURE_STATIC_WEB_APPS_API_TOKEN_*` secret in repository settings
-2. Push to `main` branch triggers deployment
-
-### Custom Deployment
-
-For other hosting platforms, build the app and serve the `dist` folder:
-
-```bash
-npm run build
-# Upload the 'dist' folder to your hosting provider
-```
-
-#### Environment Variables
-
-- `VITE_BASE_URL` - Set the base URL for deployment (default: `/ebike-assistant-app/`)
-
-## PWA Features
-
-The app includes Progressive Web App capabilities:
-
-- **Offline Support**: Service worker caches assets for offline use
-- **Install Prompt**: Can be installed on mobile devices and desktops
-- **App Icons**: Proper iconography for different platforms
-- **Manifest**: Web app manifest for native-like experience
-
-## Technology Stack
-
-- **React 19** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-- **Vitest** - Testing framework
-- **PWA Plugin** - Progressive Web App features
-- **Electron** - Desktop application framework
-- **electron-builder** - Desktop app packaging and distribution
-- **ESLint** - Code linting
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Make your changes and add tests
-4. Run tests: `npm test`
-5. Run linting: `npm run lint`
-6. Commit your changes: `git commit -m 'Add your feature'`
-7. Push to the branch: `git push origin feature/your-feature`
-8. Open a Pull Request
-
-## License
+## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
