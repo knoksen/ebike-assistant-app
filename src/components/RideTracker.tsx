@@ -1,59 +1,10 @@
 import { useState, useEffect } from 'react'
-import { connectivityFramework, type EnhancedRideData } from '../services/ConnectivityFramework'
+import { connectivityFramework } from '../services/ConnectivityFramework'
+import type { EnhancedRideData } from '../types/ride'
 import { sensorService, type SensorDevice } from '../services/SensorService'
 import { networkService } from '../services/NetworkService'
 
-type Ride = {
-  id: string
-  date: Date
-  duration: number // minutes
-  distance: number // km or miles
-  averageSpeed: number
-  maxSpeed: number
-  elevation?: number
-  batteryStart: number // percentage
-  batteryEnd: number // percentage
-  batteryUsed: number // percentage
-  route?: string
-  notes?: string
-  weather?: 'sunny' | 'cloudy' | 'rainy' | 'windy' | 'cold' | 'hot'
-  assistLevel?: 'eco' | 'tour' | 'sport' | 'turbo' | 'off'
-  // Enhanced properties
-  sensors?: SensorDevice[]
-  realTimeMetrics?: {
-    currentSpeed: number
-    heartRate?: number
-    power?: number
-    cadence?: number
-    batteryTemp?: number
-  }
-  weatherData?: {
-    temperature: number
-    humidity: number
-    windSpeed: number
-    condition: string
-  }
-  insights?: {
-    efficiency: number
-    co2Saved: number
-    calories: number
-    routeRating: number
-    recommendations: string[]
-  }
-}
-
-type RideStats = {
-  totalRides: number
-  totalDistance: number
-  totalDuration: number
-  averageDistance: number
-  averageSpeed: number
-  longestRide: number
-  fastestRide: number
-  totalBatteryUsed: number
-  totalCo2Saved: number
-  connectedSensors: number
-}
+import type { Ride, RideStats, ConnectionStatus, WeatherType, AssistLevel } from '../types/types'
 
 export function RideTracker() {
   const [rides, setRides] = useState<Ride[]>([])
@@ -257,32 +208,64 @@ export function RideTracker() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-            {stats.totalRides}
+        <div className="group bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-700 p-6 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="flex items-center justify-between mb-2 relative">
+            <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-300">
+              {stats.totalRides}
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
+              <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+              </svg>
+            </div>
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Total Rides</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 relative">Total Rides</div>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-            {stats.totalDistance.toFixed(1)}
+        <div className="group bg-gradient-to-br from-white to-green-50 dark:from-gray-800 dark:to-gray-700 p-6 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="flex items-center justify-between mb-2 relative">
+            <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-400 dark:from-green-400 dark:to-green-300">
+              {stats.totalDistance.toFixed(1)}
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
+              <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+              </svg>
+            </div>
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Total Distance (km)</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 relative">Total Distance (km)</div>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-            {Math.round(stats.totalDuration / 60)}
+        <div className="group bg-gradient-to-br from-white to-purple-50 dark:from-gray-800 dark:to-gray-700 p-6 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="flex items-center justify-between mb-2 relative">
+            <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-purple-400 dark:from-purple-400 dark:to-purple-300">
+              {Math.round(stats.totalDuration / 60)}
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/50">
+              <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+              </svg>
+            </div>
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Total Hours</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 relative">Total Hours</div>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-          <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-            {stats.averageSpeed.toFixed(1)}
+        <div className="group bg-gradient-to-br from-white to-orange-50 dark:from-gray-800 dark:to-gray-700 p-6 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-orange-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="flex items-center justify-between mb-2 relative">
+            <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-orange-400 dark:from-orange-400 dark:to-orange-300">
+              {stats.averageSpeed.toFixed(1)}
+            </div>
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/50">
+              <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2 11.5A1.5 1.5 0 013.5 10H4V3a1 1 0 011-1h10a1 1 0 011 1v7h.5a1.5 1.5 0 010 3H15v4a1 1 0 01-1 1H6a1 1 0 01-1-1v-4h-.5A1.5 1.5 0 012 11.5zm2-6a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm0 2a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm0 2a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5z" clipRule="evenodd" />
+              </svg>
+            </div>
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Avg Speed (km/h)</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 relative">Avg Speed (km/h)</div>
         </div>
       </div>
 
@@ -419,28 +402,52 @@ export function RideTracker() {
               Add Ride
             </button>
             
-            <select
-              value={filterBy}
-              onChange={(e) => setFilterBy(e.target.value as 'all' | 'week' | 'month' | 'year')}
-              className="p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              aria-label="Filter rides by time period"
-            >
-              <option value="all">All Time</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
-            </select>
-            
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'distance' | 'duration')}
-              className="p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              aria-label="Sort rides by"
-            >
-              <option value="date">Sort by Date</option>
-              <option value="distance">Sort by Distance</option>
-              <option value="duration">Sort by Duration</option>
-            </select>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <select
+                  value={filterBy}
+                  onChange={(e) => setFilterBy(e.target.value as 'all' | 'week' | 'month' | 'year')}
+                  className="appearance-none bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 
+                           text-blue-800 dark:text-blue-200 px-4 py-2 pr-10 rounded-lg border border-blue-200 dark:border-blue-700
+                           focus:outline-none focus:border-blue-500 dark:focus:border-blue-400
+                           hover:bg-gradient-to-r hover:from-blue-100 hover:to-blue-200 
+                           dark:hover:from-blue-800/30 dark:hover:to-blue-700/30 transition-all"
+                  aria-label="Filter rides by time period"
+                >
+                  <option value="all">📅 All Time</option>
+                  <option value="week">📅 This Week</option>
+                  <option value="month">📅 This Month</option>
+                  <option value="year">📅 This Year</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+              
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'date' | 'distance' | 'duration')}
+                  className="appearance-none bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 
+                           text-purple-800 dark:text-purple-200 px-4 py-2 pr-10 rounded-lg border border-purple-200 dark:border-purple-700
+                           focus:outline-none focus:border-purple-500 dark:focus:border-purple-400
+                           hover:bg-gradient-to-r hover:from-purple-100 hover:to-purple-200 
+                           dark:hover:from-purple-800/30 dark:hover:to-purple-700/30 transition-all"
+                  aria-label="Sort rides by"
+                >
+                  <option value="date">🔄 Sort by Date</option>
+                  <option value="distance">📏 Sort by Distance</option>
+                  <option value="duration">⏱️ Sort by Duration</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -547,7 +554,7 @@ export function RideTracker() {
                             {sensor.name}
                           </div>
                           <div className="text-xs text-green-600 dark:text-green-400">
-                            {sensor.type} • {sensor.connection}
+                            {sensor.type} • {sensor.connectionStatus}
                           </div>
                         </div>
                       </div>
