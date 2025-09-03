@@ -317,21 +317,22 @@ export function MaintenanceTracker() {
       </div>
 
       {/* Add Maintenance Record */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+      <div className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-12 border border-gray-200/50 dark:border-gray-700/50">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+          <h2 className="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent">
             Maintenance Records
           </h2>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className="btn-primary px-6 py-2 text-base shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
           >
+            <span className="mr-2">{showAddForm ? '✖️' : '➕'}</span>
             {showAddForm ? 'Cancel' : 'Add Record'}
           </button>
         </div>
 
         {showAddForm && (
-          <div className="border-t pt-4 mb-4">
+          <div className="border-t pt-4 mb-4 fade-in">
             <h3 className="font-medium text-gray-800 dark:text-white mb-3">Add New Maintenance Record</h3>
             <div className="grid gap-4">
               {MAINTENANCE_TYPES.map(type => (
@@ -345,9 +346,9 @@ export function MaintenanceTracker() {
                       addRecord(type.id, description, cost)
                     }
                   }}
-                  className="flex items-center space-x-3 p-3 text-left border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="group flex items-center space-x-3 p-3 text-left border border-gray-200 dark:border-gray-600 rounded-lg bg-white/70 dark:bg-gray-800/70 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200 shadow-sm hover:shadow-lg"
                 >
-                  <span className="text-xl">{type.icon}</span>
+                  <span className="text-2xl group-hover:scale-110 transition-transform">{type.icon}</span>
                   <div>
                     <div className="font-medium text-gray-800 dark:text-white">{type.name}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-300">{type.description}</div>
@@ -359,37 +360,54 @@ export function MaintenanceTracker() {
         )}
 
         {/* Records List */}
-        <div className="space-y-3">
+        <div className="space-y-4 mt-6">
           {records.slice(0, 10).map(record => {
             const type = MAINTENANCE_TYPES.find(t => t.id === record.type)
             return (
-              <div key={record.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <span className="text-xl">{type?.icon || '🔧'}</span>
-                  <div>
-                    <h3 className="font-medium text-gray-800 dark:text-white">
-                      {type?.name || record.type}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {record.description}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {record.date.toLocaleDateString()}
-                      {record.mileage && ` • ${record.mileage} miles`}
-                      {record.cost && ` • $${record.cost}`}
-                    </p>
+              <div key={record.id} className="group relative">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-green-500 rounded-xl opacity-0 group-hover:opacity-20 blur transition duration-300"></div>
+                <div className="relative flex items-center justify-between p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02]">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-2xl drop-shadow-sm">{type?.icon || '🔧'}</span>
+                    <div>
+                      <h3 className="font-medium text-lg text-gray-800 dark:text-white">
+                        {type?.name || record.type}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        {record.description}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span>{record.date.toLocaleDateString()}</span>
+                        {record.mileage && <span>• {record.mileage} miles</span>}
+                        {record.cost && <span>• ${record.cost}</span>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-blue-100 to-green-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                      <svg className="w-4 h-4 mr-1 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                      Saved
+                    </span>
                   </div>
                 </div>
               </div>
             )
           })}
-          
           {records.length === 0 && (
             <p className="text-center text-gray-500 dark:text-gray-400 py-8">
               No maintenance records yet. Add your first record above!
             </p>
           )}
         </div>
+        {/* Floating Action Button */}
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="fixed bottom-10 right-10 z-50 btn-primary rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition-transform duration-300"
+          title="Add Maintenance Record"
+          style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)' }}
+        >
+          ➕
+        </button>
       </div>
     </div>
   )

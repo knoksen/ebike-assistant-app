@@ -99,6 +99,23 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  80%, 100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1); }
+  100% { transform: scale(0.8); }
+}
+
 /* Glass morphism effect */
 .glass {
   @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20;
@@ -106,4 +123,45 @@
 
 .dark .glass {
   @apply bg-gray-900 bg-opacity-10 border-gray-800;
+}
+
+/* Floating animation */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse animation */
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+/* Floating Action Button */
+.fab {
+  @apply fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center rounded-full 
+         bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg 
+         hover:from-blue-700 hover:to-blue-800 transform hover:scale-110
+         transition-all duration-300 z-50;
+}
+
+.fab::before {
+  content: '';
+  @apply absolute inset-0 rounded-full;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+/* Loading indicator */
+.loading-dots::after {
+  content: '.';
+  animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60% { content: '...'; }
+  80%, 100% { content: ''; }
 }
