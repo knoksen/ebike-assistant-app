@@ -1,4 +1,4 @@
-import { screen, fireEvent, within } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import App from '../App'
 import { renderWithProviders } from '../test/test-utils'
@@ -16,21 +16,18 @@ vi.mock('../services/DatabaseService', () => ({
 
 describe('App', () => {
   it('renders primary navigation elements', () => {
-    renderWithProviders(<App />, { skipRouter: true })
+    renderWithProviders(<App />)
     
-    // Using data-testid to find desktop nav
-    const desktopNav = screen.getByTestId('desktop-nav')
-    
-    // Check for main navigation links within desktop nav
-    expect(within(desktopNav).getByRole('link', { name: /home/i })).toBeTruthy()
-    expect(within(desktopNav).getByRole('link', { name: /diagnostics/i })).toBeTruthy()
-    expect(within(desktopNav).getByRole('link', { name: /maintenance/i })).toBeTruthy()
-    expect(within(desktopNav).getByRole('link', { name: /parts/i })).toBeTruthy()
+    // Check for main navigation links
+    expect(screen.getByRole('link', { name: /home/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /diagnostics/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /maintenance/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /parts/i })).toBeTruthy()
   })
 
   it('renders header with theme toggle', () => {
-    renderWithProviders(<App />, { skipRouter: true })
-    const themeToggle = screen.getByRole('button', { name: /toggle dark mode/i })
+    renderWithProviders(<App />)
+    const themeToggle = screen.getByRole('button', { name: /toggle theme/i })
     expect(themeToggle).toBeTruthy()
     
     // Test theme toggle functionality
@@ -42,9 +39,8 @@ describe('App', () => {
   })
 
   it('renders settings page when clicking settings', async () => {
-    renderWithProviders(<App />, { skipRouter: true })
-    const desktopNav = screen.getByTestId('desktop-nav')
-    const settingsLink = within(desktopNav).getByRole('link', { name: /settings/i })
+    renderWithProviders(<App />)
+    const settingsLink = screen.getByRole('link', { name: /settings/i })
     fireEvent.click(settingsLink)
     
     // Wait for settings page to render

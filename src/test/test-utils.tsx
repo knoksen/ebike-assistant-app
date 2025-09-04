@@ -6,30 +6,21 @@ import { render } from '@testing-library/react'
 interface TestWrapperProps {
   children: ReactNode
   initialEntries?: string[]
-  skipRouter?: boolean
 }
 
-export const TestWrapper = ({ children, initialEntries = ['/'], skipRouter = false }: TestWrapperProps) => {
-  let element = (
-    <ThemeProvider>
-      {children}
-    </ThemeProvider>
+export const TestWrapper = ({ children, initialEntries = ['/'] }: TestWrapperProps) => {
+  return (
+    <MemoryRouter initialEntries={initialEntries}>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </MemoryRouter>
   )
-
-  if (!skipRouter) {
-    element = (
-      <MemoryRouter initialEntries={initialEntries}>
-        {element}
-      </MemoryRouter>
-    )
-  }
-
-  return element
 }
 
-export const renderWithProviders = (ui: React.ReactElement, { route = '/', skipRouter = false } = {}) => {
+export const renderWithProviders = (ui: React.ReactElement, { route = '/' } = {}) => {
   return render(
-    <TestWrapper initialEntries={[route]} skipRouter={skipRouter}>
+    <TestWrapper initialEntries={[route]}>
       {ui}
     </TestWrapper>
   )
