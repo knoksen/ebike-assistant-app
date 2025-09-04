@@ -42,7 +42,7 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-2">
+          <nav className="hidden md:flex items-center space-x-2" data-testid="desktop-nav">
             {navItems.map(({ path, label, icon }) => (
               <Link
                 key={path}
