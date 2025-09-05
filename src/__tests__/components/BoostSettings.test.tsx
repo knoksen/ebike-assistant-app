@@ -2,19 +2,25 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi } from 'vitest'
 import BoostSettings from '../../components/BoostSettings'
 
-const mockLocalStorage = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  clear: vi.fn()
+const mockStorage = {
+  store: {} as Record<string, string>,
+  getItem: vi.fn((key: string) => mockStorage.store[key] || null),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage.store[key] = value.toString()
+  }),
+  clear: vi.fn(() => {
+    mockStorage.store = {}
+  })
 }
 
-// Replace the localStorage global with our mock
-global.localStorage = mockLocalStorage as any
+// Configure mock before tests
+vi.stubGlobal('localStorage', mockStorage)
 
 describe('BoostSettings', () => {
   beforeEach(() => {
-    mockLocalStorage.getItem.mockClear()
-    mockLocalStorage.setItem.mockClear()
+    mockStorage.getItem.mockClear()
+    mockStorage.setItem.mockClear()
+    mockStorage.store = {}
     document.documentElement.classList.remove('dark')
   })
 
@@ -55,7 +61,7 @@ describe('BoostSettings', () => {
       }
     }
 
-    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedSettings))
+    mockStorage.store['boostSettings'] = JSON.stringify(savedSettings)
     render(<BoostSettings />)
 
     // The boost profile should be active
@@ -89,18 +95,18 @@ describe('BoostSettings', () => {
 
     // Wait for save confirmation
     await waitFor(() => {
-      expect(mockLocalStorage.setItem).toHaveBeenCalled()
+      expect(mockStorage.setItem).toHaveBeenCalled()
       expect(screen.getByText('Saved!')).toBeInTheDocument()
     })
 
     // Settings should be saved to localStorage
-    const savedSettings = JSON.parse(mockLocalStorage.setItem.mock.calls[0][1])
+    const savedSettings = JSON.parse(mockStorage.store['boostSettings'])
     expect(savedSettings.profiles.boost.maxSpeed).toBe(42)
   })
 
   test('shows error feedback on save failure', async () => {
     // Mock localStorage.setItem to throw an error
-    mockLocalStorage.setItem.mockImplementation(() => {
+    mockStorage.setItem.mockImplementation(() => {
       throw new Error('Storage full')
     })
 

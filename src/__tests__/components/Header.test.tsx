@@ -8,6 +8,7 @@ const navItems = [
   { path: '/', label: 'Home', icon: '🏠' },
   { path: '/diagnostics', label: 'Diagnostics', icon: '🔧' },
   { path: '/tuneup', label: 'Tuneup', icon: '🔨' },
+  { path: '/boost', label: 'Power Boost', icon: '⚡' },
   { path: '/parts', label: 'Parts', icon: '⚙️' },
   { path: '/maintenance', label: 'Maintenance', icon: '🛠️' },
   { path: '/guides', label: 'Guides', icon: '📖' },
@@ -191,6 +192,67 @@ test('applies correct styles to diagnostics link', () => {
       expect(link).not.toHaveClass(...activeClasses)
     })
 })
+
+test('applies correct styles to boost link', () => {
+  const { getByLabelText } = renderWithProviders(<Header />, { route: '/boost' })
+  const desktopNav = getByLabelText('Desktop navigation')
+  
+  // Boost link should be active
+  const boostLink = within(desktopNav).getByRole('link', { name: /⚡.*power boost/i })
+  expect(boostLink).toBeInTheDocument()
+  expect(boostLink).toHaveAttribute('href', '/boost')
+  expect(boostLink).toHaveClass(...activeClasses)
+
+  // Other links should be inactive
+  navItems
+    .filter(item => item.path !== '/boost')
+    .forEach(({ label, icon }) => {
+      const link = within(desktopNav).getByRole('link', { name: new RegExp(`${icon}.*${label}`, 'i') })
+      expect(link).toHaveClass(...inactiveClasses.slice(0, 2)) // Test base colors only
+      expect(link).not.toHaveClass(...activeClasses)
+    })
+})
+
+test('navigation items are in correct order', () => {
+  renderWithProviders(<Header />)
+  const desktopNav = screen.getByLabelText('Desktop navigation')
+  
+  const links = within(desktopNav).getAllByRole('link')
+  const actualOrder = links.map(link => {
+    const text = link.textContent
+    const item = navItems.find(item => text?.includes(item.label))
+    return item?.path
+  })
+  
+  const expectedOrder = navItems.map(item => item.path)
+  expect(actualOrder).toEqual(expectedOrder)
+})
+
+test('mobile menu has correct accessibility and styling', () => {
+  renderWithProviders(<Header />)
+  
+  const menuButton = screen.getByRole('button', { name: /toggle menu/i })
+  expect(menuButton).toBeInTheDocument()
+  expect(menuButton).toHaveClass(
+    'md:hidden',
+    'p-2',
+    'rounded-lg',
+    'bg-gradient-to-br',
+    'from-blue-500/10',
+    'to-green-500/10'
+  )
+  
+  const mobileNav = screen.getByLabelText('Mobile navigation')
+  expect(mobileNav).toHaveClass(
+    'hidden',
+    'md:hidden',
+    'py-2',
+    'overflow-x-auto',
+    'whitespace-nowrap',
+    'scrollbar-thin'
+  )
+})
+
 test('toggles mobile menu visibility', () => {
     renderWithProviders(<Header />)
     
