@@ -36,11 +36,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, initialS
   });
 
   useEffect(() => {
-    localStorage.setItem('ebike-theme', theme);
+    try {
+      localStorage.setItem('ebike-theme', theme);
+    } catch (e) {
+      // swallow to avoid crashing tests when storage is mocked to throw
+    }
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem('ebike-dark-mode', JSON.stringify(isDark));
+    try {
+      localStorage.setItem('ebike-dark-mode', JSON.stringify(isDark));
+    } catch (e) {
+      // swallow
+    }
   }, [isDark]);
 
   useEffect(() => {

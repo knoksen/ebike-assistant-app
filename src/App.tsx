@@ -11,6 +11,7 @@ import { RideTrackerPage } from './pages/RideTracker'
 import Tuneup from './pages/Tuneup'
 import Boost from './pages/Boost'
 import Header from './components/Header'
+import MobileDock from './components/MobileDock'
 import { ThemeProvider } from './context/ThemeContext'
 import './App.css'
 
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/boost" element={<Boost />} />
             </Routes>
           </main>
+          <MobileDock />
         </div>
       </BrowserRouter>
     </ThemeProvider>

@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../context/useTheme'
 import ProgressBar from './ProgressBar'
+import DeviceConnectButton from './DeviceConnectButton'
 
 const Header: React.FC = () => {
   const { isDark, toggleDarkMode } = useTheme()
@@ -67,6 +68,11 @@ const Header: React.FC = () => {
               </Link>
             ))}
           </nav>
+
+          {/* Connect Button (desktop) */}
+          <div className="hidden md:flex items-center gap-4 pr-2">
+            <DeviceConnectButton />
+          </div>
 
           {/* Theme Toggle */}
           <button
