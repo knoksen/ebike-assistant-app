@@ -18,10 +18,25 @@ export const TestWrapper = ({ children, initialEntries = ['/'] }: TestWrapperPro
   )
 }
 
-export const renderWithProviders = (ui: React.ReactElement, { route = '/' } = {}) => {
-  return render(
+interface RenderOptions {
+  route?: string;
+}
+
+export const renderWithProviders = (ui: React.ReactElement, { route = '/' }: RenderOptions = {}) => {
+  const utils = render(
     <TestWrapper initialEntries={[route]}>
       {ui}
     </TestWrapper>
   )
+
+  return {
+    ...utils,
+    rerender: (rerenderUi: React.ReactElement) => utils.rerender(
+      <TestWrapper initialEntries={[route]}>
+        {rerenderUi}
+      </TestWrapper>
+    )
+  }
 }
+
+export * from '@testing-library/react'
