@@ -3,8 +3,16 @@ import { vi } from 'vitest'
 import BoostSettings2 from '../../components/BoostSettings2'
 import { ThemeProvider } from '../../context/ThemeContext'
 
-const mockStorage = {
-  store: {} as Record<string,string>,
+type Fn = ReturnType<typeof vi.fn>
+interface MockStorageShape {
+  store: Record<string,string>
+  getItem: Fn
+  setItem: Fn
+  clear: Fn
+}
+// Define first, then initialize to avoid implicit any self-reference issue
+const mockStorage: MockStorageShape = {
+  store: {},
   getItem: vi.fn((key: string) => mockStorage.store[key] || null),
   setItem: vi.fn((key: string, value: string) => { mockStorage.store[key] = value }),
   clear: vi.fn(() => { mockStorage.store = {} })
