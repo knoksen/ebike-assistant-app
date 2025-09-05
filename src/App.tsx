@@ -31,7 +31,7 @@ export default function App() {
   }
   return (
     <ThemeProvider>
-      <BrowserRouter basename={basename}>
+  <BrowserRouter basename={basename} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-grow">

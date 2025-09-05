@@ -1,18 +1,9 @@
 import { screen, fireEvent, within } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import App from '../App'
 import { renderWithTheme } from '../test/test-utils'
 
-// Mock database service
-vi.mock('../services/DatabaseService', () => ({
-  default: {
-    instance: {
-      initialize: vi.fn().mockResolvedValue(null),
-      ensureDb: vi.fn().mockResolvedValue({ objectStoreNames: [] }),
-      create: vi.fn().mockResolvedValue(null),
-    }
-  }
-}))
+// Service mocks (Database, Network, Connectivity) are defined in shared setup.
 
 describe('App', () => {
   it('renders primary navigation elements', () => {
