@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi } from 'vitest'
-import BoostSettings from '../../components/BoostSettings'
+import { BoostSettings } from '../../components/BoostSettings'
 
 const mockStorage = {
   store: {} as Record<string, string>,
