@@ -75,11 +75,13 @@ test('renders desktop navigation', () => {
 test('renders mobile navigation', () => {
   renderWithProviders(<Header />, { route: '/diagnostics' })
   
-  const mobileNav = screen.getByRole('navigation', { name: /mobile/i })
+  const allNavs = screen.getAllByRole('navigation')
+  const mobileNav = allNavs.find(nav => nav.classList.contains('md:hidden'))
+  expect(mobileNav).toBeDefined()
   expect(mobileNav).toHaveClass('md:hidden', 'py-2', 'overflow-x-auto', 'whitespace-nowrap', 'scrollbar-thin')
   
   navItems.forEach(({ label, icon, path }) => {
-    const link = within(mobileNav).getByRole('link', { name: new RegExp(`${icon}.*${label}`, 'i') })
+    const link = within(mobileNav!).getByRole('link', { name: new RegExp(`${icon}.*${label}`, 'i') })
     expect(link).toBeInTheDocument()
     expect(link).toHaveAttribute('href', path)
     expect(link).toHaveClass(
@@ -149,21 +151,50 @@ test('persists theme preference', () => {
 })
 
 test('updates active styles on navigation', () => {
-  // Home page
-  renderWithProviders(<Header />, { route: '/' })
-  let homeLink = screen.getAllByRole('link', { name: /🏠.*home/i })[0]
+  // Home page is active
+  const { container, rerender } = renderWithProviders(<Header />, { route: '/' })
+  
+  // Get desktop navigation
+  const [desktopNav] = screen.getAllByRole('navigation', { name: /desktop/i })
+  expect(desktopNav).toBeInTheDocument()
+
+  // Check home link is active
+  const homeLink = within(desktopNav).getByRole('link', { name: /🏠.*home/i })
   expect(homeLink).toHaveClass(
     'bg-blue-100', 'dark:bg-blue-900/50',
     'text-blue-600', 'dark:text-blue-400',
     'transform', 'scale-105', 'shadow-lg'
   )
-  
-  // Diagnostics page
-  renderWithProviders(<Header />, { route: '/diagnostics' })
-  let diagnosticsLink = screen.getAllByRole('link', { name: /🔧.*diagnostics/i })[0]
+
+  // Check other links are inactive
+  navItems
+    .filter(item => item.path !== '/')
+    .forEach(({ label, icon }) => {
+      const link = within(desktopNav).getByRole('link', { name: new RegExp(`${icon}.*${label}`, 'i') })
+      expect(link).toHaveClass(
+        'text-gray-600', 'dark:text-gray-300',
+        'hover:bg-gray-100', 'dark:hover:bg-gray-800/50',
+        'hover:text-gray-800', 'dark:hover:text-white',
+        'hover:shadow-md', 'backdrop-blur-sm'
+      )
+    })
+
+  // Rerender with diagnostics page active
+  rerender(<Header />)
+  window.history.pushState({}, '', '/diagnostics')
+
+  // Get desktop navigation again
+  const [newDesktopNav] = screen.getAllByRole('navigation', { name: /desktop/i })
+  expect(newDesktopNav).toBeInTheDocument()
+
+  // Check diagnostics link is now active
+  const diagnosticsLink = within(newDesktopNav).getByRole('link', { name: /🔧.*diagnostics/i })
   expect(diagnosticsLink).toHaveClass(
     'bg-blue-100', 'dark:bg-blue-900/50',
     'text-blue-600', 'dark:text-blue-400',
     'transform', 'scale-105', 'shadow-lg'
   )
+
+  // Cleanup
+  window.history.pushState({}, '', '/')
 })

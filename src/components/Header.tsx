@@ -1,8 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-imp        {/* Mobile Navigation */}
-        <nav aria-label="Mobile navigation" className="md:hidden py-2 overflow-x-auto whitespace-nowrap scrollbar-thin">
-          <div className="flex space-x-2 px-2">{ { useTheme } from '../context/useTheme'
+import { useTheme } from '../context/useTheme'
 import ProgressBar from './ProgressBar'
 
 const Header: React.FC = () => {
