@@ -1,4 +1,4 @@
-/// <reference path="./vite-env.d.ts" />
+// Removed triple-slash reference; Vite types are included via tsconfig "types".
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import DiagnosticsPage from './pages/Diagnostics'

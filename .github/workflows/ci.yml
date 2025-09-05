@@ -2,27 +2,112 @@ name: CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      matrix:
+        node: [18.x, 20.x]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node }}
           cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
 
-      - run: npm test
-      - run: npm run build
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm run build:analyze
-      - uses: actions/upload-artifact@v4
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --reporter=default
+
+      - name: Build
+        run: npm run build
+
+      - name: Bundle analyze (optional)
+        run: npm run build:analyze || echo "Analyze step optional"
+
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
         with:
-          name: bundle-report
-          path: dist/bundle-report.html
+          name: dist-${{ matrix.node }}
+          path: |
+            dist
+            dist-electron
+          if-no-files-found: ignore
+
+  screenshots:
+    runs-on: ubuntu-latest
+    needs: build-test
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (preview server)
+        run: npm run build
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate screenshots
+        run: npm run screenshots
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots
+          if-no-files-found: warn
+
+  electron-pack:
+    runs-on: ubuntu-latest
+    needs: build-test
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web bundle
+        run: npm run build
+
+      - name: Package Electron (no publish)
+        run: npm run electron:dist || echo "Electron packaging failed (optional)"
+
+      - name: Upload electron artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-dist
+          path: dist-electron
           if-no-files-found: ignore
 

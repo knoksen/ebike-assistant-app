@@ -403,29 +403,34 @@ class SensorService {
     const subCommand = data[4]
 
     switch (command) {
-      case 0x22: // Read responses
+      case 0x22: { // Read responses
         switch (subCommand) {
-          case 0x01: // Speed
+          case 0x01: { // Speed
             const speed = data[5]
             this.addSensorData(sensorId, 'speed', speed, 'km/h')
             break
-          case 0x02: // Battery
+          }
+          case 0x02: { // Battery
             const battery = data[5]
             this.addSensorData(sensorId, 'battery', battery, '%')
             break
-          case 0x03: // Odometer
+          }
+          case 0x03: { // Odometer
             const odometer = (data[5] << 16) | (data[6] << 8) | data[7]
             this.addSensorData(sensorId, 'odometer', odometer / 1000, 'km')
             break
+          }
         }
         break
-      case 0x20: // Write responses
+      }
+      case 0x20: { // Write responses
         this.emit('scooter:command:response', {
           sensorId,
           subCommand,
           success: data[5] === 0
         })
         break
+      }
     }
   }
 
@@ -606,7 +611,7 @@ class SensorService {
       }
 
       // Read data from serial port
-      while (true) {
+  for (;;) { // intentional continuous read loop until reader reports done
         const { value, done } = await reader.read()
         if (done) break
         
@@ -629,21 +634,25 @@ class SensorService {
         const numValue = parseFloat(value)
         
         switch (key.toLowerCase()) {
-          case 'speed':
+          case 'speed': {
             this.addSensorData('serial-bike-computer', 'speed', numValue, 'km/h')
             break
-          case 'cadence':
+          }
+          case 'cadence': {
             this.addSensorData('serial-bike-computer', 'cadence', numValue, 'rpm')
             break
-          case 'power':
+          }
+          case 'power': {
             this.addSensorData('serial-bike-computer', 'power', numValue, 'watts')
             break
-          case 'battery':
+          }
+          case 'battery': {
             const serialDevice = this.sensors.get('serial-bike-computer')
             if (serialDevice) {
               serialDevice.batteryLevel = numValue
             }
             break
+          }
         }
       })
     } catch (error) {

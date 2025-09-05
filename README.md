@@ -1,5 +1,7 @@
 # E-Bike Assistant 🚲
 
+[![CI](https://github.com/knoksen/ebike-assistant-app/actions/workflows/ci.yml/badge.svg)](https://github.com/knoksen/ebike-assistant-app/actions/workflows/ci.yml)
+
 Your pocket e-bike companion! Track rides, diagnose issues, customize boost profiles, and maintain your e-bike - all from your phone or desktop.
 
 ![Boost Profiles](docs/screenshots/boost.png)

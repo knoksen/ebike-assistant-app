@@ -1,4 +1,4 @@
-/// <reference path="../vite-env.d.ts" />
+// Vite env types provided globally via tsconfig.
 export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800">

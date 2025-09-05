@@ -110,7 +110,7 @@ const DEFAULT_TUNEUP_SECTIONS: TuneupSection[] = [
   }
 ];
 
-export function TuneupSection() {
+export function TuneupSectionComponent() {
   const [sections, setSections] = useState<TuneupSection[]>([]);
   const [totalTime, setTotalTime] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -308,3 +308,6 @@ export function TuneupSection() {
     </div>
   );
 }
+
+// Backward compatible export name
+export { TuneupSectionComponent as TuneupSection }

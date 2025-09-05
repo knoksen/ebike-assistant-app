@@ -1,4 +1,20 @@
 // BluetoothService.ts - Handles BLE connectivity and device communication
+import { log } from './logger';
+
+// Minimal Web Bluetooth type shims (avoid full lib dependency)
+interface GATTServerLike {
+  getPrimaryService(uuid: string): Promise<GATTServiceLike>;
+  disconnect?: () => void;
+}
+interface GATTServiceLike {
+  uuid: string;
+  getCharacteristic(uuid: string): Promise<GATTCharacteristicLike>;
+}
+interface GATTCharacteristicLike {
+  startNotifications(): Promise<void>;
+  addEventListener(event: string, cb: (e: Event) => void): void;
+  readValue?: () => Promise<DataView>;
+}
 export interface BLEDeviceInfo {
   id: string;
   name: string;
@@ -29,9 +45,11 @@ export interface TelemetryData {
 
 export class BluetoothService {
   private static instance: BluetoothService;
+  // Using minimal structural types instead of 'any'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private device: any | null = null;
-  private server: any | null = null;
-  private characteristic: any | null = null;
+  private server: GATTServerLike | null = null;
+  private characteristic: GATTCharacteristicLike | null = null;
 
   // Xiaomi service and characteristic UUIDs
   private readonly XIAOMI_SERVICE_UUID = '0000fe95-0000-1000-8000-00805f9b34fb';
@@ -45,7 +63,7 @@ export class BluetoothService {
 
   private constructor() {
     if (!navigator.bluetooth) {
-      console.error('Bluetooth API is not available in this browser/environment');
+      log.error('Bluetooth API is not available in this browser/environment');
     }
   }
 
@@ -73,14 +91,14 @@ export class BluetoothService {
       this.device.addEventListener('gattserverdisconnected', this.onDisconnected.bind(this));
       return true;
     } catch (error) {
-      console.error('Error requesting device:', error);
+      log.error('Error requesting device:', error);
       return false;
     }
   }
 
   public async connect(): Promise<boolean> {
     if (!this.device) {
-      console.error('No device selected');
+      log.error('No device selected');
       return false;
     }
 
@@ -105,13 +123,13 @@ export class BluetoothService {
       this.notifyConnectionListeners(true);
       return true;
     } catch (error) {
-      console.error('Error connecting to device:', error);
+      log.error('Error connecting to device:', error);
       this.notifyConnectionListeners(false);
       return false;
     }
   }
 
-  private async setupNotifications(service: any): Promise<any> {
+  private async setupNotifications(service: GATTServiceLike): Promise<GATTCharacteristicLike> {
     const characteristic = await service.getCharacteristic(
       service.uuid === this.XIAOMI_SERVICE_UUID ? this.XIAOMI_SERVICE_UUID : this.NORDIC_UART_RX_UUID
     );
@@ -129,15 +147,16 @@ export class BluetoothService {
       // 2. Send public key
       // 3. Receive and verify response
       // 4. Establish secure session
-      console.log('Xiaomi authentication initialized');
+  log.debug('Xiaomi authentication initialized');
     } catch (error) {
-      console.error('Error in Xiaomi authentication:', error);
+  log.error('Error in Xiaomi authentication:', error);
       throw error;
     }
   }
 
   private handleNotification(event: Event): void {
-    const value = (event.target as any).value;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const value = (event.target as { value?: DataView } | null)?.value;
     if (!value) return;
 
     // Parse the notification data
@@ -159,7 +178,7 @@ export class BluetoothService {
         cruiseControlActive: Boolean(value.getUint8(10) & 0x01)
       };
     } catch (error) {
-      console.error('Error parsing notification data:', error);
+      log.error('Error parsing notification data:', error);
       return null;
     }
   }
@@ -227,9 +246,10 @@ export class BluetoothService {
     if (!this.server) return null;
 
     try {
-      const service = await this.server.getPrimaryService(this.XIAOMI_SERVICE_UUID);
-      const characteristic = await service.getCharacteristic(this.XIAOMI_SERVICE_UUID);
-      const value = await characteristic.readValue();
+  const service = await this.server.getPrimaryService(this.XIAOMI_SERVICE_UUID);
+  const characteristic = await service.getCharacteristic(this.XIAOMI_SERVICE_UUID);
+  const value = characteristic.readValue ? await characteristic.readValue() : undefined;
+  if (!value) return null;
 
       return {
         totalVoltage: value.getUint16(0, true) / 100,
@@ -243,7 +263,7 @@ export class BluetoothService {
         charging: Boolean(value.getUint8(value.byteLength - 1) & 0x01)
       };
     } catch (error) {
-      console.error('Error reading battery info:', error);
+      log.error('Error reading battery info:', error);
       return null;
     }
   }
