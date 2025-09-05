@@ -14,7 +14,7 @@ export interface UseBluetoothState {
 
 export function useBluetooth(): UseBluetoothState {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [isAvailable, setIsAvailable] = useState<boolean>(() => !!(navigator as any).bluetooth)
+  const [isAvailable] = useState<boolean>(() => !!(navigator as any).bluetooth)
   const [isConnected, setIsConnected] = useState(false)
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)

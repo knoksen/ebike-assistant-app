@@ -3,24 +3,11 @@ import { vi } from 'vitest'
 import BoostSettings2 from '../../components/BoostSettings2'
 import { ThemeProvider } from '../../context/ThemeContext'
 
-type Mock = typeof vi.fn extends (implementation?: any) => infer R ? R : never;
-
-interface MockStorage {
-  store: Record<string, string>;
-  getItem: Mock;
-  setItem: Mock;
-  clear: Mock;
-}
-
-const mockStorage: MockStorage = {
-  store: {} as Record<string, string>,
+const mockStorage = {
+  store: {} as Record<string,string>,
   getItem: vi.fn((key: string) => mockStorage.store[key] || null),
-  setItem: vi.fn((key: string, value: string) => {
-    mockStorage.store[key] = value.toString()
-  }),
-  clear: vi.fn(() => {
-    mockStorage.store = {}
-  })
+  setItem: vi.fn((key: string, value: string) => { mockStorage.store[key] = value }),
+  clear: vi.fn(() => { mockStorage.store = {} })
 }
 
 // Configure mock before tests

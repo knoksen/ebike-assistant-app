@@ -67,12 +67,22 @@ export function MaintenanceTracker() {
   useEffect(() => {
     const saved = localStorage.getItem('maintenance-records')
     if (saved) {
-      const parsed = JSON.parse(saved)
-      setRecords(parsed.map((r: any) => ({
-        ...r,
-        date: new Date(r.date),
-        nextDue: r.nextDue ? new Date(r.nextDue) : undefined
-      })))
+      const parsed: unknown = JSON.parse(saved)
+      if (Array.isArray(parsed)) {
+        const mapped: MaintenanceRecord[] = parsed.map((r) => {
+          const rec = r as Partial<MaintenanceRecord> & { date?: string; nextDue?: string }
+          return {
+            id: rec.id || Date.now().toString(),
+            date: rec.date ? new Date(rec.date) : new Date(),
+            type: rec.type || 'unknown',
+            description: rec.description || '',
+            mileage: rec.mileage,
+            cost: rec.cost,
+            nextDue: rec.nextDue ? new Date(rec.nextDue) : undefined
+          }
+        })
+        setRecords(mapped)
+      }
     }
 
     const savedMileage = localStorage.getItem('current-mileage')
@@ -402,9 +412,8 @@ export function MaintenanceTracker() {
         {/* Floating Action Button */}
         <button
           onClick={() => setShowAddForm(true)}
-          className="fixed bottom-10 right-10 z-50 btn-primary rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition-transform duration-300"
+          className="fixed bottom-10 right-10 z-50 btn-primary rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-fab hover:scale-110 transition-transform duration-300"
           title="Add Maintenance Record"
-          style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)' }}
         >
           ➕
         </button>

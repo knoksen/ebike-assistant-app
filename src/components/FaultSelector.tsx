@@ -15,14 +15,7 @@ const getCategoryIcon = (category: FaultInfo['category']) => {
   }
 }
 
-const getSeverityColor = (severity: FaultInfo['severity']) => {
-  switch (severity) {
-    case 'high': return 'border-red-200 dark:border-red-600 hover:border-red-500 dark:hover:border-red-400'
-    case 'medium': return 'border-yellow-200 dark:border-yellow-600 hover:border-yellow-500 dark:hover:border-yellow-400'
-    case 'low': return 'border-green-200 dark:border-green-600 hover:border-green-500 dark:hover:border-green-400'
-    default: return 'border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400'
-  }
-}
+// (Removed unused getSeverityColor helper during cleanup)
 
 const getSeverityBadge = (severity: FaultInfo['severity']) => {
   switch (severity) {
