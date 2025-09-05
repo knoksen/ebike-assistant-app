@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240" fill="none">
+  <rect width="400" height="240" rx="16" fill="#0f172a"/>
+  <text x="24" y="40" fill="#38bdf8" font-family="Arial" font-size="20" font-weight="bold">Boost Profiles</text>
+  <circle cx="110" cy="130" r="60" stroke="#f97316" stroke-width="10" fill="none" stroke-dasharray="377" stroke-dashoffset="120"/>
+  <text x="80" y="135" fill="#f8fafc" font-family="Arial" font-size="18" font-weight="bold">+500W</text>
+  <rect x="210" y="80" width="160" height="32" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="224" y="101" fill="#f1f5f9" font-size="14" font-family="Arial">eco • normal • boost</text>
+  <rect x="210" y="124" width="160" height="32" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="224" y="145" fill="#f1f5f9" font-size="14" font-family="Arial">custom (disabled)</text>
+  <text x="24" y="212" fill="#64748b" font-size="12" font-family="Arial">Placeholder preview – replace with real screenshot</text>
+</svg>

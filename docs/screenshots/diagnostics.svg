@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240" fill="none">
+  <rect width="400" height="240" rx="16" fill="#111827"/>
+  <text x="24" y="40" fill="#60a5fa" font-family="Arial" font-size="20" font-weight="bold">Diagnostics</text>
+  <rect x="24" y="60" width="352" height="52" rx="10" fill="#1e293b" stroke="#334155"/>
+  <text x="40" y="92" fill="#f1f5f9" font-size="14" font-family="Arial">Scan results • No faults</text>
+  <rect x="24" y="120" width="352" height="52" rx="10" fill="#1e293b" stroke="#334155"/>
+  <text x="40" y="152" fill="#f1f5f9" font-size="14" font-family="Arial">Temperature nominal</text>
+  <text x="24" y="212" fill="#64748b" font-size="12" font-family="Arial">Placeholder preview – replace with real screenshot</text>
+</svg>

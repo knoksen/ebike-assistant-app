@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240" fill="none">
+  <rect width="400" height="240" rx="16" fill="#0f172a"/>
+  <text x="24" y="40" fill="#f472b6" font-family="Arial" font-size="20" font-weight="bold">Ride Tracker</text>
+  <polyline points="24,170 80,130 140,150 200,110 260,125 320,90 376,100" fill="none" stroke="#f472b6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="24" y="212" fill="#64748b" font-size="12" font-family="Arial">Placeholder preview – replace with real screenshot</text>
+</svg>

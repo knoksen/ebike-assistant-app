@@ -1,8 +1,11 @@
 # E-Bike Assistant 🚲
 
-Your pocket e-bike companion! Track rides, diagnose issues, and maintain your e-bike - all from your phone.
+Your pocket e-bike companion! Track rides, diagnose issues, customize boost profiles, and maintain your e-bike - all from your phone or desktop.
 
-![App Screenshots](docs/screenshots/app-preview.png)
+![Boost Profiles](docs/screenshots/boost.svg)
+![Diagnostics](docs/screenshots/diagnostics.svg)
+![Maintenance](docs/screenshots/maintenance.svg)
+![Ride Tracker](docs/screenshots/rides.svg)
 
 ## 📱 Quick Start (30 seconds!)
 
@@ -15,6 +18,18 @@ Your pocket e-bike companion! Track rides, diagnose issues, and maintain your e-
 That's it! The app works offline and updates automatically.
 
 ## 🔧 Main Features
+
+### Power Boost (NEW)
+
+Manage eco/normal/boost/custom profiles with live telemetry awareness, activation readiness, and persistent local settings. Rapid profile switching + visual power ring.
+
+### Bluetooth Device Connection (NEW)
+
+Universal connect button (header + mobile dock) using a shared `useBluetooth` hook. Handles connection lifecycle, telemetry listeners, and graceful errors.
+
+### Mobile Dock Navigation (NEW)
+
+Bottom navigation bar on small screens for faster access to core areas (Home, Diagnostics, Boost, Settings) plus inline device status.
 
 ### Diagnose & Fix
 
@@ -167,13 +182,55 @@ The app uses Bluetooth Low Energy (BLE) with GATT services to communicate with e
 - Rate-limited commands
 - See [SECURITY.md](SECURITY.md) for details
 
-## 🖥️ Desktop App
+## 🖥️ Desktop & Distribution
 
 For power users, we also offer a desktop version with additional features. See [desktop installation guide](DESKTOP.md).
 
-## 🛠️ Development
+## � Release Preparation
+
+Run the full quality gate:
+
+```bash
+npm run prep:release
+```
+
+If everything passes, create a tag and build platform packages:
+
+```bash
+git tag -a v1.0.0 -m "v1.0.0" && git push --tags
+npm run electron:dist
+```
+
+Optional platform targets:
+
+```bash
+npm run electron:win
+npm run electron:mac
+npm run electron:linux
+```
+
+### Manual Smoke Checklist
+- [ ] App loads over HTTPS (PWA install prompt shows)
+- [ ] Connect button scans & handles cancel gracefully
+- [ ] Boost profile save / load works after refresh
+- [ ] Dark / Light mode persists
+- [ ] Navigation works on mobile (dock) & desktop (header)
+- [ ] No console errors in production build
+
+### Generating Screenshots
+Use your browser dev tools or a headless tool (e.g. Playwright) to capture key screens. Replace the placeholder SVGs in `docs/screenshots/` with real PNG/JPG exports of approx 800px wide.
+
+## �🛠️ Development
 
 For developer documentation and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
+
+## 🧹 Housekeeping / Future
+
+Planned improvements:
+- Real battery & error telemetry parsing refinements
+- Firmware flashing workflow (guarded, post-1.0)
+- Cloud sync (optional) with end‑to‑end encryption
+- Localization pipeline
 
 ## 📜 License
 

@@ -13,6 +13,8 @@
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
+  "prep:release": "npm run lint && npm test && npm run build",
+  "release:check": "npm run prep:release && echo Ready for tagging",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",

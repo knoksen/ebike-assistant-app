@@ -50,6 +50,7 @@
            dark:from-gray-700 dark:to-gray-800 dark:text-gray-200 
            dark:hover:from-gray-600 dark:hover:to-gray-700
            focus:ring-gray-500 shadow-lg shadow-gray-500/10;
+  }
 
   .card {
     @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-transform duration-300 hover:scale-[1.02]
