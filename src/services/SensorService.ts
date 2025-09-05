@@ -4,9 +4,16 @@ import { log } from './logger'
 import { hasBluetooth, hasSerial } from '../types/navigator-extensions'
 
 // Narrow structural helper types for internal maps (use platform types where possible)
+// Structural subsets compatible with Web Bluetooth types (accept superset methods)
 interface GATTServerLike { getPrimaryService(uuid: string): Promise<GATTServiceLike> }
 interface GATTServiceLike { getCharacteristic(uuid: string): Promise<GATTCharacteristicLike> }
-interface GATTCharacteristicLike { startNotifications?: () => Promise<void>; addEventListener?: (ev: string, cb: (e: Event) => void) => void; readValue?: () => Promise<DataView>; writeValue?: (data: Uint8Array) => Promise<void> }
+interface GATTCharacteristicLike {
+  startNotifications?: () => Promise<unknown> | Promise<void>
+  addEventListener?: (ev: string, cb: (e: Event) => void) => void
+  readValue?: () => Promise<DataView>
+  // Accept broader BufferSource signature
+  writeValue?: (data: BufferSource) => Promise<void>
+}
 
 // Sensor data types
 export interface SensorData {
@@ -290,7 +297,7 @@ class SensorService {
       if (!server) throw new Error('Failed to connect to GATT server')
 
       // Connect to relevant services
-      await this.subscribeToBluetoothServices(server, sensor)
+  await this.subscribeToBluetoothServices(server as unknown as GATTServerLike, sensor)
       
       sensor.connectionStatus = 'connected'
       this.emit('sensor:connected', sensor)
