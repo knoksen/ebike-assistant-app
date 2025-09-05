@@ -265,7 +265,7 @@ class SensorService {
   }
 
   // Minimal capability detection, keep loose typing for flexibility
-  private detectCapabilities(device: Pick<BluetoothDevice, 'name'>): string[] {
+  private detectCapabilities(device: { name?: string | null }): string[] {
     const capabilities: string[] = []
     
     // This would be expanded based on actual services available
@@ -289,7 +289,7 @@ class SensorService {
 
   if (!hasBluetooth(navigator)) throw new Error('Bluetooth not available')
   const deviceList = await navigator.bluetooth.getDevices()
-  const device = deviceList.find(d => d.id === sensorId)
+  const device = deviceList.find((d: { id: string }) => d.id === sensorId)
       
       if (!device) throw new Error('Device not found')
 

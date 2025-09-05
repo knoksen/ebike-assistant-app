@@ -62,7 +62,8 @@ export class BluetoothService {
   private telemetryListeners: Array<(data: TelemetryData) => void> = [];
 
   private constructor() {
-    if (!navigator.bluetooth) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (!(navigator as any).bluetooth) {
       log.error('Bluetooth API is not available in this browser/environment');
     }
   }
@@ -76,7 +77,8 @@ export class BluetoothService {
 
   public async requestDevice(): Promise<boolean> {
     try {
-      this.device = await navigator.bluetooth.requestDevice({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this.device = await (navigator as any).bluetooth.requestDevice({
         filters: [
           {
             services: [this.XIAOMI_SERVICE_UUID]

@@ -14,7 +14,9 @@ export function BluetoothSelector({ onTelemetryUpdate }: BluetoothSelectorProps)
 
   useEffect(() => {
     // Check if Web Bluetooth is available
-    setIsAvailable(!!navigator.bluetooth);
+  // Narrow usage with minimal cast (Bluetooth API optional)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setIsAvailable(!!(navigator as any).bluetooth);
 
     const bluetoothService = BluetoothService.getInstance();
 
