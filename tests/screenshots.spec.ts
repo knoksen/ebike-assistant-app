@@ -10,6 +10,9 @@ const pages: { route: string; name: string; }[] = [
   { route: '/diagnostics', name: 'diagnostics' },
   { route: '/boost', name: 'boost' },
   { route: '/settings', name: 'settings' },
+  { route: '/rides', name: 'rides' },
+  { route: '/maintenance', name: 'maintenance' },
+  { route: '/parts', name: 'parts' },
 ];
 
 const screenshotsDir = path.resolve(__dirname, '..', 'docs', 'screenshots');
@@ -21,10 +24,11 @@ test.beforeAll(() => {
 });
 
 for (const p of pages) {
-  test(`capture ${p.name} page @screenshot`, async ({ page }) => {
+  test(`capture ${p.name} page @screenshot`, async ({ page }, testInfo) => {
     await page.goto(p.route);
-    await page.waitForTimeout(500); // allow UI to stabilize
-    const filePath = path.join(screenshotsDir, `${p.name}.png`);
+    await page.waitForTimeout(600); // allow UI to stabilize
+    const variant = testInfo.project.name.includes('mobile') ? 'mobile' : 'desktop';
+    const filePath = path.join(screenshotsDir, `${p.name}-${variant}.png`);
     await page.screenshot({ path: filePath, fullPage: false });
     expect(fs.existsSync(filePath)).toBe(true);
   });

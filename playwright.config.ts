@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   timeout: 30000,
@@ -17,6 +17,7 @@ export default defineConfig({
     timeout: 60000
   },
   projects: [
-    { name: 'chromium', use: { browserName: 'chromium' } }
+    { name: 'chromium-desktop', use: { browserName: 'chromium', viewport: { width: 1280, height: 800 } } },
+    { name: 'chromium-mobile', use: { ...devices['iPhone 13'] } }
   ]
 });
