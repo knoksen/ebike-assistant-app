@@ -221,6 +221,18 @@ npm run electron:linux
 - [ ] Navigation works on mobile (dock) & desktop (header)
 - [ ] No console errors in production build
 
+### Environment & Logging
+
+Runtime behavior is controlled with Vite env vars (all prefixed with `VITE_`). Create a `.env.local` for overrides during development.
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `VITE_LOG_LEVEL` | `info` (dev) / `warn` (prod via `.env.production`) | Controls verbosity of custom logger (`error` `warn` `info` `debug`). |
+| `VITE_ENABLE_ANALYTICS` | `false` | Future hook for optional telemetry (not yet implemented). |
+
+Production build automatically picks up `.env.production` which sets `VITE_LOG_LEVEL=warn` to reduce noise. Adjust per deployment if deeper diagnostics are needed.
+
+
 ### Generating Screenshots
 
 Use your browser dev tools or a headless tool (e.g. Playwright) to capture key screens. Replace the placeholder SVGs in `docs/screenshots/` with real PNG/JPG exports of approx 800px wide.
