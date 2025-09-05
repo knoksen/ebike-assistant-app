@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import PartsSearch from '../components/PartsSearch'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const viteBase: string = ((import.meta as any).env && (import.meta as any).env.BASE_URL) || '/'
 
 export default function Home() {
   return (
@@ -10,9 +12,9 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-500/5 rounded-3xl blur-3xl"></div>
           <div className="relative">
             <div className="mb-6 transform hover:scale-105 transition-transform duration-300">
-              <img 
-                src="./public/ebike-icon.svg"
-                alt="E-Bike Assistant" 
+              <img
+                src={`${viteBase}ebike-icon.svg`}
+                alt="E-Bike Assistant"
                 className="w-24 h-24 mx-auto mb-4 drop-shadow-lg"
               />
             </div>

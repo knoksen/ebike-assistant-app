@@ -16,10 +16,22 @@ import { ThemeProvider } from './context/ThemeContext'
 import './App.css'
 
 export default function App() {
+  // Determine router basename robustly across environments:
+  // - Vite dev: '/'
+  // - Relative builds for Electron / static: './'
+  // - GitHub Pages repo hosting: path starts with '/ebike-assistant-app/'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawBase: string = (import.meta as any).env.BASE_URL || '/'
+  let basename = rawBase === './' || rawBase === '.' ? '/' : rawBase.replace(/\/$/, '')
+  if (typeof window !== 'undefined') {
+    const p = window.location.pathname
+    if (basename === '/' && p.startsWith('/ebike-assistant-app/')) {
+      basename = '/ebike-assistant-app'
+    }
+  }
   return (
     <ThemeProvider>
-  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-  <BrowserRouter basename={(import.meta as any).env.BASE_URL}>
+      <BrowserRouter basename={basename}>
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-grow">
@@ -34,6 +46,8 @@ export default function App() {
               <Route path="/rides" element={<RideTrackerPage />} />
               <Route path="/tuneup" element={<Tuneup />} />
               <Route path="/boost" element={<Boost />} />
+              {/* Fallback: on unexpected path, show home instead of blank screen */}
+              <Route path="*" element={<Home />} />
             </Routes>
           </main>
           <MobileDock />
