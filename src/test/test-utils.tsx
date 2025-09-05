@@ -20,13 +20,18 @@ export const TestWrapper = ({ children, initialEntries = ['/'] }: TestWrapperPro
 
 interface RenderOptions {
   route?: string;
+  theme?: {
+    isDark?: boolean;
+  };
 }
 
-export const renderWithProviders = (ui: React.ReactElement, { route = '/' }: RenderOptions = {}) => {
+export const renderWithProviders = (ui: React.ReactElement, { route = '/', theme }: RenderOptions = {}) => {
   const utils = render(
-    <TestWrapper initialEntries={[route]}>
-      {ui}
-    </TestWrapper>
+    <MemoryRouter initialEntries={[route]}>
+      <ThemeProvider initialState={theme}>
+        {ui}
+      </ThemeProvider>
+    </MemoryRouter>
   )
 
   return {

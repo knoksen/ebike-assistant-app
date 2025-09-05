@@ -6,10 +6,15 @@ import { ThemeContext } from './useTheme';
 
 interface ThemeProviderProps {
   children: ReactNode;
+  initialState?: {
+    theme?: Theme;
+    isDark?: boolean;
+  };
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, initialState }) => {
   const [theme, setTheme] = useState<Theme>(() => {
+    if (initialState?.theme) return initialState.theme;
     try {
       const saved = localStorage.getItem('ebike-theme') as Theme;
       return saved && ['default', 'midnight', 'forest', 'ocean'].includes(saved) ? saved : 'default';
@@ -19,6 +24,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   });
   
   const [isDark, setIsDark] = useState(() => {
+    if (typeof initialState?.isDark === 'boolean') return initialState.isDark;
     try {
       const saved = localStorage.getItem('ebike-dark-mode');
       return saved ? JSON.parse(saved) : window.matchMedia('(prefers-color-scheme: dark)').matches;

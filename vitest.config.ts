@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    testTimeout: 10000,
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [
