@@ -1,6 +1,8 @@
 # E-Bike Assistant 🚲
 
 [![CI](https://github.com/knoksen/ebike-assistant-app/actions/workflows/ci.yml/badge.svg)](https://github.com/knoksen/ebike-assistant-app/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/tag/knoksen/ebike-assistant-app?label=release)](CHANGELOG.md)
 
 Your pocket e-bike companion! Track rides, diagnose issues, customize boost profiles, and maintain your e-bike - all from your phone or desktop.
 
@@ -16,6 +18,16 @@ Your pocket e-bike companion! Track rides, diagnose issues, customize boost prof
 | ![Maintenance](docs/screenshots/maintenance.png) | ![Parts](docs/screenshots/parts.png) | ![Rides](docs/screenshots/rides.png) | ![Settings](docs/screenshots/settings.png) |
 
 Desktop sized variants are also available ( *-desktop.png ) for higher‑resolution contexts.
+
+### Mobile vs Desktop
+
+| View | Mobile Dock | Desktop Header |
+|------|-------------|----------------|
+| Navigation | Bottom dock with device status | Horizontal bar + brand + connect |
+| Boost Profiles | Swipable stacked cards | Wide grid layout |
+| Diagnostics | Vertical scroll, condensed panels | Multi-column breathing room |
+
+Both builds share a single codebase; Electron packages wrap the production PWA output.
 
 ## 📱 Quick Start (30 seconds!)
 
@@ -273,6 +285,17 @@ PNG outputs land in `docs/screenshots/` (home, diagnostics, boost, maintenance, 
 
 For developer documentation and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
+## 🤝 Contributing
+
+Community contributions welcome. Until a full `CONTRIBUTING.md` lands:
+
+1. Fork & create a feature branch
+2. Run `npm run prep:release` (must pass)
+3. Add tests for behavior changes
+4. Open PR with concise description & screenshots if UI changes
+
+Guidelines draft (planned): coding standards, commit message style, triage labels, release cadence.
+
 ## 🧹 Housekeeping / Future
 
 Planned improvements:
@@ -281,7 +304,12 @@ Planned improvements:
 - Firmware flashing workflow (guarded, post-1.0)
 - Cloud sync (optional) with end‑to‑end encryption
 - Localization pipeline
+- CONTRIBUTING.md + issue/PR templates
+- Dependency hygiene (resolve current moderate advisory)
 
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+Made with TypeScript, React, Vite & caffeine.

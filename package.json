@@ -16,9 +16,9 @@
     "test:ui": "vitest --ui",
     "prep:release": "npm run lint && npm test && npm run build",
     "release:check": "npm run prep:release && echo Ready for tagging",
-  "screenshots": "playwright test --config=playwright.config.ts --grep @screenshot && npm run screenshots:optimize",
-  "screenshots:raw": "playwright test --config=playwright.config.ts --grep @screenshot",
-  "screenshots:optimize": "node scripts/optimize-screenshots.mjs",
+    "screenshots": "playwright test --config=playwright.config.ts --grep @screenshot && npm run screenshots:optimize",
+    "screenshots:raw": "playwright test --config=playwright.config.ts --grep @screenshot",
+    "screenshots:optimize": "node scripts/optimize-screenshots.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
@@ -30,8 +30,8 @@
     "electron:dist": "npm run build && electron-builder --publish=never",
     "electron:win": "npm run build && electron-builder --win --publish=never",
     "electron:mac": "npm run build && electron-builder --mac --publish=never",
-  "electron:linux": "npm run build && electron-builder --linux --publish=never",
-  "icon:generate": "node scripts/generate-icon.mjs"
+    "electron:linux": "npm run build && electron-builder --linux --publish=never",
+    "icon:generate": "node scripts/generate-icon.mjs"
   },
   "dependencies": {
     "applicationinsights": "^3.0.0",
@@ -69,7 +69,7 @@
     "typescript": "~5.3.3",
     "vite": "^7.1.4",
     "vite-plugin-pwa": "^1.0.3",
-    "vitest": "^3.2.4",
+  "vitest": "^3.2.4",
   "wait-on": "^7.2.0",
   "png-to-ico": "^2.1.8",
   "sharp": "^0.33.4"
@@ -110,7 +110,7 @@
             "x64"
           ]
         }
-      ],
+  ],
   "icon": "public/icon.ico",
       "verifyUpdateCodeSignature": false
     },
