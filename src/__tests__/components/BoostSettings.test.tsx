@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi } from 'vitest'
-import { BoostSettings } from '../../components/BoostSettings'
+import BoostSettings2 from '../../components/BoostSettings2'
 import { ThemeProvider } from '../../context/ThemeContext'
 
 type Mock = typeof vi.fn extends (implementation?: any) => infer R ? R : never;
@@ -37,7 +37,7 @@ describe('BoostSettings', () => {
   test('renders default profiles', () => {
     render(
       <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
-        <BoostSettings />
+  <BoostSettings2 />
       </ThemeProvider>
     )
     
@@ -78,7 +78,7 @@ describe('BoostSettings', () => {
     mockStorage.store['boostSettings'] = JSON.stringify(savedSettings)
     render(
       <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
-        <BoostSettings />
+  <BoostSettings2 />
       </ThemeProvider>
     )
 
@@ -99,7 +99,7 @@ describe('BoostSettings', () => {
   test('saves settings to localStorage when updated', async () => {
     render(
       <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
-        <BoostSettings />
+  <BoostSettings2 />
       </ThemeProvider>
     )
 
@@ -134,7 +134,7 @@ describe('BoostSettings', () => {
 
     render(
       <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
-        <BoostSettings />
+  <BoostSettings2 />
       </ThemeProvider>
     )
 
@@ -151,7 +151,7 @@ describe('BoostSettings', () => {
   test('updates profile when slider controls are changed', () => {
     render(
       <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
-        <BoostSettings />
+  <BoostSettings2 />
       </ThemeProvider>
     )
 
@@ -182,7 +182,7 @@ describe('BoostSettings', () => {
   test('toggles profile enabled state', () => {
     render(
       <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
-        <BoostSettings />
+  <BoostSettings2 />
       </ThemeProvider>
     )
 

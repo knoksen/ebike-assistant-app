@@ -1,4 +1,4 @@
-import { BoostSettings } from '../components/BoostSettings'
+import BoostSettings2 from '../components/BoostSettings2'
 
 export default function Boost() {
   return (
@@ -10,7 +10,7 @@ export default function Boost() {
         </p>
       </div>
       
-      <BoostSettings />
+  <BoostSettings2 />
     </div>
   )
 }

@@ -145,7 +145,7 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full h-2 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-800 dark:to-purple-800 rounded-lg appearance-none cursor-pointer slider"
       />
-      <style jsx>{`
+  <style>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
           height: 20px;
@@ -271,7 +271,7 @@ export function Settings() {
   ) => {
     setSettings(prev => ({
       ...prev,
-      [key]: { ...prev[key], ...updates }
+      [key]: { ...(prev[key] as Record<string, unknown>), ...updates } as UserSettings[K]
     }))
     setHasChanges(true)
   }

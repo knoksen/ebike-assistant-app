@@ -54,7 +54,7 @@ class SensorService {
   private sensors: Map<string, SensorDevice> = new Map()
   private dataStreams: Map<string, SensorData[]> = new Map()
   private eventListeners: Map<string, Array<(data: unknown) => void>> = new Map()
-  private characteristics: Map<string, BluetoothRemoteGATTCharacteristic> = new Map()
+  private characteristics: Map<string, any> = new Map()
   private isRecording = false
   private recordingStartTime = 0
   private watchId: number | null = null
@@ -249,7 +249,7 @@ class SensorService {
     }
   }
 
-  private detectCapabilities(device: BluetoothDevice): string[] {
+  private detectCapabilities(device: any): string[] {
     const capabilities: string[] = []
     
     // This would be expanded based on actual services available
@@ -271,9 +271,8 @@ class SensorService {
       sensor.connectionStatus = 'connecting'
       this.emit('sensor:connecting', sensor)
 
-      const device = await navigator.bluetooth.getDevices().then(devices => 
-        devices.find(d => d.id === sensorId)
-      )
+  const deviceList = await (navigator as any).bluetooth.getDevices()
+  const device = deviceList.find((d: any) => d.id === sensorId)
       
       if (!device) throw new Error('Device not found')
 
@@ -288,19 +287,18 @@ class SensorService {
       
       // Save to database
       await databaseService.create('sensors', {
-        deviceId: sensor.id,
         type: sensor.type,
         name: sensor.name,
         manufacturer: sensor.manufacturer || '',
         model: sensor.model || '',
+        firmwareVersion: '',
+        batteryLevel: sensor.batteryLevel,
         connectionStatus: sensor.connectionStatus,
         capabilities: sensor.capabilities,
         settings: sensor.settings,
         calibration: {},
         lastData: { timestamp: Date.now(), values: {} },
-        created: Date.now(),
-        lastSync: Date.now(),
-        firmwareVersion: ''
+        lastSync: Date.now()
       })
       
     } catch (error) {

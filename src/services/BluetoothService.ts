@@ -29,9 +29,9 @@ export interface TelemetryData {
 
 export class BluetoothService {
   private static instance: BluetoothService;
-  private device: BluetoothDevice | null = null;
-  private server: BluetoothRemoteGATTServer | null = null;
-  private characteristic: BluetoothRemoteGATTCharacteristic | null = null;
+  private device: any | null = null;
+  private server: any | null = null;
+  private characteristic: any | null = null;
 
   // Xiaomi service and characteristic UUIDs
   private readonly XIAOMI_SERVICE_UUID = '0000fe95-0000-1000-8000-00805f9b34fb';
@@ -111,7 +111,7 @@ export class BluetoothService {
     }
   }
 
-  private async setupNotifications(service: BluetoothRemoteGATTService): Promise<BluetoothRemoteGATTCharacteristic> {
+  private async setupNotifications(service: any): Promise<any> {
     const characteristic = await service.getCharacteristic(
       service.uuid === this.XIAOMI_SERVICE_UUID ? this.XIAOMI_SERVICE_UUID : this.NORDIC_UART_RX_UUID
     );
@@ -137,7 +137,7 @@ export class BluetoothService {
   }
 
   private handleNotification(event: Event): void {
-    const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
+    const value = (event.target as any).value;
     if (!value) return;
 
     // Parse the notification data

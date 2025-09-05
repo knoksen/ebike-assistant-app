@@ -1,7 +1,8 @@
+/// <reference path="../vite-env.d.ts" />
 // Network Service - API integrations, WebSocket, real-time sync
 import { databaseService } from './DatabaseService'
 import { sensorService } from './SensorService'
-import type { Trip, Settings } from '../types/db'
+import type { Trip } from './dbTypes'
 
 // API Response types
 export interface WeatherData {
