@@ -3,7 +3,16 @@ import { vi } from 'vitest'
 import { BoostSettings } from '../../components/BoostSettings'
 import { ThemeProvider } from '../../context/ThemeContext'
 
-const mockStorage = {
+type Mock = typeof vi.fn extends (implementation?: any) => infer R ? R : never;
+
+interface MockStorage {
+  store: Record<string, string>;
+  getItem: Mock;
+  setItem: Mock;
+  clear: Mock;
+}
+
+const mockStorage: MockStorage = {
   store: {} as Record<string, string>,
   getItem: vi.fn((key: string) => mockStorage.store[key] || null),
   setItem: vi.fn((key: string, value: string) => {
