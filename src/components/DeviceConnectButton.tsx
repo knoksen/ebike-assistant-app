@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { BluetoothService } from '../services/BluetoothService'
+import React from 'react'
+import { useBluetooth } from '../hooks/useBluetooth'
 
 interface DeviceConnectButtonProps {
   compact?: boolean
@@ -7,41 +7,12 @@ interface DeviceConnectButtonProps {
 }
 
 export const DeviceConnectButton: React.FC<DeviceConnectButtonProps> = ({ compact, className = '' }) => {
-  const [isConnected, setIsConnected] = useState(false)
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const svc = BluetoothService.getInstance()
-    const handleConn = (c: boolean) => {
-      setIsConnected(c)
-      setIsConnecting(false)
-      if (!c) setError(null)
-    }
-    svc.addConnectionListener(handleConn)
-    return () => svc.removeConnectionListener(handleConn)
-  }, [])
+  const { isConnected, isConnecting, error, connect, disconnect, resetError } = useBluetooth()
 
   const toggleConnection = async () => {
-    setError(null)
-    if (isConnected) {
-      await BluetoothService.getInstance().disconnect()
-      return
-    }
-    setIsConnecting(true)
-    try {
-      const svc = BluetoothService.getInstance()
-      const picked = await svc.requestDevice()
-      if (!picked) {
-        setError('Cancelled')
-        setIsConnecting(false)
-        return
-      }
-      await svc.connect()
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Connect failed')
-      setIsConnecting(false)
-    }
+    resetError()
+    if (isConnected) return disconnect()
+    return connect()
   }
 
   return (
@@ -62,7 +33,7 @@ export const DeviceConnectButton: React.FC<DeviceConnectButtonProps> = ({ compac
         )}
         <span className={`ml-1 h-2 w-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'} transition-colors`} />
       </button>
-      {error && (
+  {error && (
         <div className="absolute top-full mt-1 text-xs bg-red-500/90 text-white px-2 py-1 rounded shadow-lg">
           {error}
         </div>

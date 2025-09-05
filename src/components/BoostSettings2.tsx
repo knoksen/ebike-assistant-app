@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BluetoothService, type TelemetryData } from '../services/BluetoothService'
+import { useBluetooth } from '../hooks/useBluetooth'
 
 // Types
 interface BoostProfile {
@@ -75,10 +75,7 @@ export function BoostSettings2(): JSX.Element {
   const [settings, setSettings] = useState<BoostSettingsData>(DEFAULT_BOOST_SETTINGS)
   const [activeProfile, setActiveProfile] = useState<string>(DEFAULT_BOOST_SETTINGS.selectedProfile)
   const [saveStatus, setSaveStatus] = useState<SaveState>('idle')
-  const [isConnected, setIsConnected] = useState(false)
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [telemetry, setTelemetry] = useState<TelemetryData | null>(null)
-  const [connectError, setConnectError] = useState<string | null>(null)
+  const { isConnected, isConnecting, telemetry, connect, disconnect, error: connectError } = useBluetooth()
 
   // Load persisted settings
   useEffect(() => {
@@ -96,23 +93,6 @@ export function BoostSettings2(): JSX.Element {
       } catch (e) {
         // ignore
       }
-    }
-  }, [])
-
-  // Bluetooth listeners
-  useEffect(() => {
-    const svc = BluetoothService.getInstance()
-    const handleConn = (connected: boolean) => {
-      setIsConnected(connected)
-      setIsConnecting(false)
-      if (!connected) setTelemetry(null)
-    }
-    const handleTel = (data: TelemetryData) => setTelemetry(data)
-    svc.addConnectionListener(handleConn)
-    svc.addTelemetryListener(handleTel)
-    return () => {
-      svc.removeConnectionListener(handleConn)
-      svc.removeTelemetryListener(handleTel)
     }
   }, [])
 
@@ -144,25 +124,8 @@ export function BoostSettings2(): JSX.Element {
   }
 
   const connectOrDisconnect = async () => {
-    setConnectError(null)
-    if (isConnected) {
-      await BluetoothService.getInstance().disconnect()
-      return
-    }
-    setIsConnecting(true)
-    try {
-      const svc = BluetoothService.getInstance()
-      const chosen = await svc.requestDevice()
-      if (!chosen) {
-        setConnectError('Device selection cancelled')
-        setIsConnecting(false)
-        return
-      }
-      await svc.connect()
-    } catch (err) {
-      setConnectError(err instanceof Error ? err.message : 'Failed to connect')
-      setIsConnecting(false)
-    }
+    if (isConnected) return disconnect()
+    return connect()
   }
 
   const profile = settings.profiles[activeProfile]
