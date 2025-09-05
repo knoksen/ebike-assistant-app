@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bikeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="90" fill="url(#bikeGradient)" stroke="#1B5E20" stroke-width="2"/>
+  
+  <!-- E-bike frame -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round">
+    <!-- Main frame triangle -->
+    <path d="M50 120 L96 60 L142 120"/>
+    <path d="M50 120 L96 100"/>
+    <path d="M96 100 L142 120"/>
+    
+    <!-- Seat post -->
+    <path d="M96 60 L96 45"/>
+    <rect x="90" y="40" width="12" height="8" fill="#FFFFFF" rx="2"/>
+    
+    <!-- Handlebars -->
+    <path d="M96 60 L96 50"/>
+    <path d="M86 50 L106 50"/>
+  </g>
+  
+  <!-- Wheels -->
+  <circle cx="65" cy="130" r="20" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="127" cy="130" r="20" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+  
+  <!-- Wheel spokes -->
+  <g stroke="#FFFFFF" stroke-width="2">
+    <path d="M45 130 L85 130"/>
+    <path d="M65 110 L65 150"/>
+    <path d="M107 130 L147 130"/>
+    <path d="M127 110 L127 150"/>
+  </g>
+  
+  <!-- Battery indicator (electric) -->
+  <rect x="75" y="90" width="16" height="10" fill="#FFD700" stroke="#FFC107" stroke-width="1" rx="2"/>
+  <rect x="91" y="93" width="3" height="4" fill="#FFD700"/>
+  
+  <!-- Lightning bolt for electric -->
+  <path d="M85 75 L90 85 L87 85 L92 95 L87 85 L90 85 Z" fill="#FFD700"/>
+</svg>
