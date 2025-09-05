@@ -5,6 +5,8 @@
 Your pocket e-bike companion! Track rides, diagnose issues, customize boost profiles, and maintain your e-bike - all from your phone or desktop.
 
 
+## UI Overview
+
 | Home | Diagnostics | Boost |
 |------|-------------|-------|
 | ![Home](docs/screenshots/home.png) | ![Diagnostics](docs/screenshots/diagnostics.png) | ![Boost](docs/screenshots/boost.png) |
@@ -12,6 +14,8 @@ Your pocket e-bike companion! Track rides, diagnose issues, customize boost prof
 | Maintenance | Parts | Rides | Settings |
 |-------------|-------|-------|----------|
 | ![Maintenance](docs/screenshots/maintenance.png) | ![Parts](docs/screenshots/parts.png) | ![Rides](docs/screenshots/rides.png) | ![Settings](docs/screenshots/settings.png) |
+
+Desktop sized variants are also available ( *-desktop.png ) for higher‑resolution contexts.
 
 ## 📱 Quick Start (30 seconds!)
 
