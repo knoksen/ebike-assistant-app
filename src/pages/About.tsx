@@ -1,4 +1,5 @@
 // Vite env types provided globally via tsconfig.
+import { withBase } from '../env'
 export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800">
@@ -7,10 +8,9 @@ export default function About() {
           {/* Header */}
           <div className="text-center mb-12">
             <div className="mb-6">
-              <img 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                src={(import.meta as any).env.BASE_URL + 'ebike-icon.svg'} 
-                alt="E-Bike Assistant" 
+              <img
+                src={withBase('ebike-icon.svg')}
+                alt="E-Bike Assistant"
                 className="w-20 h-20 mx-auto mb-4"
               />
             </div>
