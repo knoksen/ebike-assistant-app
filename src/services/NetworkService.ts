@@ -2,6 +2,7 @@
 // Network Service - API integrations, WebSocket, real-time sync
 import { databaseService } from './DatabaseService'
 import { sensorService } from './SensorService'
+import { log } from './logger'
 import type { Trip } from './dbTypes'
 
 // API Response types
@@ -143,7 +144,7 @@ class NetworkService {
       this.wsConnection = new WebSocket(wsUrl)
       
       this.wsConnection.onopen = () => {
-        console.log('WebSocket connected')
+  log.info('WebSocket connected')
         this.reconnectAttempts = 0
         this.subscribeToRealTimeUpdates()
       }
@@ -153,21 +154,21 @@ class NetworkService {
           const data = JSON.parse(event.data)
           this.handleWebSocketMessage(data)
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error)
+          log.warn('Error parsing WebSocket message:', error)
         }
       }
       
       this.wsConnection.onclose = () => {
-        console.log('WebSocket disconnected')
+  log.info('WebSocket disconnected')
         this.scheduleReconnect()
       }
       
       this.wsConnection.onerror = (error) => {
-        console.error('WebSocket error:', error)
+  log.error('WebSocket error:', error)
       }
       
     } catch (error) {
-      console.error('WebSocket initialization error:', error)
+  log.error('WebSocket initialization error:', error)
       this.scheduleReconnect()
     }
   }
@@ -213,7 +214,7 @@ class NetworkService {
         this.handleEmergencyAlert(data.payload)
         break
       default:
-        console.log('Unknown WebSocket message type:', data.type)
+  log.debug('Unknown WebSocket message type:', data.type)
     }
   }
 
@@ -309,7 +310,7 @@ class NetworkService {
         try {
           await request()
         } catch (error) {
-          console.error('Queued request failed:', error)
+          log.warn('Queued request failed:', error)
         }
       }
     }
@@ -380,7 +381,7 @@ class NetworkService {
   async getRouteData(
     start: { lat: number; lng: number },
     end: { lat: number; lng: number },
-    preferences: {
+  _preferences: {
       avoidTraffic?: boolean
       preferBikePaths?: boolean
       avoidHills?: boolean
@@ -469,7 +470,7 @@ class NetworkService {
 
       return { gain, loss, profile }
     } catch (error) {
-      console.error('Elevation API error:', error)
+  log.warn('Elevation API error:', error)
       return { gain: 0, loss: 0, profile: [] }
     }
   }
@@ -493,7 +494,7 @@ class NetworkService {
   }
 
   // Traffic and infrastructure data
-  async getTrafficData(bounds: {
+  async getTrafficData(_bounds: {
     north: number
     south: number
     east: number
@@ -519,7 +520,7 @@ class NetworkService {
     try {
       return await this.makeRequest<CommunityData>(url, {}, 3, 'community')
     } catch (error) {
-      console.error('Community API error:', error)
+  log.warn('Community API error:', error)
       // Return mock data if API is unavailable
       return {
         nearbyRiders: [],
@@ -572,7 +573,7 @@ class NetworkService {
         body: JSON.stringify(alertData)
       }, 1, 'emergency')
     } catch (error) {
-      console.error('Emergency alert HTTP backup failed:', error)
+  log.warn('Emergency alert HTTP backup failed:', error)
     }
   }
 
@@ -597,7 +598,7 @@ class NetworkService {
         await this.syncTripToCloud(trip)
       }
     } catch (error) {
-      console.error('Sync error:', error)
+  log.warn('Sync error:', error)
     }
   }
 
@@ -615,7 +616,7 @@ class NetworkService {
         metadata: { ...trip.metadata, synced: true }
       })
     } catch (error) {
-      console.error('Failed to sync trip:', error)
+  log.warn('Failed to sync trip:', error)
     }
   }
 
