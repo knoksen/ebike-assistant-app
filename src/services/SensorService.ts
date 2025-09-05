@@ -1,12 +1,12 @@
 // Sensor Integration Service - Bluetooth, ANT+, WiFi sensor support
 import { databaseService } from './DatabaseService'
-// Lightweight structural types to avoid pervasive 'any'
-interface BLEDeviceLike { id: string; name?: string; gatt?: { connect: () => Promise<GATTServerLike> } }
+import { log } from './logger'
+import { hasBluetooth, hasSerial } from '../types/navigator-extensions'
+
+// Narrow structural helper types for internal maps (use platform types where possible)
 interface GATTServerLike { getPrimaryService(uuid: string): Promise<GATTServiceLike> }
 interface GATTServiceLike { getCharacteristic(uuid: string): Promise<GATTCharacteristicLike> }
 interface GATTCharacteristicLike { startNotifications?: () => Promise<void>; addEventListener?: (ev: string, cb: (e: Event) => void) => void; readValue?: () => Promise<DataView>; writeValue?: (data: Uint8Array) => Promise<void> }
-interface SerialPortLike { readable: ReadableStream; open: (opts: { baudRate: number }) => Promise<void> }
-import { log } from './logger'
 
 // Sensor data types
 export interface SensorData {
@@ -114,8 +114,8 @@ class SensorService {
 
   // Check browser capabilities
   private checkCapabilities(): void {
-    this.bluetoothSupported = 'bluetooth' in navigator
-    this.webSerialSupported = 'serial' in navigator
+  this.bluetoothSupported = hasBluetooth(navigator)
+  this.webSerialSupported = hasSerial(navigator)
     
   log.info('Sensor capabilities:', {
       bluetooth: this.bluetoothSupported,
@@ -200,8 +200,8 @@ class SensorService {
     }
 
     try {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const device = await (navigator as any).bluetooth.requestDevice({
+  if (!hasBluetooth(navigator)) throw new Error('Bluetooth not available')
+  const device = await navigator.bluetooth.requestDevice({
         filters: [
           // Miscooter0211 and Xiaomi scooters
           { services: [this.BLUETOOTH_SERVICES.MISCOOTER_SERVICE] },
@@ -258,8 +258,7 @@ class SensorService {
   }
 
   // Minimal capability detection, keep loose typing for flexibility
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private detectCapabilities(device: any): string[] {
+  private detectCapabilities(device: Pick<BluetoothDevice, 'name'>): string[] {
     const capabilities: string[] = []
     
     // This would be expanded based on actual services available
@@ -281,10 +280,9 @@ class SensorService {
       sensor.connectionStatus = 'connecting'
       this.emit('sensor:connecting', sensor)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const deviceList = await (navigator as any).bluetooth.getDevices()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const device = deviceList.find((d: any) => d.id === sensorId)
+  if (!hasBluetooth(navigator)) throw new Error('Bluetooth not available')
+  const deviceList = await navigator.bluetooth.getDevices()
+  const device = deviceList.find(d => d.id === sensorId)
       
       if (!device) throw new Error('Device not found')
 
@@ -614,8 +612,8 @@ class SensorService {
     }
 
     try {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const port = await (navigator as any).serial.requestPort() as SerialPortLike
+  if (!hasSerial(navigator)) throw new Error('Web Serial API not available')
+  const port = await navigator.serial.requestPort()
       await port.open({ baudRate: 9600 })
 
       const textDecoder = new TextDecoderStream()
