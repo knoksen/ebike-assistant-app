@@ -128,31 +128,24 @@ test('toggles theme mode', () => {
 })
 
 test('persists theme preference', () => {
-  // Mock localStorage
-  const localStorageMock = {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    clear: vi.fn(),
-    removeItem: vi.fn()
-  }
-  Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-  
-  renderWithProviders(<Header />)
+  renderWithProviders(<Header />, { theme: { isDark: false } })
   const themeButton = screen.getByTitle('Toggle dark mode')
   
-  // Mock initial theme state
-  localStorageMock.getItem.mockReturnValue('light')
+  // Initial state is light mode
+  const sunSvg = screen.getByLabelText('light mode')
+  expect(sunSvg).toBeInTheDocument()
   
   // Toggle to dark mode
   fireEvent.click(themeButton)
+  const moonSvg = screen.getByLabelText('dark mode')
+  expect(moonSvg).toBeInTheDocument()
   expect(document.documentElement.classList.contains('dark')).toBe(true)
   
   // Toggle back to light mode
   fireEvent.click(themeButton)
+  const newSunSvg = screen.getByLabelText('light mode')
+  expect(newSunSvg).toBeInTheDocument()
   expect(document.documentElement.classList.contains('dark')).toBe(false)
-  
-  // Cleanup
-  vi.restoreAllMocks()
 })
 
 test('updates active styles on navigation', () => {
