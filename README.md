@@ -216,6 +216,17 @@ npm run electron:mac
 npm run electron:linux
 ```
 
+### 📓 Changelog & Highlights
+
+See the full [CHANGELOG](CHANGELOG.md) for complete details. v1.0.0 highlights:
+
+- Core modules: Boost profiles, Diagnostics assistant, Maintenance tracker, Parts & Ride views
+- Unified Bluetooth connect lifecycle + transport abstraction groundwork
+- PWA installable + offline + auto-update
+- Electron desktop packaging (Windows installers & portable build)
+- Shared progress bar + screenshot automation workflow
+
+
 ### Manual Smoke Checklist
 
 - [ ] App loads over HTTPS (PWA install prompt shows)
