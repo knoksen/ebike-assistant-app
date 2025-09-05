@@ -4,10 +4,14 @@
 
 Your pocket e-bike companion! Track rides, diagnose issues, customize boost profiles, and maintain your e-bike - all from your phone or desktop.
 
-![Boost Profiles](docs/screenshots/boost.png)
-![Diagnostics](docs/screenshots/diagnostics.png)
-![Maintenance](docs/screenshots/maintenance.png)
-![Ride Tracker](docs/screenshots/home.png)
+
+| Home | Diagnostics | Boost |
+|------|-------------|-------|
+| ![Home](docs/screenshots/home.png) | ![Diagnostics](docs/screenshots/diagnostics.png) | ![Boost](docs/screenshots/boost.png) |
+
+| Maintenance | Parts | Rides | Settings |
+|-------------|-------|-------|----------|
+| ![Maintenance](docs/screenshots/maintenance.png) | ![Parts](docs/screenshots/parts.png) | ![Rides](docs/screenshots/rides.png) | ![Settings](docs/screenshots/settings.png) |
 
 ## 📱 Quick Start (30 seconds!)
 
@@ -21,21 +25,21 @@ That's it! The app works offline and updates automatically.
 
 ## 🔧 Main Features
 
-### Power Boost (NEW)
+### Power Boost
 
 Manage eco/normal/boost/custom profiles with live telemetry awareness, activation readiness, and persistent local settings. Rapid profile switching + visual power ring.
 
-### Bluetooth Device Connection (NEW)
+### Bluetooth Device Connection
 
 Universal connect button (header + mobile dock) using a shared `useBluetooth` hook. Handles connection lifecycle, telemetry listeners, and graceful errors.
 
-### Mobile Dock Navigation (NEW)
+### Mobile Dock Navigation
 
 Bottom navigation bar on small screens for faster access to core areas (Home, Diagnostics, Boost, Settings) plus inline device status.
 
 ### Diagnose & Fix
 
-![Diagnostics Screen](docs/screenshots/diagnostics.png)
+![Diagnostics Screen](docs/screenshots/diagnostics-desktop.png)
 
 - Quick troubleshooting guide
 - Step-by-step solutions
@@ -44,7 +48,7 @@ Bottom navigation bar on small screens for faster access to core areas (Home, Di
 
 ### Track Maintenance
 
-![Maintenance Screen](docs/screenshots/maintenance.png)
+![Maintenance Screen](docs/screenshots/maintenance-desktop.png)
 
 - Service reminders
 - Part replacement logs
@@ -53,7 +57,7 @@ Bottom navigation bar on small screens for faster access to core areas (Home, Di
 
 ### Find Parts
 
-![Parts Search](docs/screenshots/parts-search.png)
+![Parts Search](docs/screenshots/parts-desktop.png)
 
 - Compatible parts finder
 - Price comparisons
@@ -62,7 +66,7 @@ Bottom navigation bar on small screens for faster access to core areas (Home, Di
 
 ### Track Your Rides
 
-![Ride Tracker](docs/screenshots/ride-tracker.png)
+![Ride Tracker](docs/screenshots/rides-desktop.png)
 
 - Record routes & distance
 - Track performance
@@ -71,7 +75,7 @@ Bottom navigation bar on small screens for faster access to core areas (Home, Di
 
 ### Customize
 
-![Settings](docs/screenshots/settings.png)
+![Settings](docs/screenshots/settings-desktop.png)
 
 - Dark/Light mode
 - Units (km/miles)
@@ -235,7 +239,7 @@ Production build automatically picks up `.env.production` which sets `VITE_LOG_L
 
 ### Generating Screenshots
 
-Use your browser dev tools or a headless tool (e.g. Playwright) to capture key screens. Replace the placeholder SVGs in `docs/screenshots/` with real PNG/JPG exports of approx 800px wide.
+Use Playwright automation or manual capture for consistent assets. See the full [Screenshot Guide](docs/SCREENSHOTS.md).
 
 #### Automated (Playwright)
 
@@ -248,9 +252,9 @@ npm run build
 npm run screenshots
 ```
 
-PNGs will be saved into `docs/screenshots/` (home, diagnostics, boost, settings).
+PNG outputs land in `docs/screenshots/` (home, diagnostics, boost, maintenance, parts, rides, settings).
 
-## �️ Development
+## 🛠️ Development
 
 For developer documentation and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
