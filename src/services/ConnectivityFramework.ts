@@ -1,22 +1,7 @@
 // Connectivity Framework - Central hub for all connections and data flow
 import { databaseService } from './DatabaseService'
-import type { Device, Trip, Maintenance, Settings, DbSchema } from './dbTypes'
-
-// Internal types
-interface RideRecord extends Omit<Trip, 'environment'> {
-  deviceId: string;
-  environment?: {
-    weather: Array<{
-      condition: string;
-      temperature: number;
-      humidity: number;
-      windSpeed: number;
-      windDirection: number;
-    }>;
-    temperature: number[];
-    elevation: Array<{ distance: number; elevation: number }>;
-  }
-}
+import { log } from './logger'
+import type { Trip } from './dbTypes'
 import { sensorService, type SensorData, type LocationData } from './SensorService'
 import { networkService, type WeatherData } from './NetworkService'
 
@@ -127,10 +112,10 @@ class ConnectivityFramework {
       // Request permissions
       await this.requestPermissions()
       
-      this.isInitialized = true
-      console.log('Connectivity Framework initialized successfully')
+  this.isInitialized = true
+  log.info('Connectivity Framework initialized successfully')
     } catch (error) {
-      console.error('Failed to initialize Connectivity Framework:', error)
+  log.error('Failed to initialize Connectivity Framework:', error)
     }
   }
 
@@ -161,7 +146,7 @@ class ConnectivityFramework {
 
     // Database events
     databaseService.on('database:ready', () => {
-      console.log('Database ready for connectivity framework')
+      log.debug('Database ready for connectivity framework')
     })
   }
 
@@ -244,7 +229,7 @@ class ConnectivityFramework {
       try {
         await ((DeviceMotionEvent as unknown) as { requestPermission: () => Promise<string> }).requestPermission()
       } catch {
-        console.log('Motion permission denied')
+        log.warn('Motion permission denied')
       }
     }
   }
@@ -332,11 +317,11 @@ class ConnectivityFramework {
       // Save to database
       await this.saveRideToDatabase()
 
-      console.log('Ride started with full connectivity:', this.activeRide.id)
+  log.info('Ride started with full connectivity:', this.activeRide.id)
       return this.activeRide.id
 
     } catch (error) {
-      console.error('Failed to start ride:', error)
+  log.error('Failed to start ride:', error)
       throw error
     }
   }
@@ -385,13 +370,13 @@ class ConnectivityFramework {
       try {
         await networkService.getConnectionStatus()
       } catch (error) {
-        console.log('Cloud sync will happen when connection is available')
+        log.warn('Cloud sync will happen when connection is available')
       }
 
       return completedRide
 
     } catch (error) {
-      console.error('Failed to stop ride:', error)
+      log.error('Failed to stop ride:', error)
       throw error
     }
   }
@@ -436,7 +421,7 @@ class ConnectivityFramework {
         }
 
       } catch (error) {
-        console.error('Data collection error:', error)
+        log.error('Data collection error:', error)
       }
     }, 1000) // Collect data every second
   }
@@ -525,9 +510,9 @@ class ConnectivityFramework {
         severity: 'high'
       })
       
-      console.log('Emergency alert sent:', motionData)
+  log.info('Emergency alert sent:', motionData)
     } catch (error) {
-      console.error('Failed to handle emergency:', error)
+  log.error('Failed to handle emergency:', error)
     }
   }
 
@@ -743,8 +728,10 @@ class ConnectivityFramework {
     // Use device battery if available
     if ('getBattery' in navigator) {
       try {
-        const battery = await (navigator as any).getBattery()
-        return battery.level * 100
+        const navWithBattery = navigator as Navigator & { getBattery?: () => Promise<{ level: number }> }
+        const battery = await navWithBattery.getBattery?.()
+        if (battery) return battery.level * 100
+        return 100
       } catch (error) {
         return 100
       }
@@ -761,7 +748,7 @@ class ConnectivityFramework {
       const weather = await networkService.getWeatherData(location.latitude, location.longitude)
       this.handleWeatherUpdate(weather)
     } catch (error) {
-      console.error('Failed to update weather data:', error)
+      log.error('Failed to update weather data:', error)
     }
   }
 
@@ -780,7 +767,7 @@ class ConnectivityFramework {
         await databaseService.create('trips', rideRecord)
       }
     } catch (error) {
-      console.error('Failed to save ride to database:', error)
+      log.error('Failed to save ride to database:', error)
     }
   }
 

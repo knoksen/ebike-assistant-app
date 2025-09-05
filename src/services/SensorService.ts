@@ -1,5 +1,12 @@
 // Sensor Integration Service - Bluetooth, ANT+, WiFi sensor support
 import { databaseService } from './DatabaseService'
+// Lightweight structural types to avoid pervasive 'any'
+interface BLEDeviceLike { id: string; name?: string; gatt?: { connect: () => Promise<GATTServerLike> } }
+interface GATTServerLike { getPrimaryService(uuid: string): Promise<GATTServiceLike> }
+interface GATTServiceLike { getCharacteristic(uuid: string): Promise<GATTCharacteristicLike> }
+interface GATTCharacteristicLike { startNotifications?: () => Promise<void>; addEventListener?: (ev: string, cb: (e: Event) => void) => void; readValue?: () => Promise<DataView>; writeValue?: (data: Uint8Array) => Promise<void> }
+interface SerialPortLike { readable: ReadableStream; open: (opts: { baudRate: number }) => Promise<void> }
+import { log } from './logger'
 
 // Sensor data types
 export interface SensorData {
@@ -54,7 +61,7 @@ class SensorService {
   private sensors: Map<string, SensorDevice> = new Map()
   private dataStreams: Map<string, SensorData[]> = new Map()
   private eventListeners: Map<string, Array<(data: unknown) => void>> = new Map()
-  private characteristics: Map<string, any> = new Map()
+  private characteristics: Map<string, GATTCharacteristicLike> = new Map()
   private isRecording = false
   private recordingStartTime = 0
   private watchId: number | null = null
@@ -110,7 +117,7 @@ class SensorService {
     this.bluetoothSupported = 'bluetooth' in navigator
     this.webSerialSupported = 'serial' in navigator
     
-    console.log('Sensor capabilities:', {
+  log.info('Sensor capabilities:', {
       bluetooth: this.bluetoothSupported,
       webSerial: this.webSerialSupported,
       geolocation: 'geolocation' in navigator,
@@ -193,7 +200,8 @@ class SensorService {
     }
 
     try {
-      const device = await (navigator as any).bluetooth.requestDevice({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const device = await (navigator as any).bluetooth.requestDevice({
         filters: [
           // Miscooter0211 and Xiaomi scooters
           { services: [this.BLUETOOTH_SERVICES.MISCOOTER_SERVICE] },
@@ -244,11 +252,13 @@ class SensorService {
       
       return [sensorDevice]
     } catch (error) {
-      console.error('Bluetooth scan error:', error)
+  log.warn('Bluetooth scan error:', error)
       throw error
     }
   }
 
+  // Minimal capability detection, keep loose typing for flexibility
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private detectCapabilities(device: any): string[] {
     const capabilities: string[] = []
     
@@ -271,7 +281,9 @@ class SensorService {
       sensor.connectionStatus = 'connecting'
       this.emit('sensor:connecting', sensor)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const deviceList = await (navigator as any).bluetooth.getDevices()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const device = deviceList.find((d: any) => d.id === sensorId)
       
       if (!device) throw new Error('Device not found')
@@ -308,7 +320,7 @@ class SensorService {
     }
   }
 
-  private async subscribeToBluetoothServices(server: any, sensor: SensorDevice): Promise<void> {
+  private async subscribeToBluetoothServices(server: GATTServerLike, sensor: SensorDevice): Promise<void> {
     try {
       // Miscooter service
       const miscooterService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.MISCOOTER_SERVICE).catch(() => null)
@@ -318,12 +330,12 @@ class SensorService {
         const txChar = await miscooterService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.MISCOOTER_TX)
 
         // Start notifications for receiving data
-        await txChar.startNotifications()
-        txChar.addEventListener('characteristicvaluechanged', (event: any) => {
-          const value = event.target.value
-          if (!value) return
-
-          const data = new Uint8Array(value.buffer)
+        if (txChar.startNotifications) await txChar.startNotifications()
+        txChar.addEventListener?.('characteristicvaluechanged', (event: Event) => {
+          const target = event.target as unknown as { value?: DataView }
+          const dv = target?.value
+          if (!dv) return
+          const data = new Uint8Array(dv.buffer)
           this.handleMiscooterData(sensor.id, data)
         })
 
@@ -345,9 +357,10 @@ class SensorService {
       const cscService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.CYCLING_SPEED_CADENCE).catch(() => null)
       if (cscService) {
         const cscChar = await cscService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.CSC_MEASUREMENT)
-        await cscChar.startNotifications()
-        cscChar.addEventListener('characteristicvaluechanged', (event: any) => {
-          this.handleCSCData(sensor.id, event.target.value!)
+        if (cscChar.startNotifications) await cscChar.startNotifications()
+        cscChar.addEventListener?.('characteristicvaluechanged', (event: Event) => {
+          const target = event.target as unknown as { value?: DataView }
+          if (target.value) this.handleCSCData(sensor.id, target.value)
         })
       }
 
@@ -355,9 +368,10 @@ class SensorService {
       const hrService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.HEART_RATE).catch(() => null)
       if (hrService) {
         const hrChar = await hrService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.HEART_RATE_MEASUREMENT)
-        await hrChar.startNotifications()
-        hrChar.addEventListener('characteristicvaluechanged', (event: any) => {
-          this.handleHeartRateData(sensor.id, event.target.value!)
+        if (hrChar.startNotifications) await hrChar.startNotifications()
+        hrChar.addEventListener?.('characteristicvaluechanged', (event: Event) => {
+          const target = event.target as unknown as { value?: DataView }
+          if (target.value) this.handleHeartRateData(sensor.id, target.value)
         })
       }
 
@@ -365,9 +379,10 @@ class SensorService {
       const powerService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.CYCLING_POWER).catch(() => null)
       if (powerService) {
         const powerChar = await powerService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.CYCLING_POWER_MEASUREMENT)
-        await powerChar.startNotifications()
-        powerChar.addEventListener('characteristicvaluechanged', (event: any) => {
-          this.handlePowerData(sensor.id, event.target.value!)
+        if (powerChar.startNotifications) await powerChar.startNotifications()
+        powerChar.addEventListener?.('characteristicvaluechanged', (event: Event) => {
+          const target = event.target as unknown as { value?: DataView }
+          if (target.value) this.handlePowerData(sensor.id, target.value)
         })
       }
 
@@ -375,12 +390,14 @@ class SensorService {
       const batteryService = await server.getPrimaryService(this.BLUETOOTH_SERVICES.BATTERY_SERVICE).catch(() => null)
       if (batteryService) {
         const batteryChar = await batteryService.getCharacteristic(this.BLUETOOTH_CHARACTERISTICS.BATTERY_LEVEL)
-        const batteryLevel = await batteryChar.readValue()
-        sensor.batteryLevel = batteryLevel.getUint8(0)
+        if (batteryChar.readValue) {
+          const batteryLevel = await batteryChar.readValue()
+          sensor.batteryLevel = batteryLevel.getUint8(0)
+        }
       }
 
     } catch (error) {
-      console.error('Error subscribing to Bluetooth services:', error)
+  log.warn('Error subscribing to Bluetooth services:', error)
       throw error
     }
   }
@@ -389,13 +406,13 @@ class SensorService {
     const rxChar = this.characteristics.get(`${sensorId}_rx`)
     if (!rxChar) throw new Error('Device not ready for commands')
 
-    await rxChar.writeValue(new Uint8Array(command))
+  if (rxChar.writeValue) await rxChar.writeValue(new Uint8Array(command))
   }
 
   private handleMiscooterData(sensorId: string, data: Uint8Array): void {
     // Check header
     if (data[0] !== 0x55 || data[1] !== 0xAA) {
-      console.warn('Invalid Miscooter data header')
+  log.debug('Invalid Miscooter data header')
       return
     }
 
@@ -597,7 +614,8 @@ class SensorService {
     }
 
     try {
-      const port = await (navigator as any).serial.requestPort()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const port = await (navigator as any).serial.requestPort() as SerialPortLike
       await port.open({ baudRate: 9600 })
 
       const textDecoder = new TextDecoderStream()
@@ -619,7 +637,7 @@ class SensorService {
       }
 
     } catch (error) {
-      console.error('Serial connection error:', error)
+  log.error('Serial connection error:', error)
       throw error
     }
   }
@@ -656,7 +674,7 @@ class SensorService {
         }
       })
     } catch (error) {
-      console.error('Error parsing serial data:', error)
+  log.warn('Error parsing serial data:', error)
     }
   }
 

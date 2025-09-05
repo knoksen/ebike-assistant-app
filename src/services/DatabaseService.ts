@@ -1,6 +1,7 @@
 import { openDB } from 'idb'
 import type { IDBPDatabase } from 'idb'
 import type { Device, Trip, Maintenance, Settings, Sensor, DbSchema, DBStoreNames } from './dbTypes'
+import { log } from './logger'
 
 const DB_VERSION = 1
 const DB_NAME = 'ebike-assistant'
@@ -53,7 +54,7 @@ class DatabaseService {
 
       this.emit('database:ready', null)
     } catch (error) {
-      console.error('Failed to initialize database:', error)
+      log.error('Failed to initialize database:', error)
       this.emit('database:error', error)
     }
   }
@@ -302,7 +303,7 @@ class DatabaseService {
         repairs
       }
     } catch (error) {
-      console.error('Database verification failed:', error)
+      log.error('Database verification failed:', error)
       return {
         status: 'error',
         issues: [`Verification failed: ${error}`],
@@ -352,76 +353,6 @@ class DatabaseService {
 export const databaseService = new DatabaseService()
 export type { Device, Trip, Maintenance, Settings }
 
-await databaseService.create('devices', {
-  name: 'My Scooter',
-  type: 'scooter',
-  manufacturer: 'Miscooter',
-  model: '0211',
-  capabilities: ['speed', 'battery', 'odometer', 'tuning'],
-  connectionStatus: 'disconnected',
-  settings: {
-    speedLimit: 25,
-    boostMode: false
-  },
-  calibration: {},
-  lastData: {
-    timestamp: Date.now(),
-    values: {}
-  }
-})
-
-const tripId = await databaseService.create('trips', {
-  deviceId: 'your-device-id',
-  startTime: Date.now(),
-  endTime: 0,
-  distance: 0,
-  duration: 0,
-  averageSpeed: 0,
-  maxSpeed: 0,
-  status: 'active',
-  route: {
-    start: { lat: 0, lng: 0 },
-    path: []
-  },
-  stats: {
-    speed: [],
-    battery: []
-  },
-  metrics: {
-    distance: 0,
-    duration: 0,
-    avgSpeed: 0,
-    maxSpeed: 0,
-    elevation: {
-      gain: 0,
-      loss: 0,
-      max: 0,
-      min: 0
-    },
-    battery: {
-      startLevel: 100,
-      endLevel: 100,
-      consumption: 0,
-      efficiency: 0
-    },
-    calories: 0,
-    co2Saved: 0
-  },
-  metadata: {}
-})
-
-await databaseService.create('maintenance', {
-  deviceId: 'your-device-id',
-  type: 'service',
-  component: 'battery',
-  date: Date.now(),
-  mileage: 1000,
-  description: 'Battery calibration',
-  nextServiceDue: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
-})
-
-const health = await databaseService.verifyIntegrity()
-if (health.status === 'error') {
-  console.error('Database issues:', health.issues)
-  console.log('Repairs made:', health.repairs)
-}
+// NOTE: Removed automatic demo data creation & verification side-effects at module load.
+// If seed data is required for development or tests, implement in a dedicated
+// seeding utility or test setup file to avoid polluting production/runtime.
