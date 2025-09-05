@@ -8,7 +8,8 @@ export default function About() {
           <div className="text-center mb-12">
             <div className="mb-6">
               <img 
-                src={import.meta.env.BASE_URL + 'ebike-icon.svg'} 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                src={(import.meta as any).env.BASE_URL + 'ebike-icon.svg'} 
                 alt="E-Bike Assistant" 
                 className="w-20 h-20 mx-auto mb-4"
               />

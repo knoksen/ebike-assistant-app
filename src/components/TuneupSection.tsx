@@ -190,11 +190,13 @@ export function TuneupSectionComponent() {
           <span>Overall Progress</span>
           <span>{Math.round(progress)}% Complete</span>
         </div>
-        <div className="tuneup-progress-bar dark:tuneup-progress-bar-dark">
-          <div 
-            className="tuneup-progress-bar-fill"
+        <div className="progress-bar h-4">
+          <div
+            className="progress-bar__fill bg-gradient-to-r from-blue-500 via-indigo-500 to-green-500"
             style={{ width: `${progress}%` }}
-          />
+          >
+            <span className="progress-bar__shine" />
+          </div>
         </div>
         <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Estimated time remaining: {Math.round(totalTime * (1 - progress/100))} minutes

@@ -18,7 +18,8 @@ import './App.css'
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+  <BrowserRouter basename={(import.meta as any).env.BASE_URL}>
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-grow">

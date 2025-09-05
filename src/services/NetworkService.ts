@@ -84,7 +84,9 @@ export interface CommunityData {
 }
 
 class NetworkService {
-  private baseUrl = import.meta.env.VITE_API_URL || 'https://api.ebike-assistant.com'
+  // Access via loose cast to avoid build issues if env typing not merged
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private baseUrl = (import.meta as any).env.VITE_API_URL || 'https://api.ebike-assistant.com'
   private wsConnection: WebSocket | null = null
   private reconnectAttempts = 0
   private maxReconnectAttempts = 5
@@ -95,11 +97,16 @@ class NetworkService {
 
   // API Keys (in production, these should be secured)
   private readonly API_KEYS = {
-    weather: import.meta.env.VITE_WEATHER_API_KEY || '',
-    maps: import.meta.env.VITE_MAPS_API_KEY || '',
-    elevation: import.meta.env.VITE_ELEVATION_API_KEY || '',
-    traffic: import.meta.env.VITE_TRAFFIC_API_KEY || '',
-    community: import.meta.env.VITE_COMMUNITY_API_KEY || ''
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  weather: (import.meta as any).env.VITE_WEATHER_API_KEY || '',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  maps: (import.meta as any).env.VITE_MAPS_API_KEY || '',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  elevation: (import.meta as any).env.VITE_ELEVATION_API_KEY || '',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  traffic: (import.meta as any).env.VITE_TRAFFIC_API_KEY || '',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  community: (import.meta as any).env.VITE_COMMUNITY_API_KEY || ''
   }
 
   // External API endpoints
@@ -138,7 +145,8 @@ class NetworkService {
   private initializeWebSocket(): void {
     if (!this.isOnline) return
 
-    const wsUrl = import.meta.env.VITE_WS_URL || 'wss://ws.ebike-assistant.com'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const wsUrl = (import.meta as any).env.VITE_WS_URL || 'wss://ws.ebike-assistant.com'
     
     try {
       this.wsConnection = new WebSocket(wsUrl)

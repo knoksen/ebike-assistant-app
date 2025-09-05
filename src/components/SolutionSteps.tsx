@@ -118,6 +118,8 @@ export function SolutionSteps({ steps, faultInfo, onBack }: SolutionStepsProps) 
               </div>
             </div>
           </div>
+          {/* end relative container */}
+          </div>
         </div>
         
         {/* Progress bar */}
@@ -140,14 +142,12 @@ export function SolutionSteps({ steps, faultInfo, onBack }: SolutionStepsProps) 
               </div>
             </div>
             <div className="relative">
-              <div className="overflow-hidden h-4 rounded-full bg-gray-200 dark:bg-gray-700">
-                <div 
-                  className="h-full bg-gradient-to-r from-green-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
+              <div className="progress-bar h-4">
+                <div
+                  className="progress-bar__fill bg-gradient-to-r from-green-500 via-emerald-500 to-blue-500"
                   style={{ width: `${completionPercentage}%` }}
                 >
-                  <div className="absolute top-0 right-0 bottom-0 w-24 animate-shimmer">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12"></div>
-                  </div>
+                  <span className="progress-bar__shine" />
                 </div>
               </div>
               <div className="absolute -right-1 top-1/2 transform -translate-y-1/2">
@@ -283,8 +283,6 @@ export function SolutionSteps({ steps, faultInfo, onBack }: SolutionStepsProps) 
           </div>
         </div>
       </div>
-    </div>
-  )
     </div>
   )
 }

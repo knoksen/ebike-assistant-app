@@ -1,7 +1,6 @@
 // Sensor Integration Service - Bluetooth, ANT+, WiFi sensor support
 import { databaseService } from './DatabaseService'
 import { log } from './logger'
-import { hasBluetooth, hasSerial } from '../types/navigator-extensions'
 
 // Narrow structural helper types for internal maps (use platform types where possible)
 // Structural subsets compatible with Web Bluetooth types (accept superset methods)
@@ -121,8 +120,11 @@ class SensorService {
 
   // Check browser capabilities
   private checkCapabilities(): void {
-  this.bluetoothSupported = hasBluetooth(navigator)
-  this.webSerialSupported = hasSerial(navigator)
+  // Feature detection (avoid external helper to simplify build)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this.bluetoothSupported = typeof (navigator as any).bluetooth !== 'undefined'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this.webSerialSupported = typeof (navigator as any).serial !== 'undefined'
     
   log.info('Sensor capabilities:', {
       bluetooth: this.bluetoothSupported,
@@ -207,8 +209,10 @@ class SensorService {
     }
 
     try {
-  if (!hasBluetooth(navigator)) throw new Error('Bluetooth not available')
-  const device = await navigator.bluetooth.requestDevice({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (typeof (navigator as any).bluetooth === 'undefined') throw new Error('Bluetooth not available')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const device = await (navigator as any).bluetooth.requestDevice({
         filters: [
           // Miscooter0211 and Xiaomi scooters
           { services: [this.BLUETOOTH_SERVICES.MISCOOTER_SERVICE] },
@@ -287,8 +291,10 @@ class SensorService {
       sensor.connectionStatus = 'connecting'
       this.emit('sensor:connecting', sensor)
 
-  if (!hasBluetooth(navigator)) throw new Error('Bluetooth not available')
-  const deviceList = await navigator.bluetooth.getDevices()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (typeof (navigator as any).bluetooth === 'undefined') throw new Error('Bluetooth not available')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const deviceList = await (navigator as any).bluetooth.getDevices()
   const device = deviceList.find((d: { id: string }) => d.id === sensorId)
       
       if (!device) throw new Error('Device not found')
@@ -619,8 +625,10 @@ class SensorService {
     }
 
     try {
-  if (!hasSerial(navigator)) throw new Error('Web Serial API not available')
-  const port = await navigator.serial.requestPort()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (typeof (navigator as any).serial === 'undefined') throw new Error('Web Serial API not available')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const port = await (navigator as any).serial.requestPort()
       await port.open({ baudRate: 9600 })
 
       const textDecoder = new TextDecoderStream()
