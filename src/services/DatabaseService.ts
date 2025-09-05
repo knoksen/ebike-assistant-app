@@ -1,11 +1,11 @@
 import { openDB } from 'idb'
 import type { IDBPDatabase } from 'idb'
-import type { Device, Trip, Maintenance, Settings, DbSchema } from '../types/db'
+import type { Device, Trip, Maintenance, Settings, Sensor, DbSchema, DBStoreNames } from './dbTypes'
 
 const DB_VERSION = 1
 const DB_NAME = 'ebike-assistant'
 
-type TableNames = keyof DbSchema
+type TableNames = DBStoreNames
 type TableValue<T extends TableNames> = DbSchema[T]['value']
 
 class DatabaseService {
@@ -152,7 +152,7 @@ class DatabaseService {
   async list<T extends TableNames>(
     store: T,
     options?: {
-      index?: string
+      index?: keyof DbSchema[T]['indexes']
       query?: IDBKeyRange
       limit?: number
       offset?: number
@@ -161,24 +161,15 @@ class DatabaseService {
     const db = await this.ensureDb()
 
     if (options?.index) {
-      const cursor = await db.transaction(store).store.index(String(options.index)).openCursor()
-      const results: TableValue<T>[] = []
+      const tx = db.transaction(store)
+      const idx = tx.store.index(options.index)
       
-      if (cursor) {
-        let count = 0
-        const offset = options.offset || 0
-        const limit = options.limit || Infinity
+      const all = await idx.getAll()
+      const results = options.limit 
+        ? all.slice(options.offset || 0, options.limit)
+        : all.slice(options.offset || 0)
 
-        while (cursor && count < limit + offset) {
-          if (count >= offset) {
-            results.push(cursor.value as TableValue<T>)
-          }
-          count++
-          await cursor.continue()
-        }
-      }
-
-      return results
+      return results as TableValue<T>[]
     }
 
     return await db.getAll(store)
@@ -387,9 +378,34 @@ const tripId = await databaseService.create('trips', {
   duration: 0,
   averageSpeed: 0,
   maxSpeed: 0,
+  status: 'active',
+  route: {
+    start: { lat: 0, lng: 0 },
+    path: []
+  },
   stats: {
     speed: [],
     battery: []
+  },
+  metrics: {
+    distance: 0,
+    duration: 0,
+    avgSpeed: 0,
+    maxSpeed: 0,
+    elevation: {
+      gain: 0,
+      loss: 0,
+      max: 0,
+      min: 0
+    },
+    battery: {
+      startLevel: 100,
+      endLevel: 100,
+      consumption: 0,
+      efficiency: 0
+    },
+    calories: 0,
+    co2Saved: 0
   },
   metadata: {}
 })

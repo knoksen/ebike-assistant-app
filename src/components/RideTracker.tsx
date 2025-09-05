@@ -3,6 +3,7 @@ import { connectivityFramework } from '../services/ConnectivityFramework'
 import type { EnhancedRideData } from '../types/ride'
 import { sensorService, type SensorDevice } from '../services/SensorService'
 import { networkService } from '../services/NetworkService'
+import '../styles/ride-tracker.css'
 
 import type { Ride, RideStats, ConnectionStatus, WeatherType, AssistLevel } from '../types/types'
 
@@ -851,13 +852,13 @@ export function RideTracker() {
                 <span>Battery: {ride.batteryStart}% → {ride.batteryEnd}%</span>
                 <span>Used: {ride.batteryUsed}%</span>
               </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div className="battery-usage-bar">
                 <div 
-                  className="bg-green-500 h-2 rounded-full relative"
+                  className="battery-usage-indicator"
                   style={{ width: `${Math.min(100, ride.batteryStart)}%` }}
                 >
                   <div 
-                    className="absolute top-0 right-0 h-2 bg-red-400 rounded-r-full"
+                    className="battery-usage-consumed"
                     style={{ 
                       width: `${Math.min(100, (ride.batteryUsed / Math.max(1, ride.batteryStart)) * 100)}%`
                     }}

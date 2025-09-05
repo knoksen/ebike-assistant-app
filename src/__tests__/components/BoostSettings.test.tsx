@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi } from 'vitest'
 import { BoostSettings } from '../../components/BoostSettings'
+import { ThemeProvider } from '../../context/ThemeContext'
 
 const mockStorage = {
   store: {} as Record<string, string>,
@@ -25,7 +26,11 @@ describe('BoostSettings', () => {
   })
 
   test('renders default profiles', () => {
-    render(<BoostSettings />)
+    render(
+      <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
+        <BoostSettings />
+      </ThemeProvider>
+    )
     
     // Check all profile buttons are present
     const ecoButton = screen.getByRole('button', { name: /eco/i })
@@ -62,7 +67,11 @@ describe('BoostSettings', () => {
     }
 
     mockStorage.store['boostSettings'] = JSON.stringify(savedSettings)
-    render(<BoostSettings />)
+    render(
+      <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
+        <BoostSettings />
+      </ThemeProvider>
+    )
 
     // The boost profile should be active
     const boostButton = screen.getByRole('button', { name: /boost/i })
@@ -79,7 +88,11 @@ describe('BoostSettings', () => {
   })
 
   test('saves settings to localStorage when updated', async () => {
-    render(<BoostSettings />)
+    render(
+      <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
+        <BoostSettings />
+      </ThemeProvider>
+    )
 
     // Change to boost profile
     const boostButton = screen.getByRole('button', { name: /boost/i })
@@ -110,7 +123,11 @@ describe('BoostSettings', () => {
       throw new Error('Storage full')
     })
 
-    render(<BoostSettings />)
+    render(
+      <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
+        <BoostSettings />
+      </ThemeProvider>
+    )
 
     // Try to save
     const saveButton = screen.getByRole('button', { name: /save changes/i })
@@ -123,7 +140,11 @@ describe('BoostSettings', () => {
   })
 
   test('updates profile when slider controls are changed', () => {
-    render(<BoostSettings />)
+    render(
+      <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
+        <BoostSettings />
+      </ThemeProvider>
+    )
 
     // Switch to custom profile
     const customButton = screen.getByRole('button', { name: /custom/i })
@@ -150,7 +171,11 @@ describe('BoostSettings', () => {
   })
 
   test('toggles profile enabled state', () => {
-    render(<BoostSettings />)
+    render(
+      <ThemeProvider initialState={{ theme: 'default', isDark: false }}>
+        <BoostSettings />
+      </ThemeProvider>
+    )
 
     // Switch to custom profile
     const customButton = screen.getByRole('button', { name: /custom/i })

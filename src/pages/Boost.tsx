@@ -1,4 +1,4 @@
-import BoostSettings from '../components/BoostSettings'
+import { BoostSettings } from '../components/BoostSettings'
 
 export default function Boost() {
   return (

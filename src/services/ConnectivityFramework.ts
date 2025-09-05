@@ -1,5 +1,22 @@
 // Connectivity Framework - Central hub for all connections and data flow
-import { databaseService, type EBikeDB } from './DatabaseService'
+import { databaseService } from './DatabaseService'
+import type { Device, Trip, Maintenance, Settings, DbSchema } from './dbTypes'
+
+// Internal types
+interface RideRecord extends Omit<Trip, 'environment'> {
+  deviceId: string;
+  environment?: {
+    weather: Array<{
+      condition: string;
+      temperature: number;
+      humidity: number;
+      windSpeed: number;
+      windDirection: number;
+    }>;
+    temperature: number[];
+    elevation: Array<{ distance: number; elevation: number }>;
+  }
+}
 import { sensorService, type SensorData, type LocationData } from './SensorService'
 import { networkService, type WeatherData } from './NetworkService'
 
@@ -719,8 +736,8 @@ class ConnectivityFramework {
 
   private async getBatteryLevel(bikeId?: string): Promise<number> {
     if (bikeId) {
-      const bike = await databaseService.read('bikes', bikeId)
-      return bike?.specifications.battery.health || 100
+      const bike = await databaseService.get('devices', bikeId)
+      return bike?.batteryLevel || 100
     }
     
     // Use device battery if available
@@ -756,26 +773,37 @@ class ConnectivityFramework {
       const rideRecord = this.convertToRideRecord(this.activeRide)
       
       // Save or update
-      const existingRide = await databaseService.read('rides', this.activeRide.id)
+      const existingRide = await databaseService.get('trips', this.activeRide.id)
       if (existingRide) {
-        await databaseService.update('rides', this.activeRide.id, rideRecord)
+        await databaseService.update('trips', this.activeRide.id, rideRecord)
       } else {
-        await databaseService.create('rides', rideRecord)
+        await databaseService.create('trips', rideRecord)
       }
     } catch (error) {
       console.error('Failed to save ride to database:', error)
     }
   }
 
-  private convertToRideRecord(ride: EnhancedRideData): EBikeDB['rides']['value'] {
+  private convertToRideRecord(ride: EnhancedRideData): Trip {
     return {
       id: ride.id,
-      timestamp: ride.startTime,
-      bikeId: 'default-bike',
-      route: {
-        startLocation: ride.route.start,
-        endLocation: ride.route.end || ride.route.start,
-        waypoints: ride.route.path
+      created: Date.now(),
+      lastModified: Date.now(),
+      deviceId: 'default-device',
+      startTime: ride.startTime,
+      endTime: ride.endTime || ride.startTime,
+      status: ride.status,
+      distance: ride.distance,
+      duration: ride.duration,
+      averageSpeed: ride.averageSpeed,
+      maxSpeed: ride.maxSpeed,
+      route: ride.route,
+      stats: {
+        speed: ride.sensorData.speed.map(s => s.value),
+        cadence: ride.sensorData.cadence.map(s => s.value),
+        power: ride.sensorData.power.map(s => s.value),
+        heartRate: ride.sensorData.heartRate.map(s => s.value),
+        battery: []
       },
       metrics: {
         distance: ride.distance,
@@ -792,17 +820,12 @@ class ConnectivityFramework {
           startLevel: ride.battery.startLevel,
           endLevel: ride.battery.endLevel || 0,
           consumption: ride.battery.consumption,
-          efficiency: ride.battery.efficiency
+          efficiency: ride.battery.efficiency,
+          temperature: ride.battery.temperature,
+          voltage: ride.battery.voltage
         },
         calories: ride.analytics.calories,
         co2Saved: ride.analytics.co2Saved
-      },
-      conditions: {
-        weather: ride.environment.weather[0]?.condition || 'unknown',
-        temperature: ride.environment.temperature[0] || 20,
-        humidity: ride.environment.weather[0]?.humidity || 50,
-        windSpeed: ride.environment.weather[0]?.windSpeed || 0,
-        windDirection: ride.environment.weather[0]?.windDirection || 0
       },
       sensors: {
         heartRate: ride.sensorData.heartRate.map(s => s.value),
@@ -810,10 +833,25 @@ class ConnectivityFramework {
         power: ride.sensorData.power.map(s => s.value),
         gpsAccuracy: ride.sensorData.gps.map(s => s.accuracy)
       },
-      assistLevel: 'auto',
-      notes: ride.insights.recommendations.join('; '),
-      synchronized: false,
-      lastModified: Date.now()
+      metadata: {
+        weatherConditions: ride.environment.weather[0]?.condition || 'unknown',
+        temperature: ride.environment.temperature[0] || 20,
+        notes: ride.insights.recommendations.join('; ')
+      },
+      environment: {
+        weather: ride.environment.weather.map(w => ({
+          condition: w.condition,
+          temperature: w.temperature,
+          humidity: w.humidity,
+          windSpeed: w.windSpeed,
+          windDirection: w.windDirection,
+          visibility: 0,
+          pressure: 0,
+          uvIndex: 0
+        })),
+        temperature: ride.environment.temperature,
+        elevation: ride.environment.elevation
+      }
     }
   }
 
@@ -827,26 +865,29 @@ class ConnectivityFramework {
   }
 
   async getRideHistory(limit = 10): Promise<EnhancedRideData[]> {
-    const rides = await databaseService.list('rides', {
-      index: 'timestamp',
+    const rides = await databaseService.list('trips', {
+      index: 'by-date',
       limit
     })
     
-    // Convert from database format (simplified for this example)
+    // Convert from database format
     return rides.map(ride => ({
       id: ride.id,
-      startTime: ride.timestamp,
-      endTime: ride.timestamp + ride.metrics.duration,
-      status: 'completed' as const,
-      distance: ride.metrics.distance,
-      duration: ride.metrics.duration,
-      averageSpeed: ride.metrics.avgSpeed,
-      maxSpeed: ride.metrics.maxSpeed,
-      route: ride.route,
+      startTime: ride.startTime,
+      endTime: ride.endTime,
+      status: ride.status || 'completed' as const,
+      distance: ride.distance,
+      duration: ride.duration,
+      averageSpeed: ride.averageSpeed,
+      maxSpeed: ride.maxSpeed,
+      route: ride.route || {
+        start: { lat: 0, lng: 0 },
+        path: []
+      },
       sensorData: {
         gps: [],
-        heartRate: ride.sensors.heartRate?.map(hr => ({
-          timestamp: ride.timestamp,
+        heartRate: ride.sensors?.heartRate?.map(hr => ({
+          timestamp: ride.startTime,
           sensorId: 'heart-rate',
           type: 'heart-rate' as const,
           value: hr,
@@ -858,21 +899,25 @@ class ConnectivityFramework {
         motion: []
       },
       environment: {
-        weather: [],
-        temperature: [ride.conditions.temperature],
-        elevation: []
+        weather: ride.environment?.weather || [],
+        temperature: ride.environment?.temperature || [],
+        elevation: ride.environment?.elevation || []
       },
-      battery: ride.metrics.battery,
+      battery: {
+        ...ride.metrics.battery,
+        temperature: ride.metrics.battery.temperature || [],
+        voltage: ride.metrics.battery.voltage || []
+      },
       analytics: {
-        calories: ride.metrics.calories,
-        co2Saved: ride.metrics.co2Saved,
-        maxElevation: ride.metrics.elevation.max,
-        minElevation: ride.metrics.elevation.min
+        calories: ride.metrics?.calories || 0,
+        co2Saved: ride.metrics?.co2Saved || 0,
+        maxElevation: ride.metrics?.elevation?.max || 0,
+        minElevation: ride.metrics?.elevation?.min || 0
       },
       insights: {
         routeRating: 5,
         difficultyActual: 'moderate' as const,
-        recommendations: ride.notes ? ride.notes.split('; ') : [],
+        recommendations: ride.metadata?.notes ? ride.metadata.notes.split('; ') : [],
         anomalies: []
       }
     }))

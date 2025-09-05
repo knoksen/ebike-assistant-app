@@ -1,7 +1,4 @@
-import type { DBSchema, IDBPDatabase, IDBPTransaction } from 'idb'
-
-// Store names in the database
-export type DBStoreNames = 'devices' | 'trips' | 'maintenance' | 'sensors' | 'settings'
+import type { DBSchema } from 'idb';
 
 // Base type for all entities
 export interface BaseEntity {
@@ -38,12 +35,10 @@ export interface Trip extends BaseEntity {
   duration: number;
   averageSpeed: number;
   maxSpeed: number;
-  status: 'active' | 'paused' | 'completed';
   calories?: number;
-  route: {
-    start: { lat: number; lng: number; address?: string };
-    end?: { lat: number; lng: number; address?: string };
-    path: Array<{ lat: number; lng: number; timestamp: number; speed: number; elevation?: number }>;
+  route?: {
+    type: 'LineString';
+    coordinates: [number, number][];
   };
   stats: {
     speed: number[];
@@ -52,53 +47,10 @@ export interface Trip extends BaseEntity {
     heartRate?: number[];
     battery?: number[];
   };
-  sensors?: {
-    heartRate: number[];
-    cadence: number[];
-    power: number[];
-    gpsAccuracy: number[];
-  };
-  metrics: {
-    distance: number;
-    duration: number;
-    avgSpeed: number;
-    maxSpeed: number;
-    elevation: {
-      gain: number;
-      loss: number;
-      max: number;
-      min: number;
-    };
-    battery: {
-      startLevel: number;
-      endLevel: number;
-      consumption: number;
-      efficiency: number;
-      temperature?: number[];
-      voltage?: number[];
-    };
-    calories: number;
-    co2Saved: number;
-  };
   metadata: {
     weatherConditions?: string;
     temperature?: number;
     notes?: string;
-    synced?: boolean;
-  };
-  environment?: {
-    weather: Array<{
-      condition: string;
-      temperature: number;
-      humidity: number;
-      windSpeed: number;
-      windDirection: number;
-      visibility: number;
-      pressure: number;
-      uvIndex: number;
-    }>;
-    temperature: number[];
-    elevation: Array<{ distance: number; elevation: number }>;
   };
 }
 
@@ -143,7 +95,7 @@ export interface Settings extends BaseEntity {
   synchronized: boolean;
 }
 
-// Database schema type definitions
+// Database schema
 export interface DbSchema extends DBSchema {
   devices: {
     key: string;
@@ -186,12 +138,3 @@ export interface DbSchema extends DBSchema {
     };
   };
 }
-
-// Type helpers
-export type TableNames = DBStoreNames;
-export type TableValue<T extends TableNames> = DbSchema[T]['value'];
-export type TableIndexes<T extends TableNames> = keyof DbSchema[T]['indexes'];
-
-// Transaction type helper
-export type DBTransaction<T extends TableNames> = IDBPTransaction<DbSchema, [T], 'readwrite'>;
-export type DB = IDBPDatabase<DbSchema>;

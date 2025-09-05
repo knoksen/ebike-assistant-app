@@ -1,9 +1,9 @@
 declare interface BluetoothDevice {
   id: string
   name: string | null
-  gatt?: {
-    connect(): Promise<BluetoothRemoteGATTServer>
-  }
+  gatt: BluetoothRemoteGATTServer
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void
 }
 
 declare interface BluetoothRemoteGATTServer {
