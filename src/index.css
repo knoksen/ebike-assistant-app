@@ -79,6 +79,19 @@
   .badge-error {
     @apply badge bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
   }
+
+  /* Unified progress bar utilities */
+  .progress-bar {
+    @apply relative bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-full;
+  }
+  .progress-bar__fill {
+    @apply h-full transition-all duration-500 ease-out rounded-full relative;
+  }
+  .progress-bar__shine {
+    @apply absolute top-0 bottom-0 right-0 w-24 pointer-events-none;
+    background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.4) 45%, transparent 100%);
+    animation: shimmer 2s linear infinite;
+  }
 }
 
 /* Animation classes */
@@ -165,4 +178,9 @@
   40% { content: '..'; }
   60% { content: '...'; }
   80%, 100% { content: ''; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-200%); }
 }

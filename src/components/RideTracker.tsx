@@ -852,18 +852,11 @@ export function RideTracker() {
                 <span>Battery: {ride.batteryStart}% → {ride.batteryEnd}%</span>
                 <span>Used: {ride.batteryUsed}%</span>
               </div>
-              <div className="battery-usage-bar">
-                <div 
-                  className="battery-usage-indicator"
-                  style={{ width: `${Math.min(100, ride.batteryStart)}%` }}
-                >
-                  <div 
-                    className="battery-usage-consumed"
-                    style={{ 
-                      width: `${Math.min(100, (ride.batteryUsed / Math.max(1, ride.batteryStart)) * 100)}%`
-                    }}
-                  />
-                </div>
+              <div className="battery-usage-bar progress-bar h-2 bg-gray-200 dark:bg-gray-700 rounded-md overflow-hidden">
+                <div
+                  className="progress-bar__fill bg-gradient-to-r from-green-500 to-emerald-600"
+                  style={{ ['--pb-width' as string]: `${Math.min(100, (ride.batteryUsed / Math.max(1, ride.batteryStart)) * 100)}%` }}
+                />
               </div>
             </div>
           </div>
