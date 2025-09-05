@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "Your comprehensive e-bike maintenance and troubleshooting companion",
+  "author": "knoksen <support@ebike-assistant.app>",
   "type": "module",
   "main": "electron/main.js",
   "scripts": {
@@ -107,7 +108,6 @@
           ]
         }
       ],
-      "icon": "public/ebike-icon.svg",
       "verifyUpdateCodeSignature": false
     },
     "linux": {
