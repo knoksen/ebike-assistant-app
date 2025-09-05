@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { log } from '../services/logger'
 import { sensorService } from '../services/SensorService'
 import { useTheme } from '../context/useTheme'
 
@@ -204,7 +205,7 @@ export default function Settings() {
         const parsed = JSON.parse(savedSettings)
         setSettings({ ...DEFAULT_SETTINGS, ...parsed })
       } catch (error) {
-        console.error('Failed to load settings:', error)
+        log.error('Failed to load settings:', error)
       }
     }
   }, [])
@@ -270,7 +271,7 @@ export default function Settings() {
       const sensors = await sensorService.scanBluetoothSensors()
       setConnectedSensors(sensors)
     } catch (error) {
-      console.error('Failed to scan sensors:', error)
+      log.error('Failed to scan sensors:', error)
     } finally {
       setIsScanning(false)
     }
@@ -281,7 +282,7 @@ export default function Settings() {
       await sensorService.disconnectSensor(sensorId)
       setConnectedSensors(prev => prev.filter(sensor => sensor.id !== sensorId))
     } catch (error) {
-      console.error('Failed to disconnect sensor:', error)
+      log.error('Failed to disconnect sensor:', error)
     }
   }
 
@@ -303,7 +304,7 @@ export default function Settings() {
       setSaveStatus('saved')
       setTimeout(() => setSaveStatus('idle'), 2000)
     } catch (error) {
-      console.error('Failed to save settings:', error)
+      log.error('Failed to save settings:', error)
       setSaveStatus('error')
       setTimeout(() => setSaveStatus('idle'), 2000)
     }
@@ -351,8 +352,10 @@ export default function Settings() {
               </label>
               <select
                 value={settings.language}
-                onChange={(e) => updateSettings({ language: e.target.value as any })}
+                onChange={(e) => updateSettings({ language: e.target.value as UserSettings['language'] })}
                 className="w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                title="Select language"
+                aria-label="Language"
               >
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -367,8 +370,10 @@ export default function Settings() {
               </label>
               <select
                 value={settings.theme}
-                onChange={(e) => updateSettings({ theme: e.target.value as any })}
+                onChange={(e) => updateSettings({ theme: e.target.value as UserSettings['theme'] })}
                 className="w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                title="Select theme"
+                aria-label="Theme"
               >
                 <option value="auto">Auto (System)</option>
                 <option value="light">Light</option>
@@ -446,6 +451,8 @@ export default function Settings() {
               </label>
               <input
                 type="number"
+                aria-label="Battery capacity"
+                title="Battery capacity"
                 min="2010"
                 max="2025"
                 value={settings.bikeProfile.year || ''}
@@ -512,6 +519,8 @@ export default function Settings() {
               </label>
               <input
                 type="date"
+                aria-label="Purchase date"
+                title="Purchase date"
                 value={settings.bikeProfile.purchaseDate || ''}
                 onChange={(e) => updateBikeProfile({ purchaseDate: e.target.value })}
                 className="w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white"

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
+import { log } from '../services/logger'
 import { connectivityFramework } from '../services/ConnectivityFramework'
 import type { EnhancedRideData } from '../types/ride'
 import { sensorService, type SensorDevice } from '../services/SensorService'
-import { networkService } from '../services/NetworkService'
 import '../styles/ride-tracker.css'
 
-import type { Ride, RideStats, ConnectionStatus, WeatherType, AssistLevel } from '../types/types'
+import type { Ride, RideStats } from '../types/types'
 
 export function RideTracker() {
   const [rides, setRides] = useState<Ride[]>([])
@@ -50,7 +50,7 @@ export function RideTracker() {
         })
 
       } catch (error) {
-        console.error('Failed to initialize services:', error)
+        log.error('Failed to initialize services:', error)
       }
     }
 
@@ -302,9 +302,9 @@ export function RideTracker() {
                   try {
                     setIsRecording(true)
                     const rideId = await connectivityFramework.startRide()
-                    console.log('Started ride tracking:', rideId)
+                    log.info('Started ride tracking:', rideId)
                   } catch (error) {
-                    console.error('Failed to start ride:', error)
+                    log.error('Failed to start ride:', error)
                     setIsRecording(false)
                   }
                 }}
@@ -368,7 +368,7 @@ export function RideTracker() {
                     
                     setRides(prev => [newRide, ...prev])
                   } catch (error) {
-                    console.error('Failed to stop ride:', error)
+                    log.error('Failed to stop ride:', error)
                   }
                 }}
                 className="btn-primary bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 group relative"
@@ -594,10 +594,10 @@ export function RideTracker() {
                   onClick={async () => {
                     try {
                       const devices = await sensorService.scanBluetoothSensors()
-                      console.log('Found devices:', devices)
+                      log.debug('Found devices:', devices)
                       // Here you would typically show a device selection modal
                     } catch (error) {
-                      console.error('Failed to scan for sensors:', error)
+                      log.error('Failed to scan for sensors:', error)
                     }
                   }}
                   className="w-full flex items-center gap-2 p-3 text-left bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
@@ -617,7 +617,7 @@ export function RideTracker() {
                       await sensorService.startGPSTracking()
                       setConnectionStatus(prev => ({ ...prev, gps: true }))
                     } catch (error) {
-                      console.error('Failed to start GPS:', error)
+                      log.error('Failed to start GPS:', error)
                     }
                   }}
                   disabled={connectionStatus.gps}
@@ -915,7 +915,7 @@ export function RideTracker() {
               try {
                 await sensorService.scanBluetoothSensors()
               } catch (error) {
-                console.error('Failed to scan for sensors:', error)
+                log.error('Failed to scan for sensors:', error)
               }
             }}
             className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg 
@@ -937,7 +937,7 @@ export function RideTracker() {
                 await sensorService.startGPSTracking()
                 setConnectionStatus(prev => ({ ...prev, gps: true }))
               } catch (error) {
-                console.error('Failed to start GPS:', error)
+                log.error('Failed to start GPS:', error)
               }
             }}
             disabled={connectionStatus.gps}

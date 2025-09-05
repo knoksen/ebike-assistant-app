@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
+import { log } from '../services/logger'
 import { sensorService } from '../services/SensorService'
 import { BluetoothSelector } from './BluetoothSelector'
-import type { TelemetryData } from '../services/BluetoothService'
 
 type UserSettings = {
   units: 'metric' | 'imperial'
@@ -137,6 +137,8 @@ const SliderControl = ({ value, onChange, min, max, step = 1, label, unit }: {
     </div>
     <div className="relative">
       <input
+        aria-label="Distance value"
+        title="Distance value"
         type="range"
         min={min}
         max={max}
@@ -190,7 +192,7 @@ export function Settings() {
         const parsed = JSON.parse(savedSettings)
         setSettings({ ...DEFAULT_SETTINGS, ...parsed })
       } catch (error) {
-        console.error('Failed to load settings:', error)
+        log.error('Failed to load settings:', error)
       }
     }
 
@@ -225,7 +227,7 @@ export function Settings() {
         }
       })
     } catch (error) {
-      console.error('Failed to update system stats:', error)
+      log.error('Failed to update system stats:', error)
     }
   }
 
@@ -615,6 +617,8 @@ export function Settings() {
                     Purchase Date
                   </label>
                   <input
+                    aria-label="Bike purchase date"
+                    title="Bike purchase date"
                     type="date"
                     value={settings.bikeProfile.purchaseDate || ''}
                     onChange={(e) => updateNestedSettings('bikeProfile', { purchaseDate: e.target.value })}
@@ -641,7 +645,7 @@ export function Settings() {
                 <BluetoothSelector
                   onTelemetryUpdate={(data) => {
                     // Update system stats or handle telemetry data
-                    console.log('Telemetry update:', data);
+                    log.debug('Telemetry update:', data);
                   }}
                 />
               </div>
@@ -917,7 +921,7 @@ export function Settings() {
                             setSettings({ ...DEFAULT_SETTINGS, ...importedSettings })
                             setHasChanges(true)
                           } catch (error) {
-                            console.error('Failed to import settings:', error)
+                            log.error('Failed to import settings:', error)
                           }
                         }
                         reader.readAsText(file)
