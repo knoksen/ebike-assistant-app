@@ -565,7 +565,7 @@ export function RideTracker() {
                             await sensorService.disconnectSensor(sensor.id)
                             setConnectedSensors(sensorService.getConnectedSensors())
                           } catch (error) {
-                            console.error('Failed to disconnect sensor:', error)
+                            log.error('Failed to disconnect sensor:', error)
                           }
                         }}
                         className="text-red-600 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"

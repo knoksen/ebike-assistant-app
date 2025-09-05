@@ -198,7 +198,7 @@ export class BluetoothService {
         await this.connect();
         return;
       } catch (error) {
-        console.error(`Reconnection attempt ${i + 1} failed:`, error);
+        log.error(`Reconnection attempt ${i + 1} failed:`, error);
         await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s between attempts
       }
     }
