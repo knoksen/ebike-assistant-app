@@ -100,6 +100,7 @@ Having issues? Try these quick fixes:
 ## 💾 Technical Details
 
 ### Core Features
+
 - Works offline after first install
 - Automatic updates
 - No account needed
@@ -186,7 +187,7 @@ The app uses Bluetooth Low Energy (BLE) with GATT services to communicate with e
 
 For power users, we also offer a desktop version with additional features. See [desktop installation guide](DESKTOP.md).
 
-## � Release Preparation
+## 🚀 Release Preparation
 
 Run the full quality gate:
 
@@ -210,6 +211,7 @@ npm run electron:linux
 ```
 
 ### Manual Smoke Checklist
+
 - [ ] App loads over HTTPS (PWA install prompt shows)
 - [ ] Connect button scans & handles cancel gracefully
 - [ ] Boost profile save / load works after refresh
@@ -218,15 +220,30 @@ npm run electron:linux
 - [ ] No console errors in production build
 
 ### Generating Screenshots
+
 Use your browser dev tools or a headless tool (e.g. Playwright) to capture key screens. Replace the placeholder SVGs in `docs/screenshots/` with real PNG/JPG exports of approx 800px wide.
 
-## �🛠️ Development
+#### Automated (Playwright)
+
+Install once and capture:
+
+```bash
+npm i -D @playwright/test
+npx playwright install --with-deps chromium
+npm run build
+npm run screenshots
+```
+
+PNGs will be saved into `docs/screenshots/` (home, diagnostics, boost, settings).
+
+## �️ Development
 
 For developer documentation and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## 🧹 Housekeeping / Future
 
 Planned improvements:
+
 - Real battery & error telemetry parsing refinements
 - Firmware flashing workflow (guarded, post-1.0)
 - Cloud sync (optional) with end‑to‑end encryption
