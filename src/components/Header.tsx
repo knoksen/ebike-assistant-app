@@ -6,13 +6,22 @@ import ProgressBar from './ProgressBar'
 const Header: React.FC = () => {
   const { isDark, toggleDarkMode } = useTheme()
   const location = useLocation()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
 
-  const isActive = (path: string) => location.pathname === path
+  // Force rerender on location change
+  const locationKey = location.key
+  React.useEffect(() => {}, [locationKey])
+
+  const isActive = React.useCallback((path: string) => {
+    return location.pathname === path
+  }, [location.pathname])
+  const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev)
 
   const navItems = [
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/diagnostics', label: 'Diagnostics', icon: '🔧' },
     { path: '/tuneup', label: 'Tuneup', icon: '🔨' },
+    { path: '/boost', label: 'Power Boost', icon: '⚡' },
     { path: '/parts', label: 'Parts', icon: '⚙️' },
     { path: '/maintenance', label: 'Maintenance', icon: '🛠️' },
     { path: '/guides', label: 'Guides', icon: '📖' },
@@ -80,10 +89,21 @@ const Header: React.FC = () => {
               )}
             </div>
           </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden p-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-green-500/10"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
 
         {/* Mobile Navigation */}
-        <nav className="md:hidden py-2 overflow-x-auto whitespace-nowrap scrollbar-thin">
+        <nav aria-label="Mobile navigation" className={`${isMobileMenuOpen ? '' : 'hidden'} md:hidden py-2 overflow-x-auto whitespace-nowrap scrollbar-thin`}>
           <div className="flex space-x-2 px-2">
             {navItems.map(({ path, label, icon }) => (
               <Link

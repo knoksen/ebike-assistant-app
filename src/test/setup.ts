@@ -24,30 +24,26 @@ class IDBOpenDBRequest extends IDBRequest {
 const indexedDB = {
   open: vi.fn(() => {
     const request = new IDBOpenDBRequest()
-    setTimeout(() => {
-      if (request.onsuccess) {
-        request.result = {
-          createObjectStore: vi.fn(),
-          transaction: vi.fn(() => ({
-            objectStore: vi.fn(() => ({
-              put: vi.fn(),
-              get: vi.fn(),
-              delete: vi.fn()
-            }))
-          }))
-        }
-        request.onsuccess(new Event('success'))
-      }
-    })
+    request.result = {
+      createObjectStore: vi.fn(),
+      transaction: vi.fn(() => ({
+        objectStore: vi.fn(() => ({
+          put: vi.fn(),
+          get: vi.fn(),
+          delete: vi.fn()
+        }))
+      }))
+    }
+    if (request.onsuccess) {
+      request.onsuccess(new Event('success'))
+    }
     return request
   }),
   deleteDatabase: vi.fn(() => {
     const request = new IDBRequest()
-    setTimeout(() => {
-      if (request.onsuccess) {
-        request.onsuccess(new Event('success'))
-      }
-    })
+    if (request.onsuccess) {
+      request.onsuccess(new Event('success'))
+    }
     return request
   })
 }

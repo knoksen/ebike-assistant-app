@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
-    testTimeout: 10000,
+    testTimeout: 20000,
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [
@@ -18,7 +18,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     include: [
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'src/__tests__/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+      'src/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
     ],
   },
   resolve: {

@@ -26,22 +26,32 @@ interface RenderOptions {
 }
 
 export const renderWithProviders = (ui: React.ReactElement, { route = '/', theme }: RenderOptions = {}) => {
-  const utils = render(
-    <MemoryRouter initialEntries={[route]}>
+  const initialMemoryEntries = [route]
+  const Wrapper = ({ children }: { children: ReactNode }) => (
+    <MemoryRouter initialEntries={initialMemoryEntries}>
       <ThemeProvider initialState={theme}>
-        {ui}
+        {children}
       </ThemeProvider>
     </MemoryRouter>
   )
 
   return {
-    ...utils,
-    rerender: (rerenderUi: React.ReactElement) => utils.rerender(
-      <TestWrapper initialEntries={[route]}>
-        {rerenderUi}
-      </TestWrapper>
-    )
+    ...render(ui, { wrapper: Wrapper }),
+    rerender: (rerenderUi: React.ReactElement, newRoute?: string) => {
+      if (newRoute) initialMemoryEntries[0] = newRoute
+      return render(rerenderUi, { wrapper: Wrapper })
+    }
   }
+}
+
+export const renderWithTheme = (ui: React.ReactElement, { theme }: Omit<RenderOptions, 'route'> = {}) => {
+  const Wrapper = ({ children }: { children: ReactNode }) => (
+    <ThemeProvider initialState={theme}>
+      {children}
+    </ThemeProvider>
+  )
+
+  return render(ui, { wrapper: Wrapper })
 }
 
 export * from '@testing-library/react'

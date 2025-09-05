@@ -1,7 +1,7 @@
-import { screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent, within } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import App from '../App'
-import { renderWithProviders } from '../test/test-utils'
+import { renderWithTheme } from '../test/test-utils'
 
 // Mock database service
 vi.mock('../services/DatabaseService', () => ({
@@ -16,19 +16,23 @@ vi.mock('../services/DatabaseService', () => ({
 
 describe('App', () => {
   it('renders primary navigation elements', () => {
-    renderWithProviders(<App />)
+    renderWithTheme(<App />)
     
-    // Check for main navigation links
-    expect(screen.getByRole('link', { name: /home/i })).toBeTruthy()
-    expect(screen.getByRole('link', { name: /diagnostics/i })).toBeTruthy()
-    expect(screen.getByRole('link', { name: /maintenance/i })).toBeTruthy()
-    expect(screen.getByRole('link', { name: /parts/i })).toBeTruthy()
+    // Get desktop navigation
+    const desktopNav = screen.getByLabelText('Desktop navigation')
+    expect(desktopNav).toBeInTheDocument()
+    
+    // Check for main navigation links in desktop nav
+    const links = ['Home', 'Diagnostics', 'Maintenance', 'Parts'].map(name => 
+      within(desktopNav).getByRole('link', { name: new RegExp(name, 'i') })
+    )
+    links.forEach(link => expect(link).toBeInTheDocument())
   })
 
   it('renders header with theme toggle', () => {
-    renderWithProviders(<App />)
-    const themeToggle = screen.getByRole('button', { name: /toggle theme/i })
-    expect(themeToggle).toBeTruthy()
+    renderWithTheme(<App />)
+    const themeToggle = screen.getByTitle('Toggle dark mode')
+    expect(themeToggle).toBeInTheDocument()
     
     // Test theme toggle functionality
     fireEvent.click(themeToggle)
@@ -39,12 +43,14 @@ describe('App', () => {
   })
 
   it('renders settings page when clicking settings', async () => {
-    renderWithProviders(<App />)
-    const settingsLink = screen.getByRole('link', { name: /settings/i })
+    renderWithTheme(<App />)
+    // Get settings link from desktop nav
+    const desktopNav = screen.getByLabelText('Desktop navigation')
+    const settingsLink = within(desktopNav).getByRole('link', { name: /settings/i })
     fireEvent.click(settingsLink)
     
     // Wait for settings page to render
-    const settingsHeading = await screen.findByRole('heading', { name: /settings/i })
-    expect(settingsHeading).toBeTruthy()
+    const advancedSettingsHeading = await screen.findByRole('heading', { name: /advanced settings/i })
+    expect(advancedSettingsHeading).toBeInTheDocument()
   })
 })

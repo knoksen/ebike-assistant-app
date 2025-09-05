@@ -8,6 +8,7 @@ import About from './pages/About'
 import SettingsPage from './pages/Settings'
 import { RideTrackerPage } from './pages/RideTracker'
 import Tuneup from './pages/Tuneup'
+import Boost from './pages/Boost'
 import Header from './components/Header'
 import { ThemeProvider } from './context/ThemeContext'
 import './App.css'
@@ -29,6 +30,7 @@ export default function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/rides" element={<RideTrackerPage />} />
               <Route path="/tuneup" element={<Tuneup />} />
+              <Route path="/boost" element={<Boost />} />
             </Routes>
           </main>
         </div>
