@@ -14,9 +14,9 @@ describe('App', () => {
     expect(desktopNav).toBeInTheDocument()
     
     // Check for main navigation links in desktop nav
-    const links = ['Home', 'Diagnostics', 'Maintenance', 'Parts'].map(name => 
-      within(desktopNav).getByRole('link', { name: new RegExp(name, 'i') })
-    )
+    const links = ["Home", "Guides", "Rides", "Settings", "About"].map((name) =>
+      within(desktopNav).getByRole("link", { name: new RegExp(name, "i") })
+    );
     links.forEach(link => expect(link).toBeInTheDocument())
   })
 

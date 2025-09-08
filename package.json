@@ -35,6 +35,8 @@
   },
   "dependencies": {
     "applicationinsights": "^3.0.0",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.542.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0"
@@ -42,6 +44,9 @@
   "devDependencies": {
     "@eslint/js": "^8.56.0",
     "@playwright/test": "^1.55.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.1.2",
     "@types/node": "^20.10.5",
@@ -53,7 +58,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.21",
     "concurrently": "^8.2.2",
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1",
@@ -63,16 +68,16 @@
     "gh-pages": "^6.1.0",
     "globals": "^13.24.0",
     "jsdom": "^23.0.1",
-    "postcss": "^8.4.32",
+    "png-to-ico": "^2.1.8",
+    "postcss": "^8.5.6",
     "rollup-plugin-visualizer": "^5.11.0",
-    "tailwindcss": "^3.4.0",
+    "sharp": "^0.33.4",
+    "tailwindcss": "^3.4.17",
     "typescript": "~5.3.3",
     "vite": "^7.1.4",
     "vite-plugin-pwa": "^1.0.3",
-  "vitest": "^3.2.4",
-  "wait-on": "^7.2.0",
-  "png-to-ico": "^2.1.8",
-  "sharp": "^0.33.4"
+    "vitest": "^3.2.4",
+    "wait-on": "^7.2.0"
   },
   "build": {
     "appId": "com.knoksen.ebike-assistant",
@@ -110,8 +115,8 @@
             "x64"
           ]
         }
-  ],
-  "icon": "public/icon.ico",
+      ],
+      "icon": "public/icon.ico",
       "verifyUpdateCodeSignature": false
     },
     "linux": {
