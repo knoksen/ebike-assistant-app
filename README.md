@@ -4,8 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/tag/knoksen/ebike-assistant-app?label=release)](CHANGELOG.md)
 
-Your pocket e-bike companion! Track rides, diagnose issues, customize boost profiles, and maintain your e-bike - all from your phone or desktop.
+Your pocket e-bike companion. Track rides, diagnose issues, customize boost profiles, and maintain your e-bike — all from your phone or desktop.
 
+**Quick links:** [Live App](https://knoksen.github.io/ebike-assistant-app) · [Desktop Guide](DESKTOP.md) · [Development](DEVELOPMENT.md) · [Changelog](CHANGELOG.md)
+
+---
 
 ## UI Overview
 
@@ -17,7 +20,7 @@ Your pocket e-bike companion! Track rides, diagnose issues, customize boost prof
 |-------------|-------|-------|----------|
 | ![Maintenance](docs/screenshots/maintenance.png) | ![Parts](docs/screenshots/parts.png) | ![Rides](docs/screenshots/rides.png) | ![Settings](docs/screenshots/settings.png) |
 
-Desktop sized variants are also available ( *-desktop.png ) for higher‑resolution contexts.
+Desktop-sized variants are also available (`*-desktop.png`) for higher-resolution contexts.
 
 ### Mobile vs Desktop
 
@@ -38,6 +41,8 @@ Both builds share a single codebase; Electron packages wrap the production PWA o
 3. Tap the app icon on your home screen to start
 
 That's it! The app works offline and updates automatically.
+
+---
 
 ## 🔧 Main Features
 
@@ -98,6 +103,8 @@ Bottom navigation bar on small screens for faster access to core areas (Home, Di
 - Language
 - Notifications
 
+---
+
 ## ⚠️ Quick Troubleshooting
 
 Having issues? Try these quick fixes:
@@ -118,6 +125,8 @@ Having issues? Try these quick fixes:
 
 - Visit our [support page](https://github.com/knoksen/ebike-assistant-app/issues)
 - Email us at [support@ebike-assistant.app](mailto:support@ebike-assistant.app)
+
+---
 
 ## 💾 Technical Details
 
@@ -205,6 +214,8 @@ The app uses Bluetooth Low Energy (BLE) with GATT services to communicate with e
 - Rate-limited commands
 - See [SECURITY.md](SECURITY.md) for details
 
+---
+
 ## 🖥️ Desktop & Distribution
 
 For power users, we also offer a desktop version with additional features. See [desktop installation guide](DESKTOP.md).
@@ -241,7 +252,7 @@ See the full [CHANGELOG](CHANGELOG.md) for complete details. v1.0.0 highlights:
 - PWA installable + offline + auto-update
 - Electron desktop packaging (Windows installers & portable build)
 - Shared progress bar + screenshot automation workflow
-
+---
 
 ### Manual Smoke Checklist
 
@@ -251,6 +262,8 @@ See the full [CHANGELOG](CHANGELOG.md) for complete details. v1.0.0 highlights:
 - [ ] Dark / Light mode persists
 - [ ] Navigation works on mobile (dock) & desktop (header)
 - [ ] No console errors in production build
+
+---
 
 ### Environment & Logging
 
@@ -262,7 +275,7 @@ Runtime behavior is controlled with Vite env vars (all prefixed with `VITE_`). C
 | `VITE_ENABLE_ANALYTICS` | `false` | Future hook for optional telemetry (not yet implemented). |
 
 Production build automatically picks up `.env.production` which sets `VITE_LOG_LEVEL=warn` to reduce noise. Adjust per deployment if deeper diagnostics are needed.
-
+---
 
 ### Generating Screenshots
 
@@ -281,6 +294,8 @@ npm run screenshots
 
 PNG outputs land in `docs/screenshots/` (home, diagnostics, boost, maintenance, parts, rides, settings).
 
+---
+
 ## 🛠️ Development
 
 For developer documentation and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
@@ -296,6 +311,8 @@ Community contributions welcome. Until a full `CONTRIBUTING.md` lands:
 
 Guidelines draft (planned): coding standards, commit message style, triage labels, release cadence.
 
+---
+
 ## 🧹 Housekeeping / Future
 
 Planned improvements:
@@ -306,6 +323,8 @@ Planned improvements:
 - Localization pipeline
 - CONTRIBUTING.md + issue/PR templates
 - Dependency hygiene (resolve current moderate advisory)
+
+---
 
 ## 📜 License
 
