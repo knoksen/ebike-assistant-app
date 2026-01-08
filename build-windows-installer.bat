@@ -42,4 +42,15 @@ if errorlevel 1 (
 
 echo Done. Installer output is available in dist-electron\
 popd
+if errorlevel 1 exit /b 1
+
+echo Generating icons...
+call npm run icon:generate
+if errorlevel 1 exit /b 1
+
+echo Packaging installer...
+call npm run electron:win
+if errorlevel 1 exit /b 1
+
+echo Done. Installer output is available in dist-electron\
 endlocal

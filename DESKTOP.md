@@ -18,6 +18,10 @@ Or run the helper script from the repository root on Windows:
 
 ```bash
 .\build-windows-installer.bat
+Or run the helper script on Windows:
+
+```bash
+build-windows-installer.bat
 ```
 
 Creates:
