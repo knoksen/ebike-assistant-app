@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { log } from '../services/logger'
 import { sensorService } from '../services/SensorService'
 import { BluetoothSelector } from './BluetoothSelector'
+import { FirmwareUpdateCard } from './FirmwareUpdateCard'
 
 type UserSettings = {
   units: 'metric' | 'imperial'
@@ -863,6 +864,8 @@ export function Settings() {
                 )}
               </div>
             </div>
+
+            <FirmwareUpdateCard />
 
             {/* Data Management */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
