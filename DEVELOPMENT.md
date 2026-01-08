@@ -148,6 +148,8 @@ __tests__/
 
 ## 🤝 Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow and commit conventions.
+
 1. Fork the repository
 2. Create a feature branch
 3. Follow style guide

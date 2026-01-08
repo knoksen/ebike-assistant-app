@@ -6,7 +6,7 @@
 
 Your pocket e-bike companion. Track rides, diagnose issues, customize boost profiles, and maintain your e-bike — all from your phone or desktop.
 
-**Quick links:** [Live App](https://knoksen.github.io/ebike-assistant-app) · [Desktop Guide](DESKTOP.md) · [Development](DEVELOPMENT.md) · [Changelog](CHANGELOG.md)
+**Quick links:** [Live App](https://knoksen.github.io/ebike-assistant-app) · [Desktop Guide](DESKTOP.md) · [Development](DEVELOPMENT.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
 
 ---
 
