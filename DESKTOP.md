@@ -14,6 +14,12 @@ npm run icon:generate
 npm run electron:win
 ```
 
+Or run the helper script on Windows:
+
+```bash
+build-windows-installer.bat
+```
+
 Creates:
 
 - NSIS installer (.exe)
