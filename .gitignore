@@ -31,3 +31,7 @@ dist-electron
 *.AppImage
 *.deb
 *.rpm
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
