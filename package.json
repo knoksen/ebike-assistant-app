@@ -41,6 +41,10 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0"
   },
+  "overrides": {
+    "axios": "^1.11.1",
+    "glob": "^10.4.6"
+  },
   "devDependencies": {
     "@eslint/js": "^8.56.0",
     "@playwright/test": "^1.57.0",
