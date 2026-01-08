@@ -1,0 +1,71 @@
+{
+  "home": {
+    "hero": {
+      "title": "E-Bike Assistant",
+      "tagline": "Your comprehensive companion for e-bike maintenance, troubleshooting, and parts management",
+      "alt": "E-Bike Assistant"
+    },
+    "features": {
+      "diagnostics": {
+        "title": "Diagnostics",
+        "description": "Step-by-step guidance to identify and fix common e-bike issues",
+        "cta": "Start Diagnostics"
+      },
+      "parts": {
+        "title": "Parts Search",
+        "description": "Find compatible components and replacement parts for your e-bike",
+        "cta": "Browse Parts"
+      },
+      "maintenance": {
+        "title": "Maintenance",
+        "description": "Keep track of maintenance schedules and service history",
+        "cta": "Track Maintenance"
+      },
+      "guides": {
+        "title": "Tips & Guides",
+        "description": "Learn maintenance techniques and best practices",
+        "cta": "Read Guides"
+      },
+      "rides": {
+        "title": "Ride Tracker",
+        "description": "Log your rides and track your e-bike adventures and statistics",
+        "cta": "Track Rides"
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Customize your preferences and manage your e-bike profile",
+        "cta": "Open Settings"
+      }
+    },
+    "quickPartsSearch": {
+      "title": "Quick Parts Search"
+    },
+    "whyChoose": {
+      "title": "Why Choose E-Bike Assistant?",
+      "pwa": {
+        "title": "Progressive Web App",
+        "description": "Install on mobile devices for offline access"
+      },
+      "desktop": {
+        "title": "Desktop Application",
+        "description": "Native support for Windows, macOS, and Linux"
+      },
+      "fast": {
+        "title": "Fast & Responsive",
+        "description": "Built with modern web technologies"
+      }
+    }
+  },
+  "parts": {
+    "title": "🔍 E-Bike Parts & Components",
+    "subtitle": "Find compatible replacement parts and upgrades for your e-bike",
+    "searchPlaceholder": "Search parts, compatibility, or description...",
+    "allCategories": "All Categories",
+    "showing": "Showing {{count}} parts",
+    "showingIn": "in {{category}}",
+    "showingMatching": "matching \"{{query}}\"",
+    "noPartsTitle": "No parts found",
+    "noPartsDescription": "Try adjusting your search terms or category filter",
+    "quickSearchTitle": "Quick Search"
+  }
+}

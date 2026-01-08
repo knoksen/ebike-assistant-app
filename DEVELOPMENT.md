@@ -6,6 +6,7 @@
 - [Architecture](#architecture)
 - [Testing](#testing)
 - [Security](#security)
+- [Internationalization (i18n)](#internationalization-i18n)
 - [Contributing](#contributing)
 
 ## 🔧 Setup
@@ -169,6 +170,22 @@ We use semantic versioning:
 - MAJOR: Breaking changes
 - MINOR: New features
 - PATCH: Bug fixes
+
+## 🌍 Internationalization (i18n)
+
+We use **i18next** with **react-i18next** for UI translations.
+
+### Adding a new locale
+
+1. Create a new locale file in `src/locales/` (for example, `src/locales/es.json`) by copying the structure of `src/locales/en.json`.
+2. Add the new locale import to `src/i18n.ts` and register it in the `resources` map.
+3. Update the default language in `src/i18n.ts` if needed.
+
+### Using translations in components
+
+1. Import the hook: `import { useTranslation } from 'react-i18next'`.
+2. Call `const { t } = useTranslation()` in your component.
+3. Replace hard-coded text with `t('your.key.path')`.
 
 ## 📜 License
 

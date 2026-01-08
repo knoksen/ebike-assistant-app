@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import PartsSearch from '../components/PartsSearch'
 import PartItem from '../components/PartItem'
 
@@ -114,6 +115,7 @@ const PARTS_CATEGORIES = [
 const ALL_PARTS = PARTS_CATEGORIES.flatMap(category => category.parts)
 
 export default function Parts() {
+  const { t } = useTranslation()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -126,16 +128,19 @@ export default function Parts() {
     part.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     part.compatibility.some(comp => comp.toLowerCase().includes(searchQuery.toLowerCase()))
   )
+  const partsSummary = `${t('parts.showing', { count: searchFilteredParts.length })}${
+    selectedCategory ? ` ${t('parts.showingIn', { category: selectedCategory })}` : ''
+  }${searchQuery ? ` ${t('parts.showingMatching', { query: searchQuery })}` : ''}`
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
-            🔍 E-Bike Parts & Components
+            {t('parts.title')}
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Find compatible replacement parts and upgrades for your e-bike
+            {t('parts.subtitle')}
           </p>
         </div>
 
@@ -143,7 +148,7 @@ export default function Parts() {
         <div className="max-w-md mx-auto mb-8">
           <input
             type="text"
-            placeholder="Search parts, compatibility, or description..."
+            placeholder={t('parts.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -160,7 +165,7 @@ export default function Parts() {
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
           >
-            All Categories
+            {t('parts.allCategories')}
           </button>
           {PARTS_CATEGORIES.map(category => (
             <button
@@ -180,9 +185,7 @@ export default function Parts() {
         {/* Results */}
         <div className="mb-4">
           <p className="text-gray-600 dark:text-gray-400 text-center">
-            Showing {searchFilteredParts.length} parts
-            {selectedCategory && ` in ${selectedCategory}`}
-            {searchQuery && ` matching "${searchQuery}"`}
+            {partsSummary}
           </p>
         </div>
 
@@ -197,10 +200,10 @@ export default function Parts() {
           <div className="text-center py-12">
             <div className="text-4xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-              No parts found
+              {t('parts.noPartsTitle')}
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Try adjusting your search terms or category filter
+              {t('parts.noPartsDescription')}
             </p>
           </div>
         )}
@@ -208,7 +211,7 @@ export default function Parts() {
         {/* Quick Search Component */}
         <div className="max-w-2xl mx-auto mt-12">
           <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-white">
-            Quick Search
+            {t('parts.quickSearchTitle')}
           </h2>
           <PartsSearch />
         </div>
