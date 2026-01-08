@@ -87,15 +87,15 @@ const PartsSearch: React.FC = () => {
           </div>
         ))}
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <div className="relative w-16 h-16 mx-auto mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-full opacity-20 blur"></div>
-              <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-full">
-                <span className="text-4xl">🔍</span>
+          <div className="text-center py-16">
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-full opacity-20 blur-xl"></div>
+              <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-full shadow-lg">
+                <span className="text-5xl">🔍</span>
               </div>
             </div>
-            <p className="text-lg">No parts found</p>
-            <p className="text-sm text-gray-400">Try a different search term</p>
+            <p className="text-xl font-medium text-gray-800 dark:text-white mb-2">No parts found</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Try a different search term or browse categories above</p>
           </div>
         )}
       </div>

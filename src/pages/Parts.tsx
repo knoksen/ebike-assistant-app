@@ -197,14 +197,26 @@ export default function Parts() {
         </div>
 
         {searchFilteredParts.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+          <div className="text-center py-16">
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full opacity-20 blur-xl"></div>
+              <div className="relative flex items-center justify-center w-full h-full bg-white dark:bg-gray-800 rounded-full shadow-lg">
+                <span className="text-5xl">🔍</span>
+              </div>
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-3">
               {t('parts.noPartsTitle')}
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
               {t('parts.noPartsDescription')}
             </p>
+            <button
+              onClick={() => setSearchQuery('')}
+              className="btn-primary"
+              type="button"
+            >
+              Clear Search
+            </button>
           </div>
         )}
 

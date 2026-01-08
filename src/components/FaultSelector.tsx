@@ -68,6 +68,8 @@ export function FaultSelector({ faults, onSelect }: FaultSelectorProps) {
                 key={f.id}
                 onClick={() => onSelect(f.id)}
                 className="group w-full text-left"
+                aria-label={`Diagnose ${f.question}`}
+                type="button"
               >
                 <div className="relative">
                   <div className={`absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-green-500 rounded-xl opacity-0 group-hover:opacity-20 blur transition duration-300 ${

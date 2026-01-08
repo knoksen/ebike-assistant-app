@@ -21,16 +21,18 @@ export const MobileDock: React.FC = () => {
               <Link
                 key={i.to}
                 to={i.to}
-                className={`flex flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium transition ${active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}
+                aria-label={`Navigate to ${i.label}`}
+                aria-current={active ? 'page' : undefined}
+                className={`flex flex-col items-center justify-center gap-1 py-3 text-xs font-medium transition touch-manipulation min-h-[64px] ${active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}
               >
                 <span className="text-lg leading-none">{i.icon}</span>
-                <span>{i.label}</span>
-                {active && <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                <span className="font-medium">{i.label}</span>
+                {active && <span className="mt-1 w-8 h-0.5 rounded-full bg-blue-500" />}
               </Link>
             )
           })}
-          <div className="flex items-center justify-center py-1">
-            <DeviceConnectButton compact className="scale-90" />
+          <div className="flex items-center justify-center py-2">
+            <DeviceConnectButton compact className="" />
           </div>
         </div>
       </div>
