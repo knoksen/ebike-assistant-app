@@ -40,8 +40,62 @@ export interface TelemetryData {
   power: number;
   temperature: number;
   errorCode?: number;
+  error?: TelemetryError;
+  batteryVoltage?: number;
+  batteryPercent?: number;
   cruiseControlActive: boolean;
 }
+
+export enum TelemetryError {
+  None = 'none',
+  Motor = 'motor',
+  Battery = 'battery',
+  Controller = 'controller',
+  Overheat = 'overheat',
+  Sensor = 'sensor',
+  Communication = 'communication',
+  Unknown = 'unknown'
+}
+
+const telemetryErrorMap: Record<number, TelemetryError> = {
+  0: TelemetryError.None,
+  1: TelemetryError.Motor,
+  2: TelemetryError.Battery,
+  3: TelemetryError.Controller,
+  4: TelemetryError.Overheat,
+  5: TelemetryError.Sensor,
+  6: TelemetryError.Communication
+};
+
+export const parseTelemetryData = (value: DataView): TelemetryData | null => {
+  if (value.byteLength < 11) {
+    return null;
+  }
+
+  const speed = value.getUint16(0, true) / 100;
+  const totalMileage = value.getUint32(2, true) / 1000;
+  const power = value.getInt16(6, true);
+  const temperature = value.getInt8(8);
+  const errorCode = value.getUint8(9);
+  const cruiseControlActive = Boolean(value.getUint8(10) & 0x01);
+
+  const batteryVoltageRaw = value.byteLength >= 13 ? value.getUint16(11, true) : undefined;
+  const batteryPercentRaw = value.byteLength >= 14 ? value.getUint8(13) : undefined;
+
+  return {
+    speed,
+    totalMileage,
+    power,
+    temperature,
+    errorCode,
+    error: telemetryErrorMap[errorCode] ?? TelemetryError.Unknown,
+    batteryVoltage: batteryVoltageRaw !== undefined ? batteryVoltageRaw / 100 : undefined,
+    batteryPercent: batteryPercentRaw !== undefined
+      ? Math.max(0, Math.min(100, batteryPercentRaw))
+      : undefined,
+    cruiseControlActive
+  };
+};
 
 export class BluetoothService {
   private static instance: BluetoothService;
@@ -170,15 +224,7 @@ export class BluetoothService {
 
   private parseNotificationData(value: DataView): TelemetryData | null {
     try {
-      // This is a basic implementation - extend based on actual data format
-      return {
-        speed: value.getUint16(0, true) / 100, // km/h
-        totalMileage: value.getUint32(2, true) / 1000, // km
-        power: value.getInt16(6, true), // watts
-        temperature: value.getInt8(8), // celsius
-        errorCode: value.getUint8(9),
-        cruiseControlActive: Boolean(value.getUint8(10) & 0x01)
-      };
+      return parseTelemetryData(value);
     } catch (error) {
       log.error('Error parsing notification data:', error);
       return null;
