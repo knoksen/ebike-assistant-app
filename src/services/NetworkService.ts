@@ -1,7 +1,6 @@
 // Vite env types provided globally via tsconfig.
 // Network Service - API integrations, WebSocket, real-time sync
 import { databaseService } from './DatabaseService'
-import { sensorService } from './SensorService'
 import { log } from './logger'
 import type { Trip } from './dbTypes'
 

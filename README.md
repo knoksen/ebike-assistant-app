@@ -6,7 +6,22 @@
 
 Your pocket e-bike companion. Track rides, diagnose issues, customize boost profiles, and maintain your e-bike — all from your phone or desktop.
 
-**Quick links:** [Live App](https://knoksen.github.io/ebike-assistant-app) · [Desktop Guide](DESKTOP.md) · [Development](DEVELOPMENT.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
+## 🚀 Launch the App
+
+<div align="center">
+
+[![Launch Web App](https://img.shields.io/badge/🌐_Launch_Web_App-4CAF50?style=for-the-badge&logo=google-chrome&logoColor=white)](https://knoksen.github.io/ebike-assistant-app)
+[![Download for Windows](https://img.shields.io/badge/💻_Download_for_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/knoksen/ebike-assistant-app/releases/latest)
+[![Download for macOS](https://img.shields.io/badge/🍎_Download_for_macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/knoksen/ebike-assistant-app/releases/latest)
+[![Download for Linux](https://img.shields.io/badge/🐧_Download_for_Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/knoksen/ebike-assistant-app/releases/latest)
+
+**Web App** • Works on any device • No installation needed • Offline support
+
+**Desktop App** • Native experience • System integration • Automatic updates
+
+</div>
+
+**Quick links:** [Desktop Guide](DESKTOP.md) · [Development](DEVELOPMENT.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
 
 ---
 

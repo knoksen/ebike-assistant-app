@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to semantic versioning once past v1.0.0.
 
+## [1.1.0] - 2026-01-08
+### Fixed
+- Fixed linting errors in BoostSettings re-export pattern
+- Removed unused imports from example.test.ts, DatabaseService.ts, and NetworkService.ts
+- Fixed TypeScript path aliases in tsconfig.test.json for proper @ imports in tests
+- Resolved build errors with sync module imports
+
+### Changed
+- Updated dependencies: applicationinsights (3.12.1), framer-motion (12.24.10), lucide-react (latest), react-router-dom (6.30.3)
+- Updated browserslist database to latest (caniuse-lite 1.0.30001763)
+- Improved code quality with ESLint fixes (reduced from 16 issues to 11 warnings)
+
+### Security
+- All dependencies verified with 0 vulnerabilities
+- Package lock file updated with latest secure versions
+
 ## [1.0.0] - 2025-09-05
 ### Added
 

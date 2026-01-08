@@ -1,6 +1,6 @@
 import { openDB } from 'idb'
 import type { IDBPDatabase } from 'idb'
-import type { Device, Trip, Maintenance, Settings, Sensor, DbSchema, DBStoreNames } from './dbTypes'
+import type { Device, Trip, Maintenance, Settings, DbSchema, DBStoreNames } from './dbTypes'
 import { log } from './logger'
 
 const DB_VERSION = 1
