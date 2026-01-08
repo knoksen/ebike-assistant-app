@@ -72,9 +72,9 @@ const Header: React.FC = () => {
             className="group flex items-center space-x-3"
             aria-label="E-Bike Assistant Home">
             <img
-              src="./public/ebike-icon.svg"
+              src="/ebike-icon.svg"
               alt="E-Bike Assistant"
-              className="w-8 h-8 relative transform group-hover:scale-110 transition-transform duration-300"
+              className="w-8 h-8 object-contain relative transform group-hover:scale-110 transition-transform duration-300"
             />
             <span className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent">
               E-Bike Assistant

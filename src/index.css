@@ -53,8 +53,17 @@
   }
 
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-transform duration-300 hover:scale-[1.02]
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-all duration-300
            border border-gray-200 dark:border-gray-700;
+  }
+
+  .card:hover {
+    @apply transform scale-[1.02] shadow-xl;
+  }
+
+  /* Prevent card content overflow during scale */
+  .card > * {
+    @apply relative z-10;
   }
 
   .input {
@@ -91,6 +100,27 @@
     @apply absolute top-0 bottom-0 right-0 w-24 pointer-events-none;
     background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.4) 45%, transparent 100%);
     animation: shimmer 2s linear infinite;
+  }
+
+  /* Image and thumbnail utilities */
+  .img-thumbnail {
+    @apply rounded-lg overflow-hidden shadow-md;
+  }
+
+  .img-responsive {
+    @apply w-full h-auto object-contain;
+  }
+
+  .img-cover {
+    @apply w-full h-full object-cover;
+  }
+
+  .aspect-square {
+    @apply aspect-w-1 aspect-h-1;
+  }
+
+  .aspect-video {
+    @apply aspect-w-16 aspect-h-9;
   }
 
   /* Shadow utility for floating action button */

@@ -17,7 +17,7 @@ export default function Home() {
               <img
                 src={withBase('ebike-icon.svg')}
                 alt={t('home.hero.alt')}
-                className="w-24 h-24 mx-auto mb-4 drop-shadow-lg"
+                className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 object-contain drop-shadow-lg"
               />
             </div>
             <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 bg-clip-text text-transparent mb-4">
